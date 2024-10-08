@@ -6,7 +6,7 @@
     <input id="username" name="username" type="text" required autocomplete="off">
 
     <label for="password">Contraseña</label>
-    {{-- <a href="{{ route('recoveryPassword') }}">¿Olvidaste tu contraseña?</a> --}}
+    <a href="{{ route('forgotPassword') }}">¿Olvidaste tu contraseña?</a>
     <input id="password" name="password" type="password" required autocomplete="current-password">
 
     <button type="submit">🚪 Iniciar sesión</button>

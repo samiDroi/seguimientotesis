@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Models\UnidadAcademica;
 use App\Http\Controllers\AcademicControl\UnidadController;
 use App\Http\Controllers\AcademicControl\ProgramaController;
+use App\Http\Controllers\Auth\ResetPwsdController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +31,10 @@ Route::controller(RegisterController::class)->group(function(){
     Route::get('/register', 'showRegister');
     Route::post('/register', 'register')->name('register');
 });
-
+Route::controller(ResetPwsdController::class)->group(function(){
+    Route::get("/forgotPassword",'index')->name("forgotPassword");
+    Route::post("/forgotPassword","resetPassword")->name("forgotPassword");
+});
 Route::controller(UnidadController::class)->group(function(){
     Route::get('/unidades', 'index')->name('unidades.index'); // Lista todas las unidades
     Route::get('/unidades/create', 'store')->name('unidades.create'); // Muestra el formulario para crear una nueva unidad
@@ -47,5 +51,5 @@ Route::controller(ProgramaController::class)->group(function(){
 
     Route::get('/programas/{id}/edit', 'edit')->name('programas.edit');//devuelve vista del update
     Route::put('/programas/{id}', 'update')->name('programas.update');//metodo para editar el programa seleccionado
-    Route::delete('/programas/{id}', 'delete')->name('programas.destroy');
+    Route::delete('/programas/{id}', 'delete')->name('programas.destroy');//metodo que elimina el programa
 });
