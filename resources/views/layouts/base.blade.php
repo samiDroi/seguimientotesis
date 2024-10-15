@@ -6,10 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Landing page</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-KyZXEAg3QhqLMpG8r+Knujsl5/5hb7ieaV0L5ttE5ms=" crossorigin="anonymous"></script>
-
+    @yield("css")
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
     @yield('content')
     @yield('js')
+    
 </body>
 </html>

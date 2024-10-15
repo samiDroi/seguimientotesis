@@ -7,11 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+
 
 class Usuarios extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-
+    protected $primaryKey = 'id_user';
     /**
      * The attributes that are mass assignable.
      *
@@ -44,4 +48,9 @@ class Usuarios extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    public function tipos(): BelongsToMany
+    {
+        return $this->belongsToMany(TipoUsuario::class,"usuario_tipo_usuario","id_usuario","id_tipo");
+    }
+    
 }

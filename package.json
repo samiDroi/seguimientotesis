@@ -11,6 +11,10 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
+        "datatables.net-dt": "^2.1.8",
+        "datatables.net-responsive": "^3.0.3",
+        "datatables.net-responsive-dt": "^3.0.3",
+        "jquery": "^3.7.1",
         "remixicon": "^4.3.0",
         "sweetalert2": "^11.14.1"
     }

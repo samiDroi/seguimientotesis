@@ -7,6 +7,7 @@ use App\Models\UnidadAcademica;
 use App\Http\Controllers\AcademicControl\UnidadController;
 use App\Http\Controllers\AcademicControl\ProgramaController;
 use App\Http\Controllers\Auth\ResetPwsdController;
+use App\Http\Controllers\Users\ShowUsers;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,4 +53,11 @@ Route::controller(ProgramaController::class)->group(function(){
     Route::get('/programas/{id}/edit', 'edit')->name('programas.edit');//devuelve vista del update
     Route::put('/programas/{id}', 'update')->name('programas.update');//metodo para editar el programa seleccionado
     Route::delete('/programas/{id}', 'delete')->name('programas.destroy');//metodo que elimina el programa
+});
+
+Route::controller(ShowUsers::class)->group(function(){
+    Route::get("/admin/users","index")->name("users.index");
+    Route::get("admin/users/edit/{id}","edit")->name("users.edit");
+    Route::put("admin/users/{id}","update")->name("users.update");
+    Route::delete("/users/{id}","delete")->name("users.delete");
 });

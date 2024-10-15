@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Auth;
 
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\mail\MailController;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Http\Request;
 use App\Models\Usuarios;
@@ -25,7 +26,7 @@ class ResetPwsdController extends Controller{
             return back()->withErrors(['correo_electronico' => 'Este correo electrónico no está registrado.']); 
         }
         
-        $MailController = new ResetPwsdController;
+        $MailController = new ResetPasswordController;
         $MailController->resetPassword($request);
         //Alert::success('Correo confirmado','se ha enviado un correo de recuperacion de contraseña a tu email');
         return redirect('login');

@@ -13,9 +13,10 @@ class ResetPasswordController extends Controller
 {
     public function resetPassword(Request $request){
         $usuario = Usuarios::where('correo_electronico', $request->correo_electronico)->first();
+        //dd($usuario->nombre);
         $email = $request->get('correo_electronico');
         
-        Mail::send('mails/ResetPassword', ['usuario' => $usuario->nombre], function($msj) use ($email){
+        Mail::send('mails/ResetPassword', ['usuario' => $usuario], function($msj) use ($email){
             $msj->subject('Recuperacion de contraseña');
             $msj->to($email);
         });

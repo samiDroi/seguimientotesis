@@ -3,7 +3,26 @@
 <form action="{{ route('register') }}" method="POST">
     @csrf
     <h1>Informacion personal</h1>
+        <label for="nombre_tipo">Seleccione los Tipos de Usuario:</label>
     
+        <div>
+            <input type="checkbox" id="coordinador" name="nombre_tipo[]" value="5">
+            <label  for="coordinador">Coordinador</label>
+        </div>
+        <div>
+            <input type="checkbox"  id="docente" name="nombre_tipo[]" value="4">
+            <label for="docente">Docente</label>
+        </div>
+
+        <div>
+            <input type="checkbox"  id="alumno" name="nombre_tipo[]" value="3">
+            <label  for="alumno">Alumno</label>
+        </div>
+    
+        <!-- Agrega más checkboxes para otros tipos de usuario -->
+        
+    
+
     <label for="correo_electronico">Correo Electronico</label>
     <input type="email" name="correo_electronico" required>
 

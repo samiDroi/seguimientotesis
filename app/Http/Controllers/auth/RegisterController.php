@@ -18,6 +18,12 @@ namespace App\Http\Controllers\Auth;
         public function register(Request $request){
             // Retornar true o false si la validación fue exitosa o no
             $validator = $this->validateUser($request);
+
+            $validated = $request->validate([
+                'nombre_tipo' => 'required|array',
+                'nombre_tipo.*' => 'exists:tipo_usuario,id_tipo',  // Verifica que cada tipo de usuario exista
+            ]);        
+
             if ($validator->passes()) {
                 $user = new Usuarios;
                 $user->username = $request->get('username');
@@ -29,8 +35,10 @@ namespace App\Http\Controllers\Auth;
                 $user->nombre = $request->get('nombre');
                 $user->apellidos = $request->get('apellidos');
                 $user->correo_electronico = $request->get('correo_electronico');
+               
                 $user->save();
-    
+                $user->tipos()->sync($request->nombre_tipo);
+               
                 return redirect('login')->with('success', 'Registro exitoso. Revisa tu correo para la confirmación.');
             } else {
                 foreach ($validator->errors()->all() as $error) {

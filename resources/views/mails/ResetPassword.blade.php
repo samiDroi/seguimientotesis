@@ -7,7 +7,8 @@
     <title>Recuperar Contraseñas</title>
 </head>
 <body>
-        <h1>Hola {{ $usuario->Nombre }}</h1>
+    {{-- @dd($usuario->nombre) --}}
+        <h1>Hola {{ $usuario->nombre }}</h1>
         <h1>este es tu link para tu recuperacion de contraseña</h1>
         <h3>tienes 90 minutos antes de que este link caduque</h3>
         <a href=""></a>
