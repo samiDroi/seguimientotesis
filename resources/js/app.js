@@ -4,3 +4,7 @@ import 'datatables.net-responsive/js/dataTables.responsive';  // Importa el arch
 
 
 
+import 'bootstrap';
+
+import $ from 'jquery';
+window.$ = $;
