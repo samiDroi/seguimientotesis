@@ -4,7 +4,6 @@
     @csrf
     <h1>Informacion personal</h1>
         <label for="nombre_tipo">Seleccione los Tipos de Usuario:</label>
-    
         <div>
             <input type="checkbox" id="coordinador" name="nombre_tipo[]" value="5">
             <label  for="coordinador">Coordinador</label>
@@ -20,9 +19,18 @@
         </div>
     
         <!-- Agrega más checkboxes para otros tipos de usuario -->
-        
-    
-
+        {{-- listbox de programas academicos --}}
+        <label for="programa_academico">Programas Academicos:</label>
+        <select name="id_programa[]" multiple required>
+            @foreach ($unidades as $unidad)
+                <optgroup label="{{ $unidad->nombre_unidad }}">
+                    @foreach ($unidad->programas as $programa)
+                        <option value="{{ $programa->id_programa }}">{{ $programa->nombre_programa }}</option>
+                    @endforeach
+                </optgroup>
+            @endforeach
+        </select>
+        {{-- listbox de programas academicos --}}
     <label for="correo_electronico">Correo Electronico</label>
     <input type="email" name="correo_electronico" required>
 

@@ -52,5 +52,16 @@ class Usuarios extends Authenticatable
     {
         return $this->belongsToMany(TipoUsuario::class,"usuario_tipo_usuario","id_usuario","id_tipo");
     }
+
+    public function comites():BelongsToMany {
+        return $this->belongsToMany(Comite::class,"usuarios_comite","id_user","id_comite");
+    }
     
+    public function programas():BelongsToMany{
+        return $this->belongsToMany(ProgramaAcademico::class,"usuarios_programa_academico","id_user","id_programa");
+    }
+
+    public function roles():BelongsToMany{
+        return $this->belongsToMany(ComiteRolUsusario::class,"usuarios_comite","id_user","id_comite_rol")->withPivot('id_comite');;
+    }
 }

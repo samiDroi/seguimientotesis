@@ -6,8 +6,12 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Models\UnidadAcademica;
 use App\Http\Controllers\AcademicControl\UnidadController;
 use App\Http\Controllers\AcademicControl\ProgramaController;
+use App\Http\Controllers\Admin\ComiteController;
+use App\Http\Controllers\Admin\RolController;
 use App\Http\Controllers\Auth\ResetPwsdController;
-use App\Http\Controllers\Users\ShowUsers;
+use App\Http\Controllers\Admin\ShowUsers;
+use Illuminate\Support\Facades\Auth;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -36,14 +40,16 @@ Route::controller(ResetPwsdController::class)->group(function(){
     Route::get("/forgotPassword",'index')->name("forgotPassword");
     Route::post("/forgotPassword","resetPassword")->name("forgotPassword");
 });
-Route::controller(UnidadController::class)->group(function(){
-    Route::get('/unidades', 'index')->name('unidades.index'); // Lista todas las unidades
-    Route::get('/unidades/create', 'store')->name('unidades.create'); // Muestra el formulario para crear una nueva unidad
-    Route::post('/unidades', 'create')->name('unidades.store'); // Guarda una nueva unidad
-    Route::get('/unidades/{id}/edit', 'edit')->name('unidades.edit'); // Muestra el formulario para editar una unidad existente
-    Route::put('/unidades/{id}', 'update')->name('unidades.update'); // Actualiza una unidad existente
-    Route::delete('/unidades/{id}', 'delete')->name('unidades.destroy'); // Elimina una unidad existente
-});
+    Route::controller(UnidadController::class)->prefix("/unidades")->group(function(){
+        Route::get('', 'index')->name('unidades.index'); // Lista todas las unidades
+        Route::get('create', 'store')->name('unidades.create'); // Muestra el formulario para crear una nueva unidad
+        Route::post('', 'create')->name('unidades.store'); // Guarda una nueva unidad
+        Route::get('{id}/edit', 'edit')->name('unidades.edit'); // Muestra el formulario para editar una unidad existente
+        Route::put('{id}', 'update')->name('unidades.update'); // Actualiza una unidad existente
+        Route::delete('{id}', 'delete')->name('unidades.destroy'); // Elimina una unidad existente
+    });
+
+
 
 Route::controller(ProgramaController::class)->group(function(){
     Route::get("/programas/index/{id}","index")->name('programas.index');//devuelve vista del index
@@ -61,3 +67,34 @@ Route::controller(ShowUsers::class)->group(function(){
     Route::put("admin/users/{id}","update")->name("users.update");
     Route::delete("/users/{id}","delete")->name("users.delete");
 });
+
+Route::controller(ComiteController::class)->group(function(){
+    Route::get("/admin/comites","index")->name("comites.index");
+    Route::get("/admin/comites/create","store")->name("comites.store");
+    Route::get("/admin/comites/{id}/edit","edit")->name("comites.edit");
+
+    Route::post("/admin/comites/create","create")->name("comites.create");
+    Route::delete('/comites/{id}','destroy')->name('comites.destroy');
+    Route::put('/comites/edit/{id}', "update")->name("comites.update");
+
+});
+
+Route::controller(RolController::class)->group(function(){
+    Route::get("admin/roles","index")->name("roles.index");
+});
+
+
+
+// Route::controller();
+// Route::get("home/index",function(){
+//     return Auth::user();
+//     return "hola este es home";
+// });
+// Route::get("cerrar_sesion",function(){
+//     Auth::logout();
+ 
+//     Session::invalidate();
+
+//     Session::regenerateToken();
+//     return redirect("/login");
+// });

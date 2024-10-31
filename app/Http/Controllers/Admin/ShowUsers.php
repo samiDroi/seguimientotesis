@@ -1,15 +1,12 @@
 <?php
-namespace App\Http\Controllers\Users;
+namespace App\Http\Controllers\Admin;
     use App\Http\Controllers\Controller;
-    use App\Models\UnidadAcademica;
     use App\Models\Usuarios;
     use RealRashid\SweetAlert\Facades\Alert;
-    use Illuminate\Database\Eloquent\Model;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Validator;
     use Illuminate\Validation\Rule;
     use Illuminate\Support\Facades\DB;
-    use App\Http\Controllers\Auth\RegisterController;
 
     class ShowUsers extends Controller{
 
@@ -23,8 +20,6 @@ namespace App\Http\Controllers\Users;
 
         public function edit($id_user){
             $usuario = Usuarios::find($id_user);
-            // $tiposUsuario = $usuario->tipos()->pluck('id_usuario')->toArray();
-             // Encuentra al usuario por su ID
             $tiposUsuario = DB::table('usuario_tipo_usuario')
             ->join('tipo_usuario', 'usuario_tipo_usuario.id_tipo', '=', 'tipo_usuario.id_tipo')
             ->where('usuario_tipo_usuario.id_usuario', $id_user)
@@ -37,7 +32,6 @@ namespace App\Http\Controllers\Users;
 
         public function update(Request $request,$id){
             $usuario = Usuarios::findOrFail($id);
-            // $RegisterController = new RegisterController;
             
             
             $validator = $this->validateEditUser($request,$id);

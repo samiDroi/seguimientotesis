@@ -44,7 +44,8 @@ namespace App\Http\Controllers\AcademicControl;
                     $nuevoPrograma = new ProgramaAcademico();
                     $nuevoPrograma->nombre_programa = $nombrePrograma;
                     $nuevoPrograma->id_unidad = $id_unidad;
-                    $nuevoPrograma->save(); // Guarda el nuevo programa
+                    $nuevoPrograma->save();
+                    // Guarda el nuevo programa
                 }
             }
 

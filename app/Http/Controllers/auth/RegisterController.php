@@ -7,12 +7,16 @@ namespace App\Http\Controllers\Auth;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Hash;
     use App\Http\Controllers\mail\MailController;
+    use App\Models\ProgramaAcademico;
+    use App\Models\UnidadAcademica;
     use Illuminate\Support\Facades\Validator;
 
     class RegisterController extends Controller{
        
         public function showRegister(){
-            return view("auth/register");
+            $unidades = UnidadAcademica::all();
+            $programas = ProgramaAcademico::all();
+            return view("auth/register",compact("unidades","programas"));
         }
 
         public function register(Request $request){
@@ -27,6 +31,7 @@ namespace App\Http\Controllers\Auth;
             if ($validator->passes()) {
                 $user = new Usuarios;
                 $user->username = $request->get('username');
+
                 $MailController = new MailController;
     
                 $newPassword = $MailController->sendMailConfirmation($request);
@@ -37,6 +42,9 @@ namespace App\Http\Controllers\Auth;
                 $user->correo_electronico = $request->get('correo_electronico');
                
                 $user->save();
+                //asignar los programas academicos a los usuarios
+                $user->programas()->attach($request->input('id_programa'));
+                //asignar los tipos de usuario en la tabla
                 $user->tipos()->sync($request->nombre_tipo);
                
                 return redirect('login')->with('success', 'Registro exitoso. Revisa tu correo para la confirmación.');
@@ -53,13 +61,7 @@ namespace App\Http\Controllers\Auth;
                 'username' => 'required|string|max:255|unique:usuarios,username',
                 'correo_electronico' => 'required|string|email|max:255|unique:usuarios,correo_electronico',]);
         }
-     
+
     }
-
-    
-    //password to send email
-    
-
-    
 ?>
 
