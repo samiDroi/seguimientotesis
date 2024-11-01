@@ -20,17 +20,22 @@ class ComiteController extends Controller
     return view("Admin.Comites.index", compact("comites"));
     }
 
-    public function store(){
+    public function store($id = null){
+        $comite = $id ? Comite::with('Usuarios')->find($id) : null;
         $docentes = $this->getDocentes();
         $alumnos = $this->getAlumnos();
         $unidades = UnidadAcademica::all();
         $programas = ProgramaAcademico::all();
-        return view("Admin.Comites.Create",compact("docentes","alumnos","unidades","programas"));
+        return view("Admin.Comites.Create",compact("docentes","alumnos","unidades","programas","comite"));
     }
     
 
     public function create(Request $request){
-        $comite = new Comite();
+        if($request->get("id")){
+            $comite = Comite::findOrFail($request->get("id"));
+        }else{
+            $comite = new Comite();
+        }
         $comite->nombre_comite = $request->nombre_comite;
         $comite->id_programa = 1;
         $comite->save();
@@ -88,9 +93,7 @@ class ComiteController extends Controller
         $roles = ComiteRolUsusario::all();
         return view("Admin.Comites.Edit",compact("comite","roles"));
     }
-    public function update(){
-
-    }
+ 
     public function validateComite(){
 
     }

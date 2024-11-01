@@ -49,7 +49,7 @@
 <div class="container pt-5 px-5 bg-body-secondary text-center shadow-lg">
     
         <div class="row mb-4 fs-5 pe-5 ">
-             <form action="{{ route('register') }}" method="POST">
+         <form action="{{ route('register') }}" method="POST">
               @csrf
                         {{-- listbox de programas academicos --}}
                 <label for="programa_academico">Programas Academicos:</label>
@@ -127,13 +127,7 @@
              </div>
 
                  <button type="submit" class="btn btn-primary  mb-4 ">Registrarse</button>
-             </form>
-
-    
-        
-        
-
-   
+        </form>
 </div>
 
 @endsection

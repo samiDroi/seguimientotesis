@@ -40,14 +40,14 @@ Route::controller(ResetPwsdController::class)->group(function(){
     Route::get("/forgotPassword",'index')->name("forgotPassword");
     Route::post("/forgotPassword","resetPassword")->name("forgotPassword");
 });
-    Route::controller(UnidadController::class)->prefix("/unidades")->group(function(){
-        Route::get('', 'index')->name('unidades.index'); // Lista todas las unidades
-        Route::get('create', 'store')->name('unidades.create'); // Muestra el formulario para crear una nueva unidad
-        Route::post('', 'create')->name('unidades.store'); // Guarda una nueva unidad
-        Route::get('{id}/edit', 'edit')->name('unidades.edit'); // Muestra el formulario para editar una unidad existente
-        Route::put('{id}', 'update')->name('unidades.update'); // Actualiza una unidad existente
-        Route::delete('{id}', 'delete')->name('unidades.destroy'); // Elimina una unidad existente
-    });
+Route::controller(UnidadController::class)->prefix("/unidades")->group(function(){
+    Route::get('', 'index')->name('unidades.index'); // Lista todas las unidades
+    Route::get('create', 'store')->name('unidades.create'); // Muestra el formulario para crear una nueva unidad
+    Route::post('', 'create')->name('unidades.store'); // Guarda una nueva unidad
+    Route::get('{id}/edit', 'edit')->name('unidades.edit'); // Muestra el formulario para editar una unidad existente
+    Route::put('{id}', 'update')->name('unidades.update'); // Actualiza una unidad existente
+    Route::delete('{id}', 'delete')->name('unidades.destroy'); // Elimina una unidad existente
+});
 
 
 
@@ -68,12 +68,13 @@ Route::controller(ShowUsers::class)->group(function(){
     Route::delete("/users/{id}","delete")->name("users.delete");
 });
 
-Route::controller(ComiteController::class)->group(function(){
-    Route::get("/admin/comites","index")->name("comites.index");
-    Route::get("/admin/comites/create","store")->name("comites.store");
-    Route::get("/admin/comites/{id}/edit","edit")->name("comites.edit");
+Route::controller(ComiteController::class)->prefix("/admin/comites")->group(function(){
+    Route::get("/","index")->name("comites.index");
+    Route::get("/create/{id?}","store")->name("comites.store");
+    
 
-    Route::post("/admin/comites/create","create")->name("comites.create");
+    Route::post("/create/registro","create")->name("comites.create");
+    
     Route::delete('/comites/{id}','destroy')->name('comites.destroy');
     Route::put('/comites/edit/{id}', "update")->name("comites.update");
 

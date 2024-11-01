@@ -19,7 +19,7 @@
                 Eliminar Comité
             </button>
         </form>
-        <a href="{{ Route("comites.edit",$comite->id_comite) }}">Editar comite</a>
+        <a href="{{ Route("comites.store",$comite->id_comite) }}">Editar comite</a>
 
         <table>
             <thead>
