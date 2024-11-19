@@ -11,11 +11,16 @@ use App\Models\Comite;
 use App\Http\Controllers\Admin\RolController;
 use App\Models\ComiteRolUsusario;
 use Illuminate\Support\Facades\DB;
+use RealRashid\SweetAlert\Facades\Alert;
+
 
 
 class ComiteController extends Controller
 {
     public function index(){
+        $title = 'Delete User!';
+        $text = "Are you sure you want to delete?";
+        confirmDelete($title, $text);
     $comites = Comite::with(['usuarios.roles'])->get();
     return view("Admin.Comites.index", compact("comites"));
     }
@@ -26,6 +31,7 @@ class ComiteController extends Controller
         $alumnos = $this->getAlumnos();
         $unidades = UnidadAcademica::all();
         $programas = ProgramaAcademico::all();
+      
         return view("Admin.Comites.Create",compact("docentes","alumnos","unidades","programas","comite"));
     }
     
@@ -60,6 +66,7 @@ class ComiteController extends Controller
 
 
     public function destroy($id){
+
         DB::beginTransaction();
 
         try {
@@ -79,7 +86,8 @@ class ComiteController extends Controller
             Comite::where('id_comite', $id)->delete();
 
             DB::commit();
-            return redirect()->route('comites.index')->with('success', 'Comité eliminado correctamente.');
+            Alert::success('Deleted!', 'The user has been deleted successfully.');
+            //return redirect()->route('comites.index')->with('success', 'Comité eliminado correctamente.');
             } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('comites.index')->with('error', 'Error al eliminar el comité: ' . $e->getMessage());
@@ -96,6 +104,33 @@ class ComiteController extends Controller
  
     public function validateComite(){
 
+    }
+
+    public function cloneComite($id){
+        // Obtener el comité original
+    $originalComite = Comite::with('usuarios')->findOrFail($id);
+
+    // Crear un nuevo comité con las mismas características
+    $clonedComite = $originalComite->replicate(); // Duplica el comité sin guardar
+    $clonedComite->nombre_comite = $originalComite->nombre_comite . '(Copia)';
+    $clonedComite->save();
+    foreach ($originalComite->usuarios as $usuario) {
+        // Obtener el `id_comite_rol` desde `usuarios_comite` para el usuario y el comité original
+        $idComiteRol = DB::table('usuarios_comite')
+            ->where('id_comite', $originalComite->id_comite)
+            ->where('id_user', $usuario->pivot->id_user)
+            ->value('id_comite_rol');
+    
+        // Insertar el usuario en el comité clonado en la tabla `usuarios_comite`, incluyendo `id_comite_rol`
+        DB::table('usuarios_comite')->insert([
+            'id_comite' => $clonedComite->id_comite,
+            'id_user' => $usuario->pivot->id_user,
+            'id_comite_rol' => $idComiteRol,
+        ]);
+    }     
+    // Redirigir a la vista de edición del nuevo comité
+    return redirect()->route('comites.store', $clonedComite->id_comite)
+                     ->with('success', 'Comité clonado con éxito. Puede hacer cambios si lo desea.');
     }
 
 }

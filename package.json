@@ -19,6 +19,6 @@
         "datatables.net-responsive-dt": "^3.0.3",
         "jquery": "^3.7.1",
         "remixicon": "^4.3.0",
-        "sweetalert2": "^11.14.1"
+        "sweetalert2": "^11.14.4"
     }
 }
