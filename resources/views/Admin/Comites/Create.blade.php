@@ -7,10 +7,19 @@
 @endsection
 
 @section('content')
-<button ><a href="{{ Route("roles.index") }}">Personalizar roles del comite</a></button>
-<form action="{{ Route("comites.create") }}" method="POST">
 
+
+
+
+<div class=" bg-body-secondary shadow-lg"> 
+    <br>
+    <h1 class="text-center">Crear comites</h1>
+
+<button class="btn btn-primary mt-5 mb-1 ms-4"><a class="text-decoration-none text-light" href="{{ Route("roles.index")}}">Personalizar roles del comite</a></button>
+<form action="{{ Route("comites.create")}}" method="POST">
     @csrf
+
+
      {{-- listbox de programas academicos --}}
      {{-- <label for="programa_academico">Programas Academicos:</label>
      <select name="id_programa[]" multiple required>
@@ -23,15 +32,21 @@
          @endforeach
      </select> --}}
      {{-- listbox de programas academicos --}}
+     <div class="mb-5">
      <input type="hidden" name="id" value="{{ $comite?->id_comite }}">
-    <label for="nombre_comite">Ingrese el nombre del comité</label>
-    <input type="text" id="nombre_comite" name="nombre_comite" required value="{{ $comite?->nombre_comite }}">
 
-    <div class="row">
+     <div class="text-center mx-5">
+    <label class="mt-2 fs-4 fw-semibold" for="nombre_comite">Ingrese el nombre del comité</label>
+    <div class="mx-5"><input class="form-control" type="text" id="nombre_comite" name="nombre_comite" required value="{{ $comite?->nombre_comite }}" autocomplete="off"></div>
+    </div>
+    </div>
+
+<div class="mx-4">
+    <div class="row py-5">
         {{-- Tabla de docentes a la izquierda --}}
-        <div class="col-md-6">
-            <label for="docentes">Lista de docentes disponibles</label>
-            <table id="docentes" >
+        <div class="col-md-6 text-center ">
+            <label class=" fs-4 fw-semibold mb-4" for="docentes">Lista de docentes disponibles</label>
+            <table class="table mt-4 table-bordered text-center table-striped" id="docentes" >
                 <thead>
                     <tr>
                         <th>Clave de trabajador</th>
@@ -58,9 +73,9 @@
         </div>
         
         {{-- Tabla de alumnos a la derecha --}}
-        <div class="col-md-6">
-            <label for="alumnos">Lista de alumnos disponibles</label>
-            <table id="alumnos" >
+        <div class="col-md-6 text-center">
+            <label class="fs-4 fw-semibold mb-4" for="alumnos">Lista de alumnos disponibles</label>
+            <table class="table mt-4 table-bordered text-center table-striped" id="alumnos" >
                 <thead>
                     <tr>
                         <th>Matrícula</th>
@@ -86,15 +101,21 @@
             </table>
         </div>
     </div>
+    </div>
 
+    </div>
+        <div class="row ms-3">
     <h1>Confirmar información de comité</h1>
     <div id="confirmarComite"></div>
    
     <h2>Asesorados</h2>
     <div id="asesorados"></div>
 
-    <button type="submit" >{{ $comite?"Guardar cambios":"Registrar comite" }}</button>
+    </div>
+
+    <button class="btn btn-primary py-2 ms-5" type="submit" >{{ $comite?"Guardar cambios":"Registrar comite" }}</button>
 </form>
+</div>
 @endsection
 
 @section('js')

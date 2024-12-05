@@ -1,17 +1,33 @@
 
 @extends('layouts.base')
 @section('content')
-<h1>Lista de Comités</h1>
-<div>
-    <a href="{{ Route("comites.store") }}">Crear nuevo comite</a>
+<h1 class="text-center mt-4">Lista de Comités</h1>
+
+
+<div class="container bg-body-secondary shadow-lg py-5">
+
+<div class=" row mb-5 ">
+    <div class="col-4 text-start"><input id="inputBuscar" class="ms-2 form-control" placeholder="Buscar Comite" type="text"> 
+    
+</div>
+
+<div class="col-4"> 
+<button class="btn btn-secondary btn-sm  mt-1" id="Btn_buscar" >Buscar</button>
+</div>
+
+    <div class="col-4 text-end"><a class="text-decoration-none btn btn-outline-primary me-5" href="{{ Route("comites.store") }}">Crear nuevo comite</a></div>
 </div>
 @if ($comites->isEmpty())
-    <h1>No hay comites registrados por el momento, si desea registrar un comite de click en 
-        el boton "crear nuevo comite" en la parte superior
-    </h1>
+    <div class="px-5">
+       
+         <span class="fs-3 fw-bold  row">No hay comites registrados por el momento  </span>
+         <span class="fs-5 row">
+          Si desea registrar un comite de click en  el boton "crear nuevo comite" en la parte superior.
+          </span>
+    </div>
 @else
     @foreach ($comites as $comite)
-        <h1>{{ $comite->nombre_comite }}</h1>
+        <h2>{{ $comite->nombre_comite }}</h2>
         <form action="{{ route('comites.destroy', $comite->id_comite) }}" method="POST" style="display:inline-block;">
             @csrf
             @method('DELETE')
@@ -19,7 +35,7 @@
                 Eliminar Comité
             </button>
         </form>
-        <a href="{{ Route("comites.store",$comite->id_comite) }}">Editar comite</a>
+        <a href="{{ Route("comites.store",$comite->id_comite) }}">Editar comite </a>
 
         <table>
             <thead>
@@ -50,6 +66,7 @@
     @endforeach
 @endif
 
+
 @endsection
 
 
@@ -63,6 +80,7 @@
 
 {{-- @extends('layouts.base')
 @section('content')
+
 <h1>lista de comites</h1>
 @foreach ($comites as $comite)
 <h1>{{ $comite->nombre_comite }}</h1>
@@ -135,4 +153,7 @@
         </table>
     @endforeach
 </div>  --}}
+</div>
 {{-- @endsection --}}
+
+

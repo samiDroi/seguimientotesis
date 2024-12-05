@@ -1,59 +1,29 @@
+
 @extends("layouts/form")
 @section('form')
-{{-- <form action="{{ route('register') }}" method="POST">
+
+
+<form action="{{ route('register') }}" method="POST">
     @csrf
-    <h1>Informacion personal</h1>
-        <label for="nombre_tipo">Seleccione los Tipos de Usuario:</label>
-        <div>
-            <input type="checkbox" id="coordinador" name="nombre_tipo[]" value="5">
-            <label  for="coordinador">Coordinador</label>
-        </div>
-        <div>
-            <input type="checkbox"  id="docente" name="nombre_tipo[]" value="4">
-            <label for="docente">Docente</label>
-        </div>
-
-        <div>
-            <input type="checkbox"  id="alumno" name="nombre_tipo[]" value="3">
-            <label  for="alumno">Alumno</label>
-        </div>
     
-        <!-- Agrega más checkboxes para otros tipos de usuario -->
-
-    <label for="correo_electronico">Correo Electronico</label>
-    <input type="email" name="correo_electronico" required>
     
         
-    
+    <div id="principal">
         <!-- Agrega más checkboxes para otros tipos de usuario -->
         
-     --}}
-
-   
-
-<style>
-    *{
-        body {
-    background-image: url('images/background white.jpg'); /* Reemplaza con la ruta de tu imagen */
-    background-size: cover; /* Ajusta la imagen al tamaño de la ventana */
-    background-position: center; /* Centra la imagen */
     
-     }
-    }
-   </style>
+    
+        <h2 class="text-center my-3 ">Registrar nuevo usuario</h2>
 
-
-
-<h2 class="text-center my-3">Registrar nuevo usuario</h2>
-
-<div class="container pt-5 px-5 bg-body-secondary text-center shadow-lg">
+      <div class="container pt-5 px-5 bg-body-secondary  text-center shadow-lg">
     
         <div class="row mb-4 fs-5 pe-5 ">
          <form action="{{ route('register') }}" method="POST">
               @csrf
                         {{-- listbox de programas academicos --}}
-                <label for="programa_academico">Programas Academicos:</label>
-                <select name="id_programa[]" multiple required>
+                <div class="mb-4"><label for="programa_academico">Programas Academicos:</label></div>
+
+                <div class="mb-5"><select name="id_programa[]"class="w-40"  multiple required>
                     @foreach ($unidades as $unidad)
                         <optgroup label="{{ $unidad->nombre_unidad }}">
                             @foreach ($unidad->programas as $programa)
@@ -61,24 +31,27 @@
                             @endforeach
                         </optgroup>
                     @endforeach
-                </select>
-                {{-- listbox de programas academicos --}}
+                </select></div>
                 
+                
+                {{-- listbox de programas academicos --}}
+             <div class="row">
               <label for="nombre_tipo" class=" text-center mb-3" >Seleccione los Tipos de Usuario:</label>
     
-             <div class="col-12 col-md-4 ">
+                 <div class="col-12 col-md-4 ">
                  <input class="form-check-input" type="checkbox" id="coordinador" name="nombre_tipo[]" value="5">
                  <label  for="coordinador">Coordinador</label>
-             </div>
+                 </div>
 
-             <div  class="col-12 col-md-4 px-0 mx-0 ">
+                 <div  class="col-12 col-md-4 px-0 mx-0 ">
                  <input class="form-check-input " type="checkbox"  id="docente" name="nombre_tipo[]" value="4">
                  <label for="docente">Docente</label>
-             </div>
+              </div>
 
-             <div class="col-12 col-md-4">
+                 <div class="col-12 col-md-4">
                  <input class="form-check-input" type="checkbox"  id="alumno" name="nombre_tipo[]" value="3">
                  <label  for="alumno">Alumno</label>
+                </div>
             </div>
         </div>
 
@@ -106,16 +79,16 @@
                  <div class="col-12 col-md-10">
                     <input id='apellidos' type="text" name="apellidos"class="col-12 form-control" autocomplete="off" required>
                 </div>
-              </div>
+            </div>
 
 
-              <div class="row mb-3">
+                <div class="row mb-3">
                  <label for="username" class="col-12 col-md-2 text-center mb-2 ">Clave de trabajador<span class="text-warning">*</span></label>
                  <div class=" col-12 col-md-10">
                      <input type="text" name="username"class="col-12 form-control" autocomplete="off" " required> 
                     </div>
                 
-                 </div>
+                </div>
 
 
             <div class="row  mb-3">
@@ -124,10 +97,21 @@
                  <input type="password" name="password" class=" form-control mb-3" required>
                  </div>
                  
-             </div>
+        </div>
 
                  <button type="submit" class="btn btn-primary  mb-4 ">Registrarse</button>
         </form>
 </div>
+    </div>
+</form>
+
+    
+        
+        
+
+   
+    
+
+
 
 @endsection

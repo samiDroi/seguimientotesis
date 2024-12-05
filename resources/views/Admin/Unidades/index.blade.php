@@ -1,37 +1,76 @@
 @extends('layouts.base')
 @section('content')
-<button><a href="{{ route('unidades.create') }}">Nueva Unidad</a></button>
-    
-<table>
-    <thead>
-        <tr>
-            <th>Nombre de la Unidad</th>
-            <th>Editar Unidad</th>
-            <th>Eliminar Unidad</th>
-            <th>Acceder a Programas Académicos</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($unidades as $unidad)
-            <tr>
-                <td>{{ $unidad->nombre_unidad }}</td>
-                <td>
-                    <button><a href="{{ route('unidades.edit', $unidad->id_unidad) }}">Editar</a></button>
-                </td>
-                <td>
-                    <form action="{{ route('unidades.destroy', $unidad->id_unidad) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit">Eliminar</button>
-                    </form>
-                </td>
-                <td>
-                    <button><a href="{{ route('programas.index',$unidad->id_unidad) }}">Programas</a></button>
-                </td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
+@section('css')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
+@endsection
+
+
+
+
+
+<div class="text-end mt-5 me-5 mb-3"><button class="btn btn-primary"><a href="{{ route('unidades.create') }}" class="text-decoration-none text-light">Agregar nueva Unidad</a></button> </div>
+
+    <div class="container bg-light py-3 shadow-lg">
+        <div class="row mx-5 mt-3">
+            <div> 
+                <table id="unidades" class="table mt-4 table-bordered text-center table-striped ">
+                <thead class="table-primary  ">
+                    <tr>
+                        <th class="col-6 text-center">Nombre de la Unidad</th>
+                        <th class="col-4 text-center">Programas Academicos</th>
+                        <th class="col-3 text-center">Acciones</th>
+                        
+                    </tr>
+                </thead>
+                <tbody class="" >
+                    @foreach ($unidades as $unidad)
+                        <tr class="text-center" >
+                            <td class="text-start ">{{ $unidad->nombre_unidad }}</td>
+
+                            <td >
+                                <button class="btn btn-outline-secondary btn-sm"><a href="{{ route('programas.index',$unidad->id_unidad) }}" class="text-decoration-none text-black">Programas</a></button>
+                            </td>
+
+
+                            <td >
+                                <button class="btn btn-primary btn-sm"><a href="{{ route('unidades.edit', $unidad->id_unidad) }}" class="text-decoration-none text-light">Editar</a></button>
+                                <form action="{{ route('unidades.destroy', $unidad->id_unidad) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger btn-sm" type="submit">Eliminar</button>
+                                </form>
+                            </td>
+                           
+                           
+                        </tr>
+                    @endforeach
+                </tbody>
+                </table>
+
+            </div>
+
+            
+        </div>
+    </div>
+
+
+    @section('js')
+        <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+        <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
+        <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js
+            https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
+        <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
+
+        <script>
+           new DataTable('#unidades', {
+                responsive: true
+            });
+        </script>
+@endsection
    
 @endsection
-route('programas.index', ['id_unidad' => $unidad->id_unidad])
+<!-- route('programas.index', ['id_unidad' => $unidad->id_unidad]) -->

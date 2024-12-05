@@ -1,11 +1,36 @@
 @extends('layouts.form')
 @section('form')
-<h1>Recuperacion de contraseña</h1>
-<h3>ingrese su correo electronico</h3>
-    <form action="{{ Route("forgotPassword") }}" method="POST">
-        @csrf
-        <label for="correo_electronico">Email</label>
-        <input type="text" name="correo_electronico">
-        <button type="submit">Aceptar</button>
-    </form>
+
+<style>
+    
+   </style>
+
+
+<div class="container">
+    <div class="row text-center">
+
+    
+        <h1 class="mt-5">Recuperacion de contraseña</h1>
+        <div class="bg-body-secondary py-4 shadow-lg">   
+            
+          <h3 class="mb-4">Ingrese el correo electronico</h3>
+          <form action="{{ Route("forgotPassword")}}" method="POST">
+          @csrf
+          <div class="form-floating mb-3 mx-5">
+              <input type="email" class="form-control" name="correo_electronico" id="floatingInput" placeholder="name@example.com" autocomplete="off">
+             <label for="floatingInput ">Correo Electronico</label>
+            </div>
+          <button type="submit" class=" btn btn-primary">Aceptar</button>
+          </form>
+
+
+        </div>
+
+        
+
+    </div>
+</div>
+
+
+
 @endsection
