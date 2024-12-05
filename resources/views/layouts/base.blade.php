@@ -8,10 +8,16 @@
     @yield("css")
     @vite(['resources/css/app.css', 'resources/js/app.js','resources/css/root.css'])
     @vite(['resources/js/app.js', 'resources/css/app.scss'])
+  
+   
+
+
 </head>
 <body>
     @yield('content')
+    @include('sweetalert::alert')
+    <script src="{{ asset("vendor/sweetalert/sweetalert.all.js") }}"></script>
     @yield('js')
-    
+
 </body>
 </html>

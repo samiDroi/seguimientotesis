@@ -20,5 +20,10 @@ class Comite extends Model
     {
         return $this->hasMany(ComiteRolUsusario::class,"id_comite","id_comite_rol");
     }
- 
+
+    public function tesis(): BelongsToMany
+    {
+        return $this->belongsToMany(Tesis::class,"tesis_comite","id_comite","id_tesis");
+    }
+    
 }

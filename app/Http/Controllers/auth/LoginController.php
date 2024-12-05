@@ -13,8 +13,9 @@ namespace App\Http\Controllers\Auth;
         public function login(Request $request){
             echo $request->get("username");
             if (Auth::attempt(["username"=>$request->get("username"),'password'=>$request->get('password')])) {
-                $user = Auth::user();
-                return redirect('home/index');
+                //$user = Auth::user();
+                //dd(Auth::user());
+                return redirect()->route("home");
             }else{
                 return redirect('/login')->withErrors('auth.fail');
             }

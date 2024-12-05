@@ -10,7 +10,10 @@
 </head>
 <body>
     @yield('form')
-    
+    @include('sweetalert::alert')
+    <script src="{{ asset("vendor/sweetalert/sweetalert.all.js") }}"></script>
+
     @yield('js')
+
 </body>
 </html>

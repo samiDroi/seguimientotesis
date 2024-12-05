@@ -21,13 +21,12 @@
                 <div class="card-header"><h2 class="col-12 bg-primary text-white mb-0" >Inicia sesion</h2></div>
 
                          <div class="bg-body-secondary pt-2 shadow-lg " >
-                             @csrf
-                             <form action="/login" method="POST">
-
+                            
+                             <form action="{{ Route("login.post") }}" method="POST">
+                                @csrf
                              <label for="username" class="Col-md-12 ">Matricula o clave de trabajador <span class="text-warning">*</span></label>
-                             <div class="mx-5"><input id="username" class="col-md-12 mt-2 form-control" name="username" type="text" required autocomplete="off"></div>
-
-
+                             <div class="mx-5">
+                                <input id="username" class="col-md-12 mt-2 form-control" name="username" type="text" required autocomplete="off"></div>
                                   <label for="password"class="col-md-12 pt-3">Contraseña<span class="text-warning">*</span></label>
                                   <div class="mx-5"><input id="password" class="col-md-12 mt-2 form-control"  name="password" type="password" required autocomplete="current-password"></i></div>
 
