@@ -10,20 +10,27 @@
     <input type="hidden" name="id_tesis_comite" id="" value="{{ $tesisComite?->id_tesis_comite }}">
     
     <div id="requerimientos">
-        @foreach($requerimientos as $requerimiento)
-        <div>
-            <label for="nombre_requerimiento">¿Qué requerimientos desea poner a la tesis?</label>
-            <input type="text" required name="nombre_requerimiento[]" value="{{ $requerimiento->nombre_requerimiento }}" id="nombre_requerimiento" autocomplete="off" placeholder="Nombre del requerimiento">
-            <textarea name="descripcion[]" id="descripcion" cols="30" rows="10" placeholder="Descripcion del requerimiento">{{ $requerimiento->descripcion }}</textarea>
-        </div>
-        @endforeach
-        
+        @if($requerimientos)
+            @foreach($requerimientos as $requerimiento)
+            <div>
+                <label for="nombre_requerimiento">¿Qué requerimientos desea poner a la tesis?</label>
+                <input type="text" required name="nombre_requerimiento[]" value="{{ $requerimiento->nombre_requerimiento }}" id="nombre_requerimiento" autocomplete="off" placeholder="Nombre del requerimiento">
+                <textarea name="descripcion[]" id="descripcion" cols="30" rows="10" placeholder="Descripcion del requerimiento">{{ $requerimiento->descripcion }}</textarea>
+            </div>
+            @endforeach
+        @else
+            <div>
+                <label for="nombre_requerimiento">¿Qué requerimientos desea poner a la tesis?</label>
+                <input type="text" required name="nombre_requerimiento[]" value="" id="nombre_requerimiento" autocomplete="off" placeholder="Nombre del requerimiento">
+                <textarea name="descripcion[]" id="descripcion" cols="30" rows="10" placeholder="Descripcion del requerimiento"></textarea>
+            </div>
+        @endif
         <button id="newRequerimiento">+</button>
     </div>
     
     <select name="usuarios" id="usuarios">
         @foreach ($usuarios as $usuario)
-            <option value="{{ $usuario->id_usuario }}" {{ isset($tesis) && $tesis->id_usuario == $usuario->id_usuario ? 'selected' : '' }}>
+            <option value="{{ $usuario->id_user }}" {{ isset($tesis) && $tesis->id_usuario == $usuario->id_user ? 'selected' : '' }}>
                 {{ $usuario->username }} {{ $usuario->nombre }} {{ $usuario->apellidos }}
             </option>
         @endforeach

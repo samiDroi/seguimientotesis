@@ -9,6 +9,7 @@ use App\Models\Comite;
 use App\Models\ComiteTesisRequerimientos;
 use App\Models\Tesis;
 use App\Models\TesisComite;
+use App\Models\TesisUsuarios;
 
 class TesisController extends Controller
 {
@@ -79,20 +80,19 @@ class TesisController extends Controller
         $tesis = Tesis::create([
             'nombre_tesis' => $nombreTesis
         ]);
-        //dd($tesis);
+       
         return $tesis;
     }
     
 
     public function asignarComite(Request $request){
         $idComite = $request->input('comite');
-        //$requerimientos[] = $this->createRequerimiento($request);
         $tesis = $this->createTesis($request);
             $tesisComite = TesisComite::create([
                 "id_tesis" => $tesis->id_tesis,
                 "id_comite" => $idComite,
             ]);
-       
+       $this->asignarAlumno($tesis,$request);
        return $tesisComite;
     }
 
@@ -146,5 +146,14 @@ class TesisController extends Controller
 
         alert()->success('La tesis se ha eliminado satisfactoriamente')->persistent(true,false);
         return redirect()->route("tesis.index");
+    }
+
+    public function asignarAlumno($tesis,$request){
+        $idUsuario = $request->input("usuarios");
+        $idTesis = $tesis->id_tesis;
+        TesisUsuarios::create([
+             "id_user" => $idUsuario,
+             "id_tesis" => $idTesis
+        ]);
     }
 }

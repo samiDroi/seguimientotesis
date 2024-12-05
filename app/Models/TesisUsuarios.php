@@ -9,4 +9,8 @@ class TesisUsuarios extends Model
 {
     use HasFactory;
     protected $table = 'tesis_usuarios';
+    protected $fillable = [
+        'id_user',
+        'id_tesis'
+    ];
 }

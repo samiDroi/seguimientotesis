@@ -97,6 +97,7 @@ Route::controller(TesisController::class)->prefix("/admin/tesis")->group(functio
 Route::controller(HomeController::class)->prefix("/home")->group(function(){
     Route::get("/","index")->name("home");
     Route::post("/logout","logout")->name("logout");
+    Route::get("/comites","showComite")->name("home.comite");
 });
 
 Route::controller();
