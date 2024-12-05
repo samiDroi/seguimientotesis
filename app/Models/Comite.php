@@ -25,4 +25,5 @@ class Comite extends Model
     {
         return $this->belongsToMany(Tesis::class,"tesis_comite","id_comite","id_tesis");
     }
+    
 }

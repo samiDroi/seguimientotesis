@@ -7,31 +7,25 @@
 @endsection
 
 @section('content')
-<button ><a href="{{ Route("roles.index") }}">Personalizar roles del comite</a></button>
-<form action="{{ Route("comites.create") }}" method="POST">
+<button><a href="{{ Route('roles.index') }}">Personalizar roles del comité</a></button>
+<form action="{{ Route('comites.create') }}" method="POST">
 
     @csrf
-     {{-- listbox de programas academicos --}}
-     {{-- <label for="programa_academico">Programas Academicos:</label>
-     <select name="id_programa[]" multiple required>
-         @foreach ($unidades as $unidad)
-             <optgroup label="{{ $unidad->nombre_unidad }}">
-                 @foreach ($unidad->programas as $programa)
-                     <option value="{{ $programa->id_programa }}">{{ $programa->nombre_programa }}</option>
-                 @endforeach
-             </optgroup>
-         @endforeach
-     </select> --}}
-     {{-- listbox de programas academicos --}}
-     <input type="hidden" name="id" value="{{ $comite?->id_comite }}">
+    <input type="hidden" name="id" value="{{ $comite?->id_comite }}">
     <label for="nombre_comite">Ingrese el nombre del comité</label>
     <input type="text" id="nombre_comite" name="nombre_comite" required value="{{ $comite?->nombre_comite }}">
-
+   
+    <label for="programas">Selecciona el programa academico al que pertenecera el comite:</label>
+    <select name="ProgramaAcademico[]" id="programas" multiple>
+        @foreach ($programas as $programa)
+            <option value="{{ $programa->id_programa }}">{{ $programa->nombre_programa }}</option>
+        @endforeach
+    </select>
     <div class="row">
         {{-- Tabla de docentes a la izquierda --}}
-        <div class="col-md-6">
+        <div class="col-md-12">
             <label for="docentes">Lista de docentes disponibles</label>
-            <table id="docentes" >
+            <table id="docentes">
                 <thead>
                     <tr>
                         <th>Clave de trabajador</th>
@@ -48,39 +42,10 @@
                         <td>{{ $docente->nombre }}</td>
                         <td>{{ $docente->apellidos }}</td>
                         <td>{{ $docente->correo_electronico }}</td>
-                        <td> 
-                            <input type="checkbox" class="checkbox-docente" value="{{ $docente->username }}"  {{ $comite && $comite->usuarios->contains($docente->id_user) ? 'checked' : '' }}>
+                        <td>
+                            <input type="checkbox" class="checkbox-docente" value="{{ $docente->username }}" {{ $comite && $comite->usuarios->contains($docente->id_user) ? 'checked' : '' }}>
                         </td>
-                    </tr>   
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        
-        {{-- Tabla de alumnos a la derecha --}}
-        <div class="col-md-6">
-            <label for="alumnos">Lista de alumnos disponibles</label>
-            <table id="alumnos" >
-                <thead>
-                    <tr>
-                        <th>Matrícula</th>
-                        <th>Nombre</th>
-                        <th>Apellidos</th>
-                        <th>Correo electrónico</th>
-                        <th>Seleccionar</th>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach ($alumnos as $alumno)
-                    <tr>
-                        <td>{{ $alumno->username }}</td>
-                        <td>{{ $alumno->nombre }}</td>
-                        <td>{{ $alumno->apellidos }}</td>
-                        <td>{{ $alumno->correo_electronico }}</td>
-                        <td> 
-                            <input type="checkbox" class="checkbox-alumno" value="{{ $alumno->username }}" {{ $comite && $comite->usuarios->contains($alumno->id_user) ? 'checked' : '' }}>
-                        </td>
-                    </tr>   
                     @endforeach
                 </tbody>
             </table>
@@ -89,11 +54,9 @@
 
     <h1>Confirmar información de comité</h1>
     <div id="confirmarComite"></div>
-   
-    <h2>Asesorados</h2>
-    <div id="asesorados"></div>
-
-    <button type="submit" >{{ $comite?"Guardar cambios":"Registrar comite" }}</button>
+ 
+    
+    <button type="submit">{{ $comite ? 'Guardar cambios' : 'Registrar comité' }}</button>
 </form>
 @endsection
 
@@ -106,14 +69,11 @@
 <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
 
 <script>
-   // Inicializar DataTables
-   new DataTable('#docentes', { responsive: true });
-   new DataTable('#alumnos', { responsive: true });
+    // Inicializar DataTables
+    new DataTable('#docentes', { responsive: true });
 
-
-   function actualizarConfirmacion() {
+    function actualizarConfirmacion() {
         let confirmarComiteHtml = '';
-        let asesoradosHtml = '';
 
         // Procesar docentes seleccionados
         $('.checkbox-docente:checked').each(function() {
@@ -131,33 +91,17 @@
             `;
         });
 
-        // Procesar alumnos seleccionados
-        $('.checkbox-alumno:checked').each(function() {
-            const username = $(this).val(); // Obtener el valor (username)
-            const nombre = $(this).closest('tr').find('td:nth-child(2)').text(); // Obtener el nombre
-            const apellidos = $(this).closest('tr').find('td:nth-child(3)').text(); // Obtener los apellidos
-
-            asesoradosHtml += `
-                <div>
-                    ${nombre} ${apellidos}
-                    <input type="hidden" name="alumnos[]" value="${username}">
-                </div>
-            `;
-        });
-
         $('#confirmarComite').html(confirmarComiteHtml);
-        $('#asesorados').html(asesoradosHtml);
     }
-     // Inicializar la confirmación al cargar la página si se está editando
-     $(document).ready(function() {
+
+    // Inicializar la confirmación al cargar la página si se está editando
+    $(document).ready(function() {
         actualizarConfirmacion();
     });
-
 
     // Evento de cambio en checkboxes
-    $(document).on('change', '.checkbox-docente, .checkbox-alumno', function() {
+    $(document).on('change', '.checkbox-docente', function() {
         actualizarConfirmacion();
     });
-
 </script>
 @endsection

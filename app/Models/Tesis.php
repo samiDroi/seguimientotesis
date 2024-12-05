@@ -15,6 +15,7 @@ class Tesis extends Model
         // Agrega otros campos que también quieras permitir para asignación masiva
     ];
     protected $primaryKey = 'id_tesis';
+    
     public function comites(): BelongsToMany
     {
         return $this->belongsToMany(Comite::class,"tesis_comite","id_tesis","id_comite");

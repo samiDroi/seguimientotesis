@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\RolController;
 use App\Http\Controllers\Auth\ResetPwsdController;
 use App\Http\Controllers\Admin\ShowUsers;
 use App\Http\Controllers\Admin\TesisController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -30,7 +31,7 @@ Route::get('/', function () {
 });
 Route::controller(LoginController::class)->group(function(){
     Route::get('/login', 'showLogin')->name('login');
-    Route::post('/login','login')->name('login');
+    Route::post('/login','login')->name('login.post');
 });
 
 Route::controller(RegisterController::class)->group(function(){
@@ -78,7 +79,7 @@ Route::controller(ComiteController::class)->prefix("/admin/comites")->group(func
     Route::post('/{id}/copy','cloneComite')->name('comites.clone');
 
 
-    Route::delete('/{id}','destroy')->name('comites.destroy');
+    Route::post('/{id}','destroy')->name('comites.destroy');
     Route::put('/edit/{id}', "update")->name("comites.update");
 
 });
@@ -93,12 +94,15 @@ Route::controller(TesisController::class)->prefix("/admin/tesis")->group(functio
     Route::post("/formulary/delete/{id}","delete")->name("tesis.delete");
 });
 
+Route::controller(HomeController::class)->prefix("/home")->group(function(){
+    Route::get("/","index")->name("home");
+    Route::post("/logout","logout")->name("logout");
+});
 
-// Route::controller();
-// Route::get("home/index",function(){
-//     return Auth::user();
-//     return "hola este es home";
-// });
+Route::controller();
+Route::get("home/index",function(){
+    return Auth::user()->programas;
+});
 // Route::get("cerrar_sesion",function(){
 //     Auth::logout();
  
