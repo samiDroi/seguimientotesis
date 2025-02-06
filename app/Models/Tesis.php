@@ -21,4 +21,7 @@ class Tesis extends Model
         return $this->belongsToMany(Comite::class,"tesis_comite","id_tesis","id_comite");
     }
 
+    public function usuarios(): BelongsToMany{
+        return $this->belongsToMany(Usuarios::class,"tesis_usuarios","id_tesis","id_user");
+    }
 }

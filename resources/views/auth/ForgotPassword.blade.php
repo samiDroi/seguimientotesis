@@ -1,12 +1,5 @@
 @extends('layouts.form')
 @section('form')
-
-<style>
-    
-   </style>
-
-
-<div class="container">
     <div class="row text-center">
 
     
@@ -29,7 +22,7 @@
         
 
     </div>
-</div>
+
 
 
 

@@ -8,27 +8,30 @@ namespace App\Http\Controllers\Auth;
     use Illuminate\Support\Facades\Hash;
     use App\Http\Controllers\mail\MailController;
     use App\Models\ProgramaAcademico;
-    use App\Models\UnidadAcademica;
-    use Illuminate\Support\Facades\Validator;
+use App\Models\TipoUsuario;
+use App\Models\UnidadAcademica;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
     class RegisterController extends Controller{
        
         public function showRegister(){
             $unidades = UnidadAcademica::all();
             $programas = ProgramaAcademico::all();
-            return view("auth/register",compact("unidades","programas"));
+            $tiposUsuario = TipoUsuario::all();
+            return view("auth/register",compact("unidades","programas","tiposUsuario"));
         }
 
         public function register(Request $request){
-            // Retornar true o false si la validación fue exitosa o no
+            //Retornar true o false si la validación fue exitosa o no
             $validator = $this->validateUser($request);
 
             $validated = $request->validate([
                 'nombre_tipo' => 'required|array',
                 'nombre_tipo.*' => 'exists:tipo_usuario,id_tipo',  // Verifica que cada tipo de usuario exista
             ]);        
-
-            if ($validator->passes()) {
+            if (!$validator->fails()) {
                 $user = new Usuarios;
                 $user->username = $request->get('username');
 
@@ -40,20 +43,46 @@ namespace App\Http\Controllers\Auth;
                 $user->nombre = $request->get('nombre');
                 $user->apellidos = $request->get('apellidos');
                 $user->correo_electronico = $request->get('correo_electronico');
-               
+                // Obtener el ID del tipo "Coordinador"
+                $coordinadorId = DB::table('tipo_usuario')->where('nombre_tipo', 'Coordinador')->value('id_tipo');
+
+                // Verificar si el ID del coordinador está en el array enviado
+                $user->esCoordinador = in_array($coordinadorId, $request->nombre_tipo) ? 1 : 0;
                 $user->save();
                 //asignar los programas academicos a los usuarios
                 $user->programas()->attach($request->input('id_programa'));
                 //asignar los tipos de usuario en la tabla
                 $user->tipos()->sync($request->nombre_tipo);
                
-                return redirect('login')->with('success', 'Registro exitoso. Revisa tu correo para la confirmación.');
+                return redirect()->route('login');
             } else {
-                foreach ($validator->errors()->all() as $error) {
-                    echo "<p style='color: red;'>$error</p>";
-                }
+                Alert::error("Error","este usuario ya existe en el sistema, favor de verificar los datos");
+                return redirect()->route('register.index');
+                // foreach ($validator->errors()->all() as $error) {
+                //     echo "<p style='color: red;'>$error</p>";
+                // }
             }
     
+                // $user = new Usuarios;
+                // $user->username = $request->get('username');
+
+                // $MailController = new MailController;
+    
+                // $newPassword = $MailController->sendMailConfirmation($request);
+    
+                // $user->password = Hash::make($newPassword); 
+                // $user->nombre = $request->get('nombre');
+                // $user->apellidos = $request->get('apellidos');
+                // $user->correo_electronico = $request->get('correo_electronico');
+               
+                // $user->save();
+                // //asignar los programas academicos a los usuarios
+                // $user->programas()->attach($request->input('id_programa'));
+                // //asignar los tipos de usuario en la tabla
+                // $user->tipos()->sync($request->nombre_tipo);
+               
+                // return redirect()->route('login');
+           
         }
 
         public function validateUser(Request $request){

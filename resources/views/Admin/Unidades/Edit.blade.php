@@ -1,5 +1,5 @@
-@extends('layouts.base')
- @section('content')
+@extends('layouts.form')
+ @section('form')
  <h1 class="text-center mt-5">Guardar nueva unidad</h1>
  <form action="{{ route('unidades.update', $unidad->id_unidad) }}" method="POST">
     @csrf

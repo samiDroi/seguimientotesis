@@ -1,5 +1,5 @@
- @extends('layouts.base')
- @section('content')
+ @extends('layouts.form')
+ @section('form')
  <h1 class="text-center">Guardar nueva unidad</h1>
 
 

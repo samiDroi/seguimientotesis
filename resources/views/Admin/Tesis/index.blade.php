@@ -1,4 +1,4 @@
-@extends('layouts.base')
+@extends('layouts.admin')
 @section('content')
 <div class="container">
     <h1>Todas las Tesis y sus Requerimientos</h1>

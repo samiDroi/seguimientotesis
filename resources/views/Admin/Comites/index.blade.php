@@ -1,5 +1,5 @@
 
-@extends('layouts.base')
+@extends('layouts.admin')
 @section('content')
 <h1 class="text-center mt-4">Lista de Comités</h1>
 
@@ -121,82 +121,5 @@
 
 
 
-{{-- @extends('layouts.base')
-@section('content')
-
-<h1>lista de comites</h1>
-@foreach ($comites as $comite)
-<h1>{{ $comite->nombre_comite }}</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Nombre del Usuario</th>
-                <th>Rol</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($comite->usuarios as $usuario)
-            <tr>
-                <td>{{ $usuario->nombre }}</td>
-                <td>
-                    {{-- @dd($usuarios) --}}
-                    {{-- @foreach ($usuarios->roles as $rol)
-                        {{-- @dd($rol->roles) --}}
-                        {{-- {{ $rol->nombre_rol }}
-                    @endforeach 
-                 
-                </td>
-            </tr>
-            @endforeach 
-        </tbody>
-    </table>
-@endforeach --}}
-
-
-
-
-
-
-
-
-{{-- <div class="container">
-    <h1>Lista de Comités</h1>
-
-    @foreach ($comites as $comite)
-        <h2>{{ $comite->nombre_comite }}</h2>
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Nombre del Usuario</th>
-                    <th>Rol</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if ($comite->usuarios->isEmpty())
-                    <tr>
-                        <td colspan="2">No hay usuarios asignados a este comité.</td>
-                    </tr>
-                @else
-                    @foreach ($comite->usuarios as $usuario)
-                        <tr>
-                            <td>{{ $usuario->nombre }}</td>
-                            <td>{{ $usuario->roles->pluck("nombre_rol") ?? 'Sin rol' }}</td>
-                            {{-- <td>
-                                @if ($usuario->roles->isNotEmpty())
-                                    {{ $usuario->roles->pluck('nombre_rol')->implode(', ') }} <!-- Muestra todos los roles -->
-                                @else
-                                    Sin rol
-                                @endif
-                            </td> --}}
-                        {{-- </tr>
-                    @endforeach
-                @endif
-            </tbody>
-        </table>
-    @endforeach
-</div>  --}}
-</div>
-{{-- @endsection --}}
 
 

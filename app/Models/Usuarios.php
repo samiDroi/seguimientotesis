@@ -64,4 +64,8 @@ class Usuarios extends Authenticatable
     public function roles():BelongsToMany{
         return $this->belongsToMany(ComiteRolUsusario::class,"usuarios_comite","id_user","id_comite_rol")->withPivot('id_comite');;
     }
+
+    public function tesis():BelongsToMany{
+        return $this->belongsToMany(Tesis::class,"tesis_usuarios","id_user","id_tesis");
+    }
 }

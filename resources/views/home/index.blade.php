@@ -2,7 +2,7 @@
 @section('content')
 <div>
     {{ Auth::user()->correo_electronico }}
-    <form action="{{ Route("logout") }}" method="POST">
+    <form action="{{ Route('logout') }}" method="POST">
         @csrf
         <button type="submit">Cerrar Sesion</button>
     </form>

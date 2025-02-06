@@ -9,10 +9,15 @@
     @vite(['resources/js/app.js', 'resources/css/app.scss', 'resources/js/ejemplo/script.js','resources/css/root.css'])
 </head>
 <body>
-    @yield('form')
+    <div id="principal">
+        <div class="container">
+            @yield('form')
+        </div>
+        
+    </div>
     @include('sweetalert::alert')
     <script src="{{ asset("vendor/sweetalert/sweetalert.all.js") }}"></script>
-
+    
     @yield('js')
 
 </body>

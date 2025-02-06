@@ -1,4 +1,4 @@
-@extends('layouts.base')
+@extends('layouts.admin')
 @section('content')
 <h1>Editar Comité</h1>
     

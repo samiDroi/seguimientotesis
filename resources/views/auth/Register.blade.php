@@ -1,24 +1,14 @@
 
-@extends("layouts/form")
+@extends("layouts.form")
 @section('form')
-
-
-<form action="{{ route('register') }}" method="POST">
-    @csrf
     
-    
-        
-    <div id="principal">
-        <!-- Agrega más checkboxes para otros tipos de usuario -->
-        
-    
-    
+        <!-- Agrega más checkboxes para otros tipos de usuario -->  
         <h2 class="text-center my-3 ">Registrar nuevo usuario</h2>
 
       <div class="container pt-5 px-5 bg-body-secondary  text-center shadow-lg">
     
         <div class="row mb-4 fs-5 pe-5 ">
-         <form action="{{ route('register') }}" method="POST">
+         <form action="{{ route('register.post') }}" method="POST">
               @csrf
                         {{-- listbox de programas academicos --}}
                 <div class="mb-4"><label for="programa_academico">Programas Academicos:</label></div>
@@ -37,21 +27,12 @@
                 {{-- listbox de programas academicos --}}
              <div class="row">
               <label for="nombre_tipo" class=" text-center mb-3" >Seleccione los Tipos de Usuario:</label>
-    
-                 <div class="col-12 col-md-4 ">
-                 <input class="form-check-input" type="checkbox" id="coordinador" name="nombre_tipo[]" value="5">
-                 <label  for="coordinador">Coordinador</label>
-                 </div>
-
-                 <div  class="col-12 col-md-4 px-0 mx-0 ">
-                 <input class="form-check-input " type="checkbox"  id="docente" name="nombre_tipo[]" value="4">
-                 <label for="docente">Docente</label>
-              </div>
-
-                 <div class="col-12 col-md-4">
-                 <input class="form-check-input" type="checkbox"  id="alumno" name="nombre_tipo[]" value="3">
-                 <label  for="alumno">Alumno</label>
-                </div>
+                @foreach ($tiposUsuario as $tipo)
+                <div class="col-12 col-md-4 ">
+                    <input class="form-check-input" type="checkbox" id="coordinador" name="nombre_tipo[]" value="{{ $tipo->id_tipo }}">
+                    <label  for="coordinador">{{ $tipo->nombre_tipo }}</label>
+                    </div>
+                @endforeach
             </div>
         </div>
 
@@ -101,17 +82,7 @@
 
                  <button type="submit" class="btn btn-primary  mb-4 ">Registrarse</button>
         </form>
+        </div>
 </div>
-    </div>
-</form>
-
     
-        
-        
-
-   
-    
-
-
-
 @endsection

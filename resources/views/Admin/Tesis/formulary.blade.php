@@ -1,5 +1,5 @@
-@extends('layouts.base')
-@section('content')
+@extends('layouts.form')
+@section('form')
 <form action="{{ route("tesis.create") }}" method="POST">
     @csrf
  

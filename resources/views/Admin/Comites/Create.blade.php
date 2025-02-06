@@ -1,4 +1,4 @@
-@extends('layouts.base')
+@extends('layouts.admin')
 
 @section('css')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
@@ -9,9 +9,6 @@
 @section('content')
 <button><a href="{{ Route('roles.index') }}">Personalizar roles del comité</a></button>
 <form action="{{ Route('comites.create') }}" method="POST">
-
-
-
 
 <div class=" bg-body-secondary shadow-lg"> 
     <br>
@@ -72,7 +69,7 @@
                         <th>Correo electrónico</th>
                         <th>Seleccionar</th>
                     </tr>
-                    @endforeach
+                    
                 </tbody>
             </table>
         </div>

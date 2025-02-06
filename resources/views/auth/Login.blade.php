@@ -6,7 +6,7 @@
 
     <!-- Contenedor principal -->
     
-   <div id="principal">
+  
         <div class="container text-center pe-5" id style="margin-top: 150px; ">
         <div class="row" >
 
@@ -48,7 +48,7 @@
        
 
         </div>
-    </div>
+   
 
    
     

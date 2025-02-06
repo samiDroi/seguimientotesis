@@ -1,4 +1,4 @@
-@extends('layouts.base')
+@extends('layouts.admin')
 @section('content')
 <h1 class="text-center mt-4">Panel de roles</h1>
 <div class="container">

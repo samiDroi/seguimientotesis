@@ -1,5 +1,5 @@
-@extends('layouts.base')
- @section('content')
+@extends('layouts.form')
+ @section('form')
  <div class="text-center mt-5"><h1>Editar programa seleccionado</h1></div>
  <form action="{{ route('programas.update', $programa->id_programa) }}" method="POST">
     @csrf
