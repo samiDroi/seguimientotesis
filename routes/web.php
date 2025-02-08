@@ -53,7 +53,7 @@ Route::middleware(['auth'])->group(function(){
     Route::prefix('/sys/admin')->middleware(['isAdmin'])->group(function(){
         
         Route::get('',function(){
-            return Auth::user()->roles->where('nombre_rol','asesor')->where('id_comite',2)->count();
+            //return Auth::user()->roles->where('nombre_rol','asesor')->where('id_comite',2)->count();
             return view('admin.index');
         })->name('administrador');
 
