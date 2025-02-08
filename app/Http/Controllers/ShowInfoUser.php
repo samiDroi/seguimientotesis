@@ -32,7 +32,7 @@ class ShowInfoUser extends Controller
         }
 
        
-       
+       return 5;
         return view('User.TesisInfo',compact('tesisUser','currentLayout','tesisComite'));
         // if(Auth::user()->esCoordinador){
             
