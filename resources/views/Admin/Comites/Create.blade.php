@@ -57,34 +57,14 @@
             </table>
         </div>
         
-        {{-- Tabla de alumnos a la derecha --}}
-        <div class="col-md-6 text-center">
-            <label class="fs-4 fw-semibold mb-4" for="alumnos">Lista de alumnos disponibles</label>
-            <table class="table mt-4 table-bordered text-center table-striped" id="alumnos" >
-                <thead>
-                    <tr>
-                        <th>Matrícula</th>
-                        <th>Nombre</th>
-                        <th>Apellidos</th>
-                        <th>Correo electrónico</th>
-                        <th>Seleccionar</th>
-                    </tr>
-                    
-                </tbody>
-            </table>
-        </div>
-    </div>
-    </div>
+       
 
     </div>
         <div class="row ms-3">
     <h1>Confirmar información de comité</h1>
     <div id="confirmarComite"></div>
    
-    <h2>Asesorados</h2>
-    <div id="asesorados"></div>
-
-    </div>
+   
 
     <button class="btn btn-primary py-2 ms-5" type="submit" >{{ $comite?"Guardar cambios":"Registrar comite" }}</button>
 </form>

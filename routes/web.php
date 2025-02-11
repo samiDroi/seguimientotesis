@@ -33,7 +33,7 @@ Route::get('/', function () {
 //Rutas publicas
 Route::withoutMiddleware(['auth'])->group(function(){
     Route::controller(LoginController::class)->group(function(){
-        Route::get('/login', 'showLogin')->name('login');
+        Route::get('/login', 'showLogin')->name('login')->middleware('guest');
         Route::post('/login','login')->name('login.post');
     });
     
@@ -54,6 +54,7 @@ Route::middleware(['auth'])->group(function(){
         
         Route::get('',function(){
             //return Auth::user()->roles->where('nombre_rol','asesor')->where('id_comite',2)->count();
+            //return comprobarRolComite('asesor','2');
             return view('admin.index');
         })->name('administrador');
 

@@ -135,12 +135,13 @@ class TesisController extends Controller
         
         $comiteTesis = TesisComite::findOrFail($id);
         $id_tesis = $comiteTesis->id_tesis;
-        $tesis = Tesis::findOrFail($id_tesis);
+        $tesis = Tesis::where('id_tesis',$id_tesis);
         $requerimientos = ComiteTesisRequerimientos::where('id_tesis_comite', $comiteTesis->id_tesis_comite)->get();
-
+        $usuarioTesis = TesisUsuarios::where('id_tesis',$id_tesis);
         foreach ($requerimientos as $requerimiento) {
             $requerimiento->delete();
         }
+        $usuarioTesis->delete();
         $comiteTesis->delete();
         $tesis->delete();
 

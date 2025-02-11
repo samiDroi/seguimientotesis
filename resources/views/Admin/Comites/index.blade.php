@@ -28,7 +28,7 @@
 @else
     @foreach ($comites as $comite)
         <h2>{{ $comite->nombre_comite }}</h2>
-        <form action="{{ route('comites.destroy', $comite->id_comite) }}" method="POST" style="display:inline-block;">
+        <form action="{{ route('comites.destroy', $comite->id_comite) }}" method="POST" style="display:inline-block;" class="delete">
             @csrf
             <button type="button" class="btn btn-danger">
                 Eliminar Comité
