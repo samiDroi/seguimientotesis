@@ -26,6 +26,7 @@
           </span>
     </div>
 @else
+
     @foreach ($comites as $comite)
         <h2>{{ $comite->nombre_comite }}</h2>
         <form action="{{ route('comites.destroy', $comite->id_comite) }}" method="POST" style="display:inline-block;" class="delete">
@@ -36,12 +37,12 @@
         </form>
         <a href="{{ Route("comites.store",$comite->id_comite) }}">Editar comite </a>
 
-        <a href="{{ route("comites.store", $comite->id_comite) }}">Editar comité</a>
 
         <form action="{{ route('comites.clone', $comite->id_comite) }}" method="POST">
             @csrf
             <button type="submit" class="btn btn-primary">Clonar Comité</button>
         </form>
+        
         <table>
             <thead>
                 <tr>
@@ -51,19 +52,15 @@
                 </tr>
             </thead>
             <tbody>
+            
                 @foreach ($comite->usuarios as $usuario)
-                <tr>
-                    <td>{{ $usuario->nombre }}</td>
-                    <td>{{ $usuario->apellidos }}</td>
-                    <td>
-                        @foreach ($usuario->roles as $rol)
-                            @if ($rol->pivot->id_comite == $comite->id_comite)
-                            {{ $rol->nombre_rol }}
-                            @endif
-                        @endforeach
-                    </td>
-                </tr>
-                @endforeach 
+                    <tr>
+                        {{-- <td>{{ $comite->nombre_comite }}</td> --}}
+                        <td>{{ $usuario->nombre }}</td>
+                        <td>{{ $usuario->apellidos }}</td>
+                        <td>{{ ucfirst($usuario->pivot->rol) }}</td> <!-- 'pivot' te da acceso al campo 'rol' de la tabla pivot -->
+                    </tr>
+                @endforeach
             </tbody>
         </table>
 

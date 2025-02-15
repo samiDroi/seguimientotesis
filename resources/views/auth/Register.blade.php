@@ -1,7 +1,7 @@
 
 @extends("layouts.form")
 @section('form')
-    
+    {{-- @dd(Auth::user()) --}}
         <!-- Agrega más checkboxes para otros tipos de usuario -->  
         <h2 class="text-center my-3 ">Registrar nuevo usuario</h2>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Rol;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Usuarios;
@@ -10,6 +11,7 @@ use App\Models\ProgramaAcademico;
 use App\Models\Comite;
 use App\Models\ComiteRolUsusario;
 use App\Http\Controllers\Admin\RolController;
+use App\Models\UsuariosComite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -21,7 +23,7 @@ class ComiteController extends Controller
         $title = 'Delete User!';
         $text = "Are you sure you want to delete?";
         confirmDelete($title, $text);
-        $comites = Comite::with(['usuarios.roles'])->get();
+        $comites = Comite::with('usuarios')->get();
         return view("Admin.Comites.index", compact("comites"));
     }
    
@@ -33,9 +35,9 @@ class ComiteController extends Controller
         //dd(Auth::user()->getAuthIdentifierName());
         //return (Auth::user());
         $programas = Auth::user()->programas;
+        $roles = Rol::getEnumValues();
 
-
-        return view("Admin.Comites.Create", compact("docentes", "unidades", "programas", "comite"));
+        return view("Admin.Comites.Create", compact("docentes", "unidades", "programas", "comite","roles"));
     }
 
     public function create(Request $request)
@@ -51,9 +53,30 @@ class ComiteController extends Controller
             $comite->id_programa = $programa;
         }
         $comite->save();
-
-        $rol = new RolController();
-        $rol->createRol($request, $comite);
+        //asociar docentes y roles al comité
+        foreach ($request->docentes as $index => $username) {
+            $usuario = Usuarios::where('username', $username)->first(); // Obtener el docente por el username
+            if ($usuario) {
+                // Obtener el rol correspondiente desde el enum
+                $rol = $request->rol[$index]; // Valor del rol seleccionado
+                
+                // Verificar si el rol es válido dentro del enum
+                if (in_array($rol, Rol::getEnumValues())) {
+                    // Aquí puedes almacenar la relación entre el docente y el comité con su rol
+                    // Si usas una tabla intermedia, aquí se podría almacenar el rol
+                    DB::table('usuarios_comite')->insert([
+                        'id_user' => $usuario->id_user,
+                        'id_comite' => $comite->id_comite,
+                        'rol' => $rol]);
+                    $comite->usuarios()->attach($usuario->id, ['rol' => $rol]); // Almacenar el rol en la tabla intermedia
+                }
+            }
+        }
+        
+        //$this->setRoles();
+        // $rol = new RolController();
+        // $rol->createRol($request, $comite);
+        
         return redirect()->route("comites.index");
     }
 
@@ -70,14 +93,10 @@ class ComiteController extends Controller
 
         try {
             DB::table('usuarios_comite')
-                ->whereIn('id_comite_rol', function ($query) use ($id) {
-                    $query->select('id_comite_rol')
-                          ->from('comite_rol_usuario')
-                          ->where('id_comite', $id);
-                })
+                ->where('id_comite',$id)
                 ->delete();
 
-            DB::table('comite_rol_usuario')->where('id_comite', $id)->delete();
+            //DB::table('comite_rol_usuario')->where('id_comite', $id)->delete();
 
             Comite::where('id_comite', $id)->delete();
 
@@ -99,8 +118,8 @@ class ComiteController extends Controller
         return view("Admin.Comites.Edit", compact("comite", "roles"));
     }
 
-    public function validateComite()
-    {
+    public function setRoles(){
+
     }
 
     public function cloneComite($id)

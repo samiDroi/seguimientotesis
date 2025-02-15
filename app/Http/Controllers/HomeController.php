@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProgramaAcademico;
+use App\Models\Tesis;
+use App\Models\TesisComite;
 use App\Models\UnidadAcademica;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,8 +24,11 @@ class HomeController extends Controller
                     ->select("t.*")
                     ->get();
         //dd($tesisUsuario);
-        
-        return view("home/index",compact("programas","comites","tesisUsuario"));
+        $tesisComites= TesisComite::with(["tesis","comite","requerimientos"])->get();
+
+         // Cargar la relación 'comites' en las tesis
+        $tesisUsuario = Tesis::with('comites')->whereIn('id_tesis', $tesisUsuario->pluck('id_tesis'))->get();
+        return view("home/index",compact("programas","comites","tesisUsuario","tesisComites"));
     }
 
     public function logout(){

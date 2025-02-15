@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ShowUsers;
 use App\Http\Controllers\Admin\TesisController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShowInfoUser;
+use App\Http\Controllers\Site\avanceTesisController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -57,7 +58,12 @@ Route::middleware(['auth'])->group(function(){
             //return comprobarRolComite('asesor','2');
             return view('admin.index');
         })->name('administrador');
-
+        Route::controller(TesisController::class)->group(function(){
+            Route::get('/reviewTesis','standbyIndex')->name('tesis.review');
+            Route::post('/reviewTesis/updateState/{id}','updateState')->name('tesis.review.update');
+            Route::post('tesis/asignarComite/{id?}','asignarComite')->name('tesis.comite.attach');
+        });
+       
         Route::controller(UnidadController::class)->prefix("/unidades")->group(function(){
             Route::get('/', 'index')->name('unidades.index'); // Lista todas las unidades
             Route::get('create', 'store')->name('unidades.create'); // Muestra el formulario para crear una nueva unidad
@@ -108,15 +114,21 @@ Route::middleware(['auth'])->group(function(){
     //DOCENTES
     Route::controller(TesisController::class)->prefix("/tesis")->group(function(){
         Route::get("/","index")->name("tesis.index"); 
-        Route::get("/formulary/{id?}","store")->name("tesis.store");
+        Route::get("/formulary/{id?}","viewRequerimientos")->name("tesis.requerimientos");
+        //Route::get("/formulary/requerimientos/{id?}")
         Route::post("/formulary","create")->name("tesis.create");
         Route::post("/formulary/delete/{id}","delete")->name("tesis.delete");
+        Route::post("formulary/requerimientos/{id}","createRequerimientos")->name("tesis.create.requerimientos");
     });
     
     Route::controller(HomeController::class)->prefix("/home")->group(function(){
         Route::get("/","index")->name("home");
         //Route::post("/logout","logout")->name("logout");
         Route::get("/comites","showComite")->name("home.comite");
+    });
+
+    Route::controller(avanceTesisController::class)->group(function(){
+        Route::get("requerimento/{id}","showAvance")->name("avance.index");
     });
     Route::controller(ShowInfoUser::class)->prefix('myInfo')->group(function(){
         Route::get('/tesis','showTesis')->name('info.tesis');

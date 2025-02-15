@@ -54,7 +54,7 @@ class Usuarios extends Authenticatable
     }
 
     public function comites():BelongsToMany {
-        return $this->belongsToMany(Comite::class,"usuarios_comite","id_user","id_comite");
+        return $this->belongsToMany(Comite::class,"usuarios_comite","id_user","id_comite")->withPivot("rol");
     }
     
     public function programas():BelongsToMany{

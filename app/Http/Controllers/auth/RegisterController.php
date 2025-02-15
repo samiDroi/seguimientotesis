@@ -27,10 +27,10 @@ use RealRashid\SweetAlert\Facades\Alert;
             //Retornar true o false si la validación fue exitosa o no
             $validator = $this->validateUser($request);
 
-            $validated = $request->validate([
-                'nombre_tipo' => 'required|array',
-                'nombre_tipo.*' => 'exists:tipo_usuario,id_tipo',  // Verifica que cada tipo de usuario exista
-            ]);        
+            // $validated = $request->validate([
+            //     'nombre_tipo' => 'required|array',
+            //     'nombre_tipo.*' => 'exists:tipo_usuario,id_tipo',  // Verifica que cada tipo de usuario exista
+            // ]);        
             if (!$validator->fails()) {
                 $user = new Usuarios;
                 $user->username = $request->get('username');

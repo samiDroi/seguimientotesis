@@ -64,8 +64,6 @@
     <h1>Confirmar información de comité</h1>
     <div id="confirmarComite"></div>
    
-   
-
     <button class="btn btn-primary py-2 ms-5" type="submit" >{{ $comite?"Guardar cambios":"Registrar comite" }}</button>
 </form>
 </div>
@@ -95,9 +93,14 @@
             confirmarComiteHtml += `
                 <div>
                     ${nombre} ${apellidos}
+                    <br/>
                     <input type="hidden" name="docentes[]" value="${username}">
-                    <h2>Confirmar rol</h2>
-                    <input type="text" name="nombre_rol[]" placeholder="Confirmar rol" class="form-control mt-1" required>
+                    <label for="rol">Confirmar Rol</label>
+                    <select name="rol[]" id="rol">
+                        @foreach($roles as $rol)
+                            <option value="{{ $rol }}">{{ ucfirst($rol) }}</option>
+                        @endforeach
+                    </select>
                 </div>
             `;
         });
