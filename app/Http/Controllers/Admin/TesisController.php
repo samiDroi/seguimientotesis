@@ -10,7 +10,10 @@ use App\Models\ComiteTesisRequerimientos;
 use App\Models\Tesis;
 use App\Models\TesisComite;
 use App\Models\TesisUsuarios;
+use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
+
+use function Laravel\Prompts\table;
 
 class TesisController extends Controller
 {
@@ -216,11 +219,34 @@ class TesisController extends Controller
 
     //FUNCIONES PARA QUE EL COORDINADOR MANEJE EL ESTADO DE LA TESIS
     public function standbyIndex(){
+        // $tesisComites= TesisComite::with(["tesis","comite","requerimientos"])->get();
+        // $requerimientos = ComiteTesisRequerimientos::with('tesisComite')->get();
+        // // $director = DB::table("tesis as t")
+        // //             ->join("tesis_comite as tc","tc.id_tesis","t.id_tesis")
+        // //             ->join("")
+        
+       
+        $directores = DB::table("tesis as t")
+        //junta los comites con las tesis
+        ->join("tesis_comite as tc", "t.id_tesis", "=", "tc.id_tesis")
+        ->join("comite as c", "tc.id_comite", "=", "c.id_comite")
+        //junta los comites con los usuarios
+        ->join("usuarios_comite as uc", "c.id_comite", "=", "uc.id_comite")
+        ->join("usuarios as u", "uc.id_user", "=", "u.id_user")
+        ->where("uc.rol", "DIRECTOR") // Se filtra para obtener solo el Director
+        ->select("t.id_tesis","u.*") // Se obtienen todos los datos del usuario con rol de Director y su tesis afiliada
+        ->get();
+        // Retornar la vista con los datos
         $tesisComites= TesisComite::with(["tesis","comite","requerimientos"])->get();
         $requerimientos = ComiteTesisRequerimientos::with('tesisComite')->get();
-
+         $tesis = Tesis::all();
+         $comites = Comite::all();
+         $usuarios = Usuarios::all();
         // Retornar la vista con los datos
-        return view('Admin.Tesis.standbyTesis', compact('tesisComites','requerimientos'));
+        //$tesis = Tesis::with(['tesisComite.comite', 'tesisComite.requerimientos'])->get();
+
+        return view('Admin.Tesis.standbyTesis', compact('tesis','requerimientos','tesisComites','comites','usuarios','directores'));
+        //return view('Admin.Tesis.standbyTesis', compact('tesisComites','requerimientos','directores'));
     }
 
     public function updateState(Request $request,$id){

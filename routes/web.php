@@ -61,7 +61,7 @@ Route::middleware(['auth'])->group(function(){
         Route::controller(TesisController::class)->group(function(){
             Route::get('/reviewTesis','standbyIndex')->name('tesis.review');
             Route::post('/reviewTesis/updateState/{id}','updateState')->name('tesis.review.update');
-            Route::post('tesis/asignarComite/{id?}','asignarComite')->name('tesis.comite.attach');
+            Route::post('tesis/asignarComite/{id}','asignarComite')->name('tesis.comite.attach');
         });
        
         Route::controller(UnidadController::class)->prefix("/unidades")->group(function(){
