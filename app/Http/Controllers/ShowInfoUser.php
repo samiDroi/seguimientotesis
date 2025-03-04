@@ -23,10 +23,6 @@ class ShowInfoUser extends Controller
                       ->from('tesis_comite')  // La tabla intermedia
                       ->whereIn('id_comite', $comites->pluck('id_comite')); // Filtrar por los comités del usuario
             })->get();
-            // $tesisComite = Tesis::whereHas('comites', function($query) use ($comites) {
-            //     // Filtrar solo las tesis que están asociadas a los comités del usuario
-            //     $query->whereIn('comite.id_comite', $comites->pluck('id'));  // Esto filtra por los ID de los comités del usuario
-            // })->get();
         } else {
             $tesisComite = null; // Si el usuario no tiene comités, devolver una colección vacía
         }

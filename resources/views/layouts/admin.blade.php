@@ -33,6 +33,9 @@
                         <a class="nav-link text-white" href="{{ Route('info.tesis') }}">Mis tesis</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ Route('tesis.admin') }}">Tesis</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link text-white" href="#">{{ Auth::user()->nombre ." ".Auth::user()->apellidos }}</a>
                     </li>
                     <li class="nav-item">

@@ -12,9 +12,20 @@
             <div class="d-flex justify-content-between align-items-center">
                 <!-- Título de la Tesis -->
                 <h2 class="card-title h4 font-weight-bold text-dark flex-grow-1">{{ $tesisItem->nombre_tesis }}</h2>
+                @if (isset($tesisItem->estado))
+                <span class="badge 
+                    @if(strtolower($tesisItem->estado) == 'pendiente') bg-warning 
+                    @elseif(strtolower($tesisItem->estado) == 'aprobada') bg-success 
+                    @elseif(strtolower($tesisItem->estado) == 'rechazada') bg-danger 
+                    @else bg-secondary 
+                    @endif">
+                    {{ ucfirst($tesisItem->estado) }}
+                </span>
+            @else
+                <span class="badge bg-secondary">Estado desconocido</span>
+            @endif
                 
             </div>
-
             <!-- Comité -->
             <div class="mt-2">
                 @if ($tesisItem->comites->isNotEmpty())
@@ -42,6 +53,8 @@
 
             <!-- Verifica si esta tesis tiene comités asignados y requerimientos asociados -->
             @foreach ($tesisComites as $tesisComite)
+            {{-- <h1 class="display-2">{{ $loop->iteration }}</h1>
+            <h1 class="display-2">{{ rand(1,1000) }}</h1> --}}
                 @if ($tesisComite->id_tesis == $tesisItem->id_tesis) <!-- Compara con la tesis actual -->  
                     @if ($tesisComite->requerimientos->isNotEmpty())
                         <!-- Requerimientos de esta TesisComite -->
@@ -68,6 +81,22 @@
                                         @else
                                             <span class="badge bg-secondary">Estado desconocido</span>
                                         @endif
+                                        <!-- Botones de Aceptar y Rechazar -->
+                                        <div class="d-flex gap-2 mt-2">
+                                            <form action="{{ route('tesis.review.update', $requerimiento->id_requerimiento) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('POST') 
+                                                <input type="hidden" name="estado" value="ACEPTADO"> <!-- Estado a Aceptado -->
+                                                <button type="submit" class="btn btn-sm btn-success">Aceptar</button>
+                                            </form>
+
+                                            <form action="{{ route('tesis.review.update', $requerimiento->id_requerimiento) }}" method="POST" class="d-inline rechazarForm" >
+                                                @csrf
+                                                @method('POST') 
+                                                <input type="hidden" name="estado" value="RECHAZADO"> <!-- Estado a Rechazado -->
+                                                <button type="button" class="btn btn-sm btn-danger btn-modal-rechazo" data-bs-toggle="modal" data-bs-target="#modalTextarea" >Rechazar</button>
+                                            </form>
+                                        </div>
                                     </li>
                                 @endforeach
                             </ul>
@@ -78,9 +107,6 @@
                 @endif
             @endforeach
 
-            @if ($tesisItem->comites->isNotEmpty() && $tesisComite->requerimientos->isEmpty())
-                <a href="{{ Route("tesis.requerimientos",$tesisComite->id_tesis_comite) }}" class="">Tiene permitido crear requerimientos para esta tesis</a>
-            @endif
             
         </div>
     </div>
@@ -88,9 +114,41 @@
 </div>
 
 @include('Admin.Tesis.Modals.ComiteAlumnoModal')
+@include('Admin.Tesis.Modals.MotivoRechazoModal')
+@endsection
 
+@section('js')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        let referencia;
+        $('.btn-modal-rechazo').on('click',function () {
+             referencia = $(this).closest('form');
+        })
+        // Evento al hacer clic en el botón "Rechazar"
+        $('#submitRechazoBtn').on('click', function() {
+            // Obtener el comentario del textarea
+            var comentario = $('#comentariosTextarea').val();
 
+            // Si el comentario está vacío, mostrar una alerta y no enviar el formulario
+            if ($.trim(comentario) === '') {
+                alert('Por favor, escribe un comentario.');
+                return;
+            }
 
- 
+            // Crear un input oculto para el comentario
+            var inputComentario = $('<input>').attr({
+                type: 'hidden',
+                name: 'comentario',
+                value: comentario
+            });
 
+            // Agregar el input oculto al formulario
+            $(referencia).append(inputComentario);
+
+            // Enviar el formulario
+            $(referencia).submit();
+        });
+    });
+</script>
 @endsection

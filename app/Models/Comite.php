@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Enums\Rol;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Comite extends Model
 {
@@ -28,5 +29,8 @@ class Comite extends Model
     {
         return $this->belongsToMany(Tesis::class,"tesis_comite","id_comite","id_tesis");
     }
-    
+    public function programas():BelongsTo
+    {
+        return $this->belongsTo(ProgramaAcademico::class, 'id_programa');  // 'id_programa' es la clave foránea
+    }
 }

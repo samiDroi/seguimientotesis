@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\TesisController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShowInfoUser;
 use App\Http\Controllers\Site\avanceTesisController;
+use App\Http\Middleware\isDirector;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -59,9 +60,11 @@ Route::middleware(['auth'])->group(function(){
             return view('admin.index');
         })->name('administrador');
         Route::controller(TesisController::class)->group(function(){
-            Route::get('/reviewTesis','standbyIndex')->name('tesis.review');
-            Route::post('/reviewTesis/updateState/{id}','updateState')->name('tesis.review.update');
-            Route::post('tesis/asignarComite/{id}','asignarComite')->name('tesis.comite.attach');
+            Route::get('/review-tesis','standbyIndex')->name('tesis.review');
+            Route::get('/current-tesis','showCurrentlyTesis')->name('tesis.admin');
+            Route::post('/review-tesis/updateState/{id}','updateState')->name('tesis.review.update');
+            Route::post('tesis/asignar-comite/{id}','asignarComite')->name('tesis.comite.attach');
+
         });
        
         Route::controller(UnidadController::class)->prefix("/unidades")->group(function(){
@@ -112,7 +115,8 @@ Route::middleware(['auth'])->group(function(){
         Route::get("admin/roles","index")->name("roles.index");
     });
     //DOCENTES
-    Route::controller(TesisController::class)->prefix("/tesis")->group(function(){
+    //CREAR MIDDLEWARE PARA QUE ESTO SOLO SEA PARA DIRECTORES DE TESIS
+    Route::controller(TesisController::class)->prefix("/tesis")->middleware(['isDirector'])->group(function(){
         Route::get("/","index")->name("tesis.index"); 
         Route::get("/formulary/{id?}","viewRequerimientos")->name("tesis.requerimientos");
         //Route::get("/formulary/requerimientos/{id?}")
@@ -127,9 +131,13 @@ Route::middleware(['auth'])->group(function(){
         Route::get("/comites","showComite")->name("home.comite");
     });
 
-    Route::controller(avanceTesisController::class)->group(function(){
-        Route::get("requerimento/{id}","showAvance")->name("avance.index");
+    Route::controller(avanceTesisController::class)->prefix("/requerimiento")->group(function(){
+        Route::get("/{id}","showAvance")->name("avance.index");
+        Route::post("/create/{id}","createAvance")->name("avance.create");
+        Route::post("/comentario","comentarioAvance")->name("comentario.create");
+        Route::post("/estado","updateEstadoAvance")->name("avance.estado.update");
     });
+    
     Route::controller(ShowInfoUser::class)->prefix('myInfo')->group(function(){
         Route::get('/tesis','showTesis')->name('info.tesis');
     });

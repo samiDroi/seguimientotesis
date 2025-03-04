@@ -9,4 +9,8 @@ class AvanceTesis extends Model
 {
     use HasFactory;
     protected $table = 'avance_tesis';
+    protected $primaryKey = 'id_avance_tesis';
+    protected $fillable = ['contenido', 'id_requerimiento'];
+
+    
 }

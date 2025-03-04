@@ -23,4 +23,9 @@ class ProgramaAcademico extends Model
     public function usuarios(): BelongsToMany{
         return $this->belongsToMany(Usuarios::class,"usuarios_programa_academico","id_programa","id_user");
     }
+
+    public function comites()
+    {
+        return $this->hasMany(Comite::class, 'id_programa');  // 'id_programa' es la clave foránea en la tabla Comite
+    }
 }
