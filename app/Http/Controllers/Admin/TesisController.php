@@ -22,9 +22,21 @@ class TesisController extends Controller
     public function index(){
         $tesisComites= TesisComite::with(["tesis","comite","requerimientos"])->get();
         $requerimientos = ComiteTesisRequerimientos::with('tesisComite')->get();
-         $tesis = Tesis::all();
-         $comites = Comite::all();
-         $usuarios = Usuarios::all();
+        $tesis = getTesisByUserProgramAndComite();
+         
+       
+        $usuarios = Usuarios::whereIn('usuarios.id_user', function ($query) {
+            $query->select('usuarios_programa_academico.id_user') // Especifica la tabla en la subconsulta
+                ->from('usuarios_programa_academico')
+                ->whereIn('usuarios_programa_academico.id_programa', Auth::user()->programas->pluck('id_programa'));
+        })->get();
+        
+        // Obtener los comités relacionados con los programas del usuario
+        $comites = Comite::with('programas')  // Cargar la relación programas
+        ->whereHas('programas', function ($query) {
+            $query->whereIn('id_programa', Auth::user()->programas->pluck('id_programa'));
+        })
+        ->get();
 
 
         return view('Admin.Tesis.index', compact('tesis','requerimientos','tesisComites','comites','usuarios'));

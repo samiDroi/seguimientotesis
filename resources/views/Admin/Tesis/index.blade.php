@@ -72,14 +72,18 @@
                                             </li>
                                         @endforeach
                                     </ul>
-                                </details>
+                                </details>    
                             @else
                                 <p>No hay requerimientos para esta tesis.</p>
                             @endif
                         @endif
                     @endforeach
-        
-                    @if ($tesisItem->comites->isNotEmpty() && $tesisComite->requerimientos->isEmpty())
+                    {{-- && comprobarIsInComite($tesisComite->id_comite) --}}
+                    
+                    @if ($tesisItem->comites->isNotEmpty() && $tesisComite->requerimientos->isEmpty()
+                         && $tesisItem->comites->pluck('id_comite')->contains(fn($id) => comprobarRolComite('DIRECTOR', $id)))
+                         
+                          {{-- @dd($tesisComite->id_comite) --}}
                         <a href="{{ Route("tesis.requerimientos",$tesisComite->id_tesis_comite) }}" class="">Tiene permitido crear requerimientos para esta tesis</a>
                     @endif
                     

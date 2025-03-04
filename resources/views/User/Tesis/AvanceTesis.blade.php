@@ -23,21 +23,22 @@
     </form>
    
     
-    @if (comprobarRolComite("DIRECTOR", $comiteTesis->id_comite) > 0)
+    @if (comprobarRolComite("DIRECTOR", $comiteTesis->id_comite) > 0 && optional($avanceTesis)->contenido)
                             <!-- Mostrar los botones solo si es DIRECTOR -->
+                            {{-- @dd($avanceTesis->id_avance_tesis) --}}
                             <div class="mt-2">
                                 <div class="d-flex gap-2 mt-2">
                                     <form action="{{ route("avance.estado.update") }}" method="POST" class="d-inline">
                                         @csrf
-                                        @method('POST') 
+                                        {{-- @method('POST')  --}}
                                         <input type="hidden" name="estado" value="ACEPTADO"> <!-- Estado a Aceptado -->
-                                        <input type="hidden" name="id_avance" value="{{ $avanceTesis?->id_avance }}">
+                                        <input type="hidden" name="id_avance" value="{{ $avanceTesis?->id_avance_tesis }}">
                                         <button type="submit" class="btn btn-sm btn-success">Aceptar</button>
                                     </form>
 
                                     <form action="{{ route("avance.estado.update") }}" method="POST" class="d-inline">
                                         @csrf
-                                        @method('POST') 
+                                        {{-- @method('POST')  --}}
                                         <input type="hidden" name="estado" value="RECHAZADO"> <!-- Estado a Rechazado -->
                                         <input type="hidden" name="id_avance" value="{{ $avanceTesis?->id_avance }}">
                                         <button type="submit" class="btn btn-sm btn-danger">Rechazar</button>
@@ -55,7 +56,7 @@
        {{ $comentario->contenido }}
     @endforeach
 
-     @if (Auth::user()->comites->contains('id_comite', $comiteTesis->id_comite))
+     @if (Auth::user()->comites->contains('id_comite', $comiteTesis->id_comite) && optional($avanceTesis)->contenido)
         <form action="{{ Route("comentario.create") }}" method="post">
             @csrf
             <input type="hidden" name="id_requerimiento" value="{{ $requerimiento->id_requerimiento }}">

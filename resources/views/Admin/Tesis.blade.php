@@ -86,7 +86,10 @@
                                     @foreach ($tesisComite->requerimientos as $requerimiento)
                                         <li class="list-group-item px-0">
                                             <strong>{{ $requerimiento->nombre_requerimiento }}</strong>
-                                            <a href="{{ Route("avance.index", $requerimiento->id_requerimiento) }}">Revisar avance de este requerimiento</a>
+                                            @if ($requerimiento->avances->isNotEmpty())
+                                                <a href="{{ Route("avance.index", $requerimiento->id_requerimiento) }}">Revisar avance de este requerimiento</a>
+                                            @endif
+                                            {{-- <a href="{{ Route("avance.index", $requerimiento->id_requerimiento) }}">Revisar avance de este requerimiento</a> --}}
                                             <br>
                                             <span>Descripción:</span> {{ $requerimiento->descripcion }}
                                             <span class="badge 

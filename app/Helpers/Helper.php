@@ -99,6 +99,19 @@ function getRequerimientos($id_requerimiento){
     ->get();
 }
 
+function getTesisByUserProgramAndComite() {
+    return Tesis::with('comites')  // Cargar la relación comites
+        ->join('tesis_comite as tc', 'tesis.id_tesis', '=', 'tc.id_tesis')
+        ->join('usuarios_comite as uc', 'tc.id_comite', '=', 'uc.id_comite')
+        ->join('usuarios_programa_academico as upa', 'uc.id_user', '=', 'upa.id_user')
+        ->where('uc.id_user', Auth::user()?->id_user) // Filtrar por usuario autenticado en comites
+        ->whereIn('upa.id_programa', Auth::user()->programas->pluck('id_programa')) // Filtrar por programas del usuario
+        ->select('tesis.*')
+        ->distinct()
+        ->get();
+}
+
+
 
 
 

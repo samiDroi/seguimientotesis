@@ -23,4 +23,13 @@ class ComiteTesisRequerimientos extends Model
     {
         return $this->belongsTo(TesisComite::class, 'id_tesis_comite','id_tesis_comite');
     }
+
+ 
+    
+    
+    public function avances()
+    {
+        return $this->hasMany(AvanceTesis::class, 'id_requerimiento', 'id_requerimiento');
+    }
+
 }

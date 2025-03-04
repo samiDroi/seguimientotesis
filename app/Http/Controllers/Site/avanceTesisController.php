@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\StatusTesisController;
 use App\Models\AvanceTesis;
 use App\Models\ComentarioAvance;
 use App\Models\Comite;
@@ -76,8 +77,12 @@ class avanceTesisController extends Controller{
         // Actualizar el estado del requerimiento
         $avance->estado = $request->estado;
         $avance->save();
-
+        $statusAvance = new StatusTesisController;
+        $statusAvance->statusTesisToPorEvaluar();
         alert()->success("El avance del requerimiento ha sido {$request->estado} satisfactoriamente.")->persistent(true,false);
+        if (Auth::user()->isAdmin) {
+            return redirect()->route('tesis.admin');
+        }
         return redirect()->route('home');
     }
     
