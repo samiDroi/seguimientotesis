@@ -28,4 +28,10 @@ class ProgramaAcademico extends Model
     {
         return $this->hasMany(Comite::class, 'id_programa');  // 'id_programa' es la clave foránea en la tabla Comite
     }
+
+        public function tesis()
+    {
+        return $this->belongsToMany(Tesis::class, 'tesis_programa_academico', 'id_programa', 'id_tesis');
+    }
+
 }

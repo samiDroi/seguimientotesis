@@ -24,4 +24,10 @@ class Tesis extends Model
     public function usuarios(): BelongsToMany{
         return $this->belongsToMany(Usuarios::class,"tesis_usuarios","id_tesis","id_user");
     }
+
+        public function programas()
+    {
+        return $this->belongsToMany(ProgramaAcademico::class, 'tesis_programa_academico', 'id_tesis', 'id_programa');
+    }
+
 }

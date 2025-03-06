@@ -10,6 +10,7 @@ use App\Models\Comite;
 use App\Models\ComiteTesisRequerimientos;
 use App\Models\Tesis;
 use App\Models\TesisComite;
+use App\Models\TesisProgramaAcademico;
 use App\Models\TesisUsuarios;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -106,9 +107,21 @@ class TesisController extends Controller
     
     public function create(Request $request){
         $nombreTesis = $request->input('nombre_tesis');
-        Tesis::create([
+        
+        $tesis = Tesis::create([
             'nombre_tesis' => $nombreTesis
         ]);
+        // foreach (Auth::user()->programas as $programa) {
+        //     TesisProgramaAcademico::create([
+        //         'id_tesis' => $tesis->id_tesis,
+        //         'id_programa' => $programa->id_programa,
+        //     ]);
+        // }
+        $idProgramas = Auth::user()->programas->pluck('id_programa')->toArray();
+
+        $tesis->programas()->attach($idProgramas);
+        
+
         return redirect()->route('tesis.index');
     }
     

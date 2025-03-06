@@ -6,6 +6,8 @@
     
   <div class="container mt-4">
     @foreach ($tesis as $tesisItem)
+    @include('Admin.Tesis.Modals.ComiteAlumnoModal')
+@include('Admin.Tesis.Modals.MotivoRechazoModal')
     <div class="card mb-4 border-secondary">
         <div class="card-body">
             <!-- Contenedor flex para nombre de tesis, botones y comité -->
@@ -113,8 +115,7 @@
 @endforeach
 </div>
 
-@include('Admin.Tesis.Modals.ComiteAlumnoModal')
-@include('Admin.Tesis.Modals.MotivoRechazoModal')
+
 @endsection
 
 @section('js')

@@ -7,6 +7,8 @@
         Crear Título de la Tesis
       </button>
     @if ($tesis->isNotEmpty())
+        @include('Admin.Tesis.Modals.ComiteAlumnoModal')
+        @include('Admin.Tesis.Modals.MotivoRechazoModal')
         <div class="container mt-4">
             @foreach ($tesis as $tesisItem)
             <div class="card mb-4 border-secondary">
@@ -171,8 +173,7 @@
     @endforeach --}}
 </div>
 @include('Admin.Tesis.Modals.TesisModal')
-@include('Admin.Tesis.Modals.ComiteAlumnoModal')
-@include('Admin.Tesis.Modals.MotivoRechazoModal')
+
 
 
  
