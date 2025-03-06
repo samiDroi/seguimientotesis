@@ -8,7 +8,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('tesis.comite.attach',$tesisItem->id_tesis) }}" method="POST">
+                <form action="{{ route('tesis.comite.attach',$tesisItem?->id_tesis) }}" method="POST">
                     @csrf
                     <div class="mb-3">
                         <label for="comite" class="form-label fs-4">Asignar comite a la tesis</label>

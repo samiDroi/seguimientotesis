@@ -1,5 +1,7 @@
 
-
+.navbar{
+   background-color: #3a3EC8;
+}
    .puprplecolor{
     background-color: #a133e8;
     color: white;
@@ -10,6 +12,27 @@
    
    }
 
+   .option{
+      transition: 0.5s;
+   }
+  
+     
+   .option:hover {
+      border-top-right-radius: 40px;
+      border-bottom-right-radius: 40px;
+      background: rgba(58, 62, 200, 0.3); /* Transparencia con tu color */
+      box-shadow: 0 0 10px rgba(58, 62, 200, 0.3);
+  }
+ 
+
+   .row {
+      width: 100%; 
+      margin: 0;
+  }
+
+  .container-pers{
+   background-color: #3a3EC8;
+  }
   
 
 

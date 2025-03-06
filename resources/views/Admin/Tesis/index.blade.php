@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 @section('content')
+
 <div class="container">
     <h1>Todas las Tesis y sus Requerimientos</h1>
     {{-- <a href="{{ Route('tesis.store',$tesisComite->id_tesis_comite ?? '') }}" class="btn btn-primary">Crear nueva tesis</a> --}}
@@ -7,13 +8,19 @@
         Crear Título de la Tesis
       </button>
   <div class="container mt-4">
+    
+    
+  @if ($tesis->isNotEmpty())
     @foreach ($tesis as $tesisItem)
+   
     <div class="card mb-4 border-secondary">
         <div class="card-body">
             <!-- Contenedor flex para nombre de tesis, botones y comité -->
             <div class="d-flex justify-content-between align-items-center">
                 <!-- Título de la Tesis -->
                 <h2 class="card-title h4 font-weight-bold text-dark flex-grow-1">{{ $tesisItem->nombre_tesis }}</h2>
+                <h2 class="card-title h4 font-weight-bold text-dark flex-grow-1">{{ $tesisItem->estado }}</h2>
+
                 
                 <!-- Botones: Editar y Eliminar -->
                 <div class="d-flex gap-2">
@@ -160,6 +167,9 @@
         </div>
     @endforeach --}}
 </div>
+@else
+<h1>No se encuentra ninguna tesis por el momento</h1>
+@endif
 @include('Admin.Tesis.Modals.TesisModal')
 @include('Admin.Tesis.Modals.ComiteAlumnoModal')
 

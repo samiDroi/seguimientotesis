@@ -144,6 +144,6 @@ class ComiteController extends Controller
         }
 
         return redirect()->route('comites.store', $clonedComite->id_comite)
-            ->with('success', 'Comité clonado con éxito. Puede hacer cambios si lo desea.');
+            ->with('success', 'Comité clonado con éxito. Puede hacer cambios si lo desea.');       
     }
 }

@@ -23,6 +23,7 @@ class TesisController extends Controller
          $tesis = Tesis::all();
          $comites = Comite::all();
          $usuarios = Usuarios::all();
+        
         // Retornar la vista con los datos
         //$tesis = Tesis::with(['tesisComite.comite', 'tesisComite.requerimientos'])->get();
 

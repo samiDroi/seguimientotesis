@@ -7,32 +7,36 @@
 @endsection
 
 @section('content')
-<button><a href="{{ Route('roles.index') }}">Personalizar roles del comité</a></button>
+<!-- <button><a href="{{ Route('roles.index') }}">Personalizar roles del comité</a></button> -->
 <form action="{{ Route('comites.create') }}" method="POST">
 
-<div class=" bg-body-secondary shadow-lg"> 
+
     <br>
     <h1 class="text-center">Crear comites</h1>
+    <div class="container "> 
 
-<button class="btn btn-primary mt-5 mb-1 ms-4"><a class="text-decoration-none text-light" href="{{ Route("roles.index")}}">Personalizar roles del comite</a></button>
+<!-- <button class="btn btn-primary mt-5 mb-1 ms-4"><a class="text-decoration-none text-light" href="{{ Route("roles.index")}}">Personalizar roles del comite</a></button> -->
 <form action="{{ Route("comites.create")}}" method="POST">
     @csrf
     <input type="hidden" name="id" value="{{ $comite?->id_comite }}">
-    <label for="nombre_comite">Ingrese el nombre del comité</label>
-    <input type="text" id="nombre_comite" name="nombre_comite" required value="{{ $comite?->nombre_comite }}">
+    <label class="fs-5 fw-semibold" for="nombre_comite">Ingrese el nombre del comité</label>
+    <input class="form-control" type="text" id="nombre_comite" name="nombre_comite" required value="{{ $comite?->nombre_comite }}">
    
-    <label for="programas">Selecciona el programa academico al que pertenecera el comite:</label>
-    <select name="ProgramaAcademico[]" id="programas" multiple>
+    <label class="fs-5 fw-semibold mt-4"  for="programas">Selecciona el programa academico al que pertenecera el comite:</label>
+    <select class="form-select" name="ProgramaAcademico[]" id="programas" >
         @foreach ($programas as $programa)
-            <option value="{{ $programa->id_programa }}">{{ $programa->nombre_programa }}</option>
+            <option  value="{{ $programa->id_programa }}">{{ $programa->nombre_programa }}</option>
         @endforeach
     </select>
-    <div class="row">
+    <div class="row mt-5">
         {{-- Tabla de docentes a la izquierda --}}
         <div class="col-md-12">
             <label for="docentes">Lista de docentes disponibles</label>
-            <table id="docentes">
-                <thead>
+
+
+
+            <table class="table" id="docentes">
+                <thead class="table-primary">
                     <tr>
                         <th>Clave de trabajador</th>
                         <th>Nombre</th>
@@ -57,14 +61,15 @@
             </table>
         </div>
         
+        
        
 
     </div>
-        <div class="row ms-3">
-    <h1>Confirmar información de comité</h1>
+    
+    <p class="fs-3 border-bottom border-primary border-2">Confirmar información de comité</p>
     <div id="confirmarComite"></div>
    
-    <button class="btn btn-primary py-2 ms-5" type="submit" >{{ $comite?"Guardar cambios":"Registrar comite" }}</button>
+    <button class="col-12 btn btn-primary py-2 text-center mt-4" style="height: 50px;" type="submit" >{{ $comite?"Guardar cambios":"Registrar comite" }}</button>
 </form>
 </div>
 @endsection
@@ -91,12 +96,13 @@
             const apellidos = $(this).closest('tr').find('td:nth-child(3)').text(); // Obtener los apellidos
 
             confirmarComiteHtml += `
-                <div>
-                    ${nombre} ${apellidos}
-                    <br/>
-                    <input type="hidden" name="docentes[]" value="${username}">
-                    <label for="rol">Confirmar Rol</label>
-                    <select name="rol[]" id="rol">
+                <div class="mb-3">
+                <div class="fs-2 fw-semibold"> ${nombre} ${apellidos}</div>
+                   
+                   
+                    <label for="rol">Selecciona Rol</label>
+                     <input type="hidden" name="docentes[]" value="${username}">
+                    <select class="form-select" name="rol[]" id="rol">
                         @foreach($roles as $rol)
                             <option value="{{ $rol }}">{{ ucfirst($rol) }}</option>
                         @endforeach
