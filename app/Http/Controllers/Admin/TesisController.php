@@ -23,11 +23,15 @@ class TesisController extends Controller
     public function index(){
         $tesisComites= TesisComite::with(["tesis","comite","requerimientos"])->get();
         $requerimientos = ComiteTesisRequerimientos::with('tesisComite')->get();
+<<<<<<< Updated upstream
         
         
         // Retornar la vista con los datos
         //$tesis = Tesis::with(['tesisComite.comite', 'tesisComite.requerimientos'])->get();
         $tesis = getTesisByUserProgramAndComite();
+=======
+        $tesis = getTesisByUserProgram();
+>>>>>>> Stashed changes
          
        
         $usuarios = Usuarios::whereIn('usuarios.id_user', function ($query) {

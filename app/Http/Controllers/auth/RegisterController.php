@@ -53,7 +53,7 @@ use RealRashid\SweetAlert\Facades\Alert;
                 $user->programas()->attach($request->input('id_programa'));
                 //asignar los tipos de usuario en la tabla
                 $user->tipos()->sync($request->nombre_tipo);
-               
+                alert()->success("El usuario se ha registrado satisfactoriamente")->persistent(true,false);
                 return redirect()->route('login');
             } else {
                 Alert::error("Error","este usuario ya existe en el sistema, favor de verificar los datos");

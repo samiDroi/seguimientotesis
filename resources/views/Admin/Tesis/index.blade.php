@@ -7,11 +7,14 @@
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tesisModal">
         Crear Título de la Tesis
       </button>
+      {{-- @dd(Auth::user()->programas->pluck("id_programa")) --}}
     @if ($tesis->isNotEmpty())
-        @include('Admin.Tesis.Modals.ComiteAlumnoModal')
-        @include('Admin.Tesis.Modals.MotivoRechazoModal')
+
         <div class="container mt-4">
+           
             @foreach ($tesis as $tesisItem)
+            @include('Admin.Tesis.Modals.ComiteAlumnoModal')
+            {{-- @include('Admin.Tesis.Modals.MotivoRechazoModal') --}}
             <div class="card mb-4 border-secondary">
                 <div class="card-body">
                     <!-- Contenedor flex para nombre de tesis, botones y comité -->

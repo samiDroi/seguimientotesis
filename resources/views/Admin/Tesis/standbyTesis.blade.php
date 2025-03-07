@@ -63,7 +63,6 @@
   <div class="container mt-4">
     @foreach ($tesis as $tesisItem)
     @include('Admin.Tesis.Modals.ComiteAlumnoModal')
-@include('Admin.Tesis.Modals.MotivoRechazoModal')
     <div class="card mb-4 border-secondary">
         <div class="card-body">
             <!-- Contenedor flex para nombre de tesis, botones y comité -->
@@ -139,14 +138,16 @@
                             <summary class="h6 text-secondary">Requerimientos</summary>
                             <ul class="list-group list-group-flush">
                                 @foreach ($tesisComite->requerimientos as $requerimiento)
+                                @include('Admin.Tesis.Modals.MotivoRechazoModal')
+
+
                                     <li class="list-group-item px-0">
                                         <strong>{{ $requerimiento->nombre_requerimiento }}</strong>
                                         <br>
                                         <span>Descripción:</span> {{ $requerimiento->descripcion }}
-                                        
+
                                         <!-- Estado del requerimiento -->
                                         @if (isset($requerimiento->estado))
-                                        
                                             <span class="badge
                                                 @if(strtolower($requerimiento->estado) == 'pendiente') bg-warning 
                                                 @elseif(strtolower($requerimiento->estado) == 'aceptado') bg-success 

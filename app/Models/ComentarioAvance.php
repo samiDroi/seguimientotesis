@@ -11,7 +11,7 @@ class ComentarioAvance extends Model
     protected $table = 'comentario_avance';
 
     protected $fillable = [
-        'contenido',
+        'comentario',
         'id_avance_tesis',
         'id_user'
     ];

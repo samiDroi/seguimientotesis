@@ -41,6 +41,7 @@ class avanceTesisController extends Controller{
             return redirect()->route('home');
         }else{
             //sino, se crea el avance
+            
             AvanceTesis::create([
                 'contenido' => $request->input('contenido'),
                 'id_requerimiento' => $id,
@@ -51,10 +52,11 @@ class avanceTesisController extends Controller{
 
     public function comentarioAvance(Request $request){
         //dd($request->get('id_avance_tesis'));
+        //dd($request->get('contenido'));
         ComentarioAvance::create([
-            'contenido' => $request->get('contenido'),
+            'comentario' => $request->get('contenido'),
             'id_avance_tesis' => $request->input('id_avance_tesis'),
-            'id_user' => Auth::user()->id_user
+            'id_user' => Auth::user()->id_user,
         ]);
 
         $requerimiento = ComiteTesisRequerimientos::join('avance_tesis', 'comite_tesis_requerimientos.id_requerimiento', '=', 'avance_tesis.id_requerimiento')
@@ -81,7 +83,7 @@ class avanceTesisController extends Controller{
         $statusAvance->statusTesisToPorEvaluar();
         alert()->success("El avance del requerimiento ha sido {$request->estado} satisfactoriamente.")->persistent(true,false);
         if (Auth::user()->isAdmin) {
-            return redirect()->route('tesis.admin');
+            return redirect()->route('tesis.index');
         }
         return redirect()->route('home');
     }

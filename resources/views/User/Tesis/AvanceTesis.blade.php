@@ -17,7 +17,7 @@
                 <a href="{{ Route("home") }}">Regresar y cancelar</a>
                 <button type="submit">Guardar Cambios</button>
             @else
-                <p>{{ $avanceTesis?->contenido }}</p>
+                <p>{!! $avanceTesis?->contenido !!}</p>
             @endif
         
     </form>
@@ -53,7 +53,7 @@
        {{ $comentario->usuario_apellidos }}
 
         {{ $comentario->usuario_rol }}
-       {{ $comentario->contenido }}
+       {!! $comentario->contenido !!}
     @endforeach
 
      @if (Auth::user()->comites->contains('id_comite', $comiteTesis->id_comite) && optional($avanceTesis)->contenido)

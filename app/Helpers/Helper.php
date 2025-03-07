@@ -33,7 +33,7 @@ function getInfoComentarioAvance($id_requerimiento){
         'u.nombre as usuario_nombre',
         'u.apellidos as usuario_apellidos',
         'uc.rol as usuario_rol',
-        'ca.contenido as contenido',
+        'ca.comentario as contenido',
         'ctr.*'
     )
     ->get();
@@ -81,13 +81,22 @@ function getDirectores(){
 }
 
 function getTesisByUserProgram(){
-    return Tesis::with('comites')  // Cargar la relación comites
-    ->join('tesis_comite as tc', 'tesis.id_tesis', '=', 'tc.id_tesis')
-    ->join('usuarios_comite as uc', 'tc.id_comite', '=', 'uc.id_comite')
-    ->join('usuarios_programa_academico as upa', 'uc.id_user', '=', 'upa.id_user')
-    ->whereIn('upa.id_programa', Auth::user()->programas->pluck('id_programa'))
-    ->select('tesis.*')
-    ->distinct()
+    // return Tesis::with('comites')  // Cargar la relación comites
+    // ->join('tesis_comite as tc', 'tesis.id_tesis', '=', 'tc.id_tesis')
+    // ->join('usuarios_comite as uc', 'tc.id_comite', '=', 'uc.id_comite')
+    // ->join('usuarios_programa_academico as upa', 'uc.id_user', '=', 'upa.id_user')
+    // ->whereIn('upa.id_programa', Auth::user()->programas->pluck('id_programa'))
+    // ->select('tesis.*')
+    // ->distinct()
+    // ->get();
+    return Tesis::with('comites')
+    //->table('tesis as t')
+    ->join('tesis_programa_academico as tap', 'tesis.id_tesis', '=', 'tap.id_tesis')
+    ->join('programa_academico as pa', 'pa.id_programa', '=', 'tap.id_programa')
+    ->join('usuarios_programa_academico as upa', 'upa.id_programa', '=', 'pa.id_programa')
+    ->whereIn('pa.id_programa', Auth::user()->programas->pluck("id_programa")->toArray())  // Filtrar por el usuario autenticado
+    ->select('tesis.*')  // Seleccionar todas las columnas de tesis
+    ->groupBy('tesis.id_tesis')
     ->get();
 }
 function getRequerimientos($id_requerimiento){

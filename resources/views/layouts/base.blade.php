@@ -17,6 +17,18 @@
 
 </head>
 <body>
+  <div>
+    {{ Auth::user()->correo_electronico }}
+    <form action="{{ Route('logout') }}" method="POST">
+        @csrf
+        <button type="submit">Cerrar Sesion</button>
+    </form>
+</div>
+
+  <a href="">Mi perfil</a>
+  <a href="{{ Route('info.comites') }}">Mi comite</a>
+  <a href="">Mis tesis</a>
+  <a href="">Mi unidad</a>
     @yield('content')
     @include('sweetalert::alert')
     <script src="{{ asset("vendor/sweetalert/sweetalert.all.js") }}"></script>

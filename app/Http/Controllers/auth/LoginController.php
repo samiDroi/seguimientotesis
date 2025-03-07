@@ -3,7 +3,8 @@ namespace App\Http\Controllers\Auth;
     use App\Http\Controllers\Controller;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Auth;
-    
+use RealRashid\SweetAlert\Facades\Alert;
+
     class LoginController extends Controller{
 
         public function showLogin(){
@@ -22,6 +23,7 @@ namespace App\Http\Controllers\Auth;
                     return redirect()->route("home"); // Redirigir a la vista general
                 }
             }else{
+                Alert::error("Error","Los datos ingresados no pertenecen a ningun usuario, verifiquelos de nuevo y vuelva a intentarlo");
                 return redirect('/login')->withErrors('auth.fail');
             }
         }
