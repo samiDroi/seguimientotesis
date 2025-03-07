@@ -9,4 +9,10 @@ class ComentarioAvance extends Model
 {
     use HasFactory;
     protected $table = 'comentario_avance';
+
+    protected $fillable = [
+        'contenido',
+        'id_avance_tesis',
+        'id_user'
+    ];
 }

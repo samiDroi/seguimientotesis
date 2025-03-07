@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\StatusTesisController;
 use Illuminate\Http\Request;
 use App\Models\Usuarios;
 use App\Models\Comite;
 use App\Models\ComiteTesisRequerimientos;
 use App\Models\Tesis;
 use App\Models\TesisComite;
+use App\Models\TesisProgramaAcademico;
 use App\Models\TesisUsuarios;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -20,12 +23,26 @@ class TesisController extends Controller
     public function index(){
         $tesisComites= TesisComite::with(["tesis","comite","requerimientos"])->get();
         $requerimientos = ComiteTesisRequerimientos::with('tesisComite')->get();
-         $tesis = Tesis::all();
-         $comites = Comite::all();
-         $usuarios = Usuarios::all();
+        
         
         // Retornar la vista con los datos
         //$tesis = Tesis::with(['tesisComite.comite', 'tesisComite.requerimientos'])->get();
+        $tesis = getTesisByUserProgramAndComite();
+         
+       
+        $usuarios = Usuarios::whereIn('usuarios.id_user', function ($query) {
+            $query->select('usuarios_programa_academico.id_user') // Especifica la tabla en la subconsulta
+                ->from('usuarios_programa_academico')
+                ->whereIn('usuarios_programa_academico.id_programa', Auth::user()->programas->pluck('id_programa'));
+        })->get();
+        
+        // Obtener los comités relacionados con los programas del usuario
+        $comites = Comite::with('programas')  // Cargar la relación programas
+        ->whereHas('programas', function ($query) {
+            $query->whereIn('id_programa', Auth::user()->programas->pluck('id_programa'));
+        })
+        ->get();
+
 
         return view('Admin.Tesis.index', compact('tesis','requerimientos','tesisComites','comites','usuarios'));
     }
@@ -62,20 +79,7 @@ class TesisController extends Controller
     public function editRequerimientos(){
 
     }
-    //Este metodo llama a todos los elementos del formulario de crear tesis para cumplir con el flujo de los datos, es como un metodo main de la operacion de crear
-    // public function create(Request $request){   
-    //     if ($request->get("id_tesis_comite")) { 
-    //         $this->update($request,$request->get("id_tesis_comite"));
-    //         return redirect()->route('tesis.index')->with('success', 'Tesis actualizada correctamente.');
-    //     }else{
-    //         $this->createTesis($request);
-    //         //$tesisComite = $this->asignarComite($request); // Llama a asignarComite, crea la tesis y el comite
-    //         // Luego, crear los requerimientos, pasando el id del tesis_comite generado
-    //         //$this->createRequerimiento($request, $tesisComite->id_tesis_comite);
-    //         return redirect()->route('tesis.index')->with('success', 'Tesis actualizada correctamente.');
-    //     }
-       
-    // }
+
     //elementos llamados para crear elementos del formulario de tesis
     public function createRequerimientos(Request $request,$idTesisComite){
         $existsRequerimientos = ComiteTesisRequerimientos::where('id_tesis_comite',$idTesisComite);
@@ -107,9 +111,21 @@ class TesisController extends Controller
     
     public function create(Request $request){
         $nombreTesis = $request->input('nombre_tesis');
-        Tesis::create([
+        
+        $tesis = Tesis::create([
             'nombre_tesis' => $nombreTesis
         ]);
+        // foreach (Auth::user()->programas as $programa) {
+        //     TesisProgramaAcademico::create([
+        //         'id_tesis' => $tesis->id_tesis,
+        //         'id_programa' => $programa->id_programa,
+        //     ]);
+        // }
+        $idProgramas = Auth::user()->programas->pluck('id_programa')->toArray();
+
+        $tesis->programas()->attach($idProgramas);
+        
+
         return redirect()->route('tesis.index');
     }
     
@@ -158,39 +174,7 @@ class TesisController extends Controller
         return redirect()->route('tesis.index');
     }
     
-    // public function update(Request $request, $id) {
 
-    // $tesisComite =  TesisComite::findOrFail($id);
-    // $tesis = Tesis::findOrFail($tesisComite->id_tesis);
-    // $requerimientos = ComiteTesisRequerimientos::where('id_tesis_comite', $tesisComite->id_tesis_comite)->get();
-
-    // // $tesis->nombre_tesis = $request->get("nombre_tesis");
-    // // $tesis->save();
-    
-    // // $tesisComite->id_comite = $request->get("comite");
-    // // $tesisComite->save();
-
-    // $nombresRequerimientos = $request->input('nombre_requerimiento',[]);
-    // $descripcionesRequerimientos = $request->input("descripcion",[]);
-    // //Editar requerimientos existentes
-    // foreach ($requerimientos as $index => $requerimiento) {
-    //     $requerimiento->nombre_requerimiento = $nombresRequerimientos[$index] ?? $requerimiento->nombre_requerimiento;
-    //     $requerimiento->descripcion = $descripcionesRequerimientos[$index] ?? $requerimiento->descripcion;
-    //     $requerimiento->save();
-    // }
-    // //Crear nuevos requerimientos si es que en la vista edit se desean crear mas
-    // foreach ($nombresRequerimientos as $index => $nombre) {
-    //     if (!isset($requerimientos[$index])) {
-    //         // Si el requerimiento no existe, crear uno nuevo
-    //         ComiteTesisRequerimientos::create([
-    //             'id_tesis_comite' => $tesisComite->id_tesis_comite,
-    //             'nombre_requerimiento' => $nombresRequerimientos[$index],
-    //             'descripcion' => $descripcionesRequerimientos[$index],
-    //         ]);
-    //     }
-    // }
-  
-    //}
     public function delete($id){
         
         $comiteTesis = TesisComite::findOrFail($id);
@@ -219,32 +203,26 @@ class TesisController extends Controller
 
 
     //FUNCIONES PARA QUE EL COORDINADOR MANEJE EL ESTADO DE LA TESIS
-    public function standbyIndex(){
-        // $tesisComites= TesisComite::with(["tesis","comite","requerimientos"])->get();
-        // $requerimientos = ComiteTesisRequerimientos::with('tesisComite')->get();
-        // // $director = DB::table("tesis as t")
-        // //             ->join("tesis_comite as tc","tc.id_tesis","t.id_tesis")
-        // //             ->join("")
-        
-       
-        $directores = DB::table("tesis as t")
-        //junta los comites con las tesis
-        ->join("tesis_comite as tc", "t.id_tesis", "=", "tc.id_tesis")
-        ->join("comite as c", "tc.id_comite", "=", "c.id_comite")
-        //junta los comites con los usuarios
-        ->join("usuarios_comite as uc", "c.id_comite", "=", "uc.id_comite")
-        ->join("usuarios as u", "uc.id_user", "=", "u.id_user")
-        ->where("uc.rol", "DIRECTOR") // Se filtra para obtener solo el Director
-        ->select("t.id_tesis","u.*") // Se obtienen todos los datos del usuario con rol de Director y su tesis afiliada
-        ->get();
+    public function standbyIndex(){ 
+        $directores = getDirectores();
         // Retornar la vista con los datos
         $tesisComites= TesisComite::with(["tesis","comite","requerimientos"])->get();
         $requerimientos = ComiteTesisRequerimientos::with('tesisComite')->get();
-         $tesis = Tesis::all();
-         $comites = Comite::all();
-         $usuarios = Usuarios::all();
-        // Retornar la vista con los datos
-        //$tesis = Tesis::with(['tesisComite.comite', 'tesisComite.requerimientos'])->get();
+         $tesis = getTesisByUserProgram();
+         
+       
+        $usuarios = Usuarios::whereIn('usuarios.id_user', function ($query) {
+            $query->select('usuarios_programa_academico.id_user') // Especifica la tabla en la subconsulta
+                ->from('usuarios_programa_academico')
+                ->whereIn('usuarios_programa_academico.id_programa', Auth::user()->programas->pluck('id_programa'));
+        })->get();
+        
+        // Obtener los comités relacionados con los programas del usuario
+        $comites = Comite::with('programas')  // Cargar la relación programas
+        ->whereHas('programas', function ($query) {
+            $query->whereIn('id_programa', Auth::user()->programas->pluck('id_programa'));
+        })
+        ->get();
 
         return view('Admin.Tesis.standbyTesis', compact('tesis','requerimientos','tesisComites','comites','usuarios','directores'));
         //return view('Admin.Tesis.standbyTesis', compact('tesisComites','requerimientos','directores'));
@@ -259,12 +237,52 @@ class TesisController extends Controller
             Alert::error("error","No se puede eliminar un comite si este tiene asignado una tesis, asegurese de eliminar primero la tesis antes que el comite");
             return redirect()->back();
         }
-
+       
         // Actualizar el estado del requerimiento
         $requerimiento->estado = $request->estado;
+        if($request->estado == "RECHAZADO"){
+            $requerimiento->motivo_rechazo = $request->get('comentario');
+        }
         $requerimiento->save();
+        $statusTesis = new StatusTesisController;
+        $statusTesis->statusTesisToEnCurso($id);
         alert()->success("El requerimiento ha sido {$request->estado} satisfactoriamente.")->persistent(true,false);
         return redirect()->route('tesis.review');
     }
 
+    
+
+
+    public function showCurrentlyTesis(){
+        $programas = Auth::user()->programas;
+        $comites = Auth::user()->comites;
+
+        $tesisUsuario = DB::table("tesis as t")
+            ->join("tesis_usuarios as tu", "t.id_tesis", "=", "tu.id_tesis")
+            ->join("usuarios as u", "u.id_user", "=", "tu.id_user")
+            ->where("u.id_user", Auth::user()->id_user)
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from("comite_tesis_requerimientos as ctr")
+                    ->join("tesis_comite as tc", "ctr.id_tesis_comite", "=", "tc.id_tesis_comite")
+                    ->whereColumn("tc.id_tesis", "t.id_tesis") 
+                    ->where("ctr.estado", "PENDIENTE");
+            })
+            ->select("t.*")
+            ->get();
+        //dd($tesisUsuario);
+        $tesisComites= TesisComite::with(["tesis","comite","requerimientos"])->get();
+
+        $tesisDeComite = Tesis::whereIn('id_tesis', function($query) use ($comites) {
+            $query->select('id_tesis')
+                  ->from('tesis_comite')  // La tabla intermedia
+                  ->whereIn('id_comite', $comites->pluck('id_comite')); // Filtrar por los comités del usuario
+        })->get();
+
+         // Cargar la relación 'comites' en las tesis
+        $tesisUsuario = Tesis::with('comites')->whereIn('id_tesis', $tesisUsuario->pluck('id_tesis'))->get();
+        //return view('Admin.Tesis', compact('tesis','requerimientos','tesisComites','comites','usuarios'));
+        return view('Admin.Tesis',compact("programas","comites","tesisUsuario","tesisComites","tesisDeComite"));
+
+    }
 }
