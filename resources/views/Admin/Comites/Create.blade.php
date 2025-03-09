@@ -30,7 +30,7 @@
     </select>
     <div class="row mt-5">
         {{-- Tabla de docentes a la izquierda --}}
-        <div class="col-md-12">
+        <div class="col-7">
             <label for="docentes">Lista de docentes disponibles</label>
 
 
@@ -61,13 +61,18 @@
             </table>
         </div>
         
-        
+        <div class="col-5">
+
+        <p class="fs-3 border-bottom border-primary border-2">Confirmar información de comité</p>
+        <div id="confirmarComite" > </div>
+        </div>
        
+    
 
     </div>
     
-    <p class="fs-3 border-bottom border-primary border-2">Confirmar información de comité</p>
-    <div id="confirmarComite"></div>
+   
+   
    
     <button class="col-12 btn btn-primary py-2 text-center mt-4" style="height: 50px;" type="submit" >{{ $comite?"Guardar cambios":"Registrar comite" }}</button>
 </form>

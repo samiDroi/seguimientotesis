@@ -31,7 +31,7 @@
                 <div class="col-12 col-md-4 ">
                     <input class="form-check-input" type="checkbox" id="coordinador" name="nombre_tipo[]" value="{{ $tipo->id_tipo }}">
                     <label  for="coordinador">{{ $tipo->nombre_tipo }}</label>
-                    </div>
+                 </div>
                 @endforeach
             </div>
         </div>

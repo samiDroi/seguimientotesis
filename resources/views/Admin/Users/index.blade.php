@@ -39,13 +39,13 @@
                             {{-- @dd($usuario->latest()->first())    --}}
                         </td> 
                         <td>
-                            <button>
-                                <a href="{{ route("users.edit",$usuario->id_user) }}">Editar</a>
+                            <button class="btn btn-sm btn-secondary">
+                                <a class="text-light text-decoration-none" href="{{ route("users.edit",$usuario->id_user) }}">Editar</a>
                             </button>
                             <form action='{{ route("users.delete",$usuario->id_user) }}' method="POST" style="display:inline;">
                                 @csrf
                                 @method("DELETE")
-                                <button type="submit">
+                                <button class="btn btn-sm btn-danger" type="submit">
                                     Eliminar
                                 </button>
                             </form>
