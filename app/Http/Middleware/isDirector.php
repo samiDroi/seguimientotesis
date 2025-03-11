@@ -24,12 +24,7 @@ class isDirector
         // ->where("uc.id_user", Auth::user()->id_user) 
         // ->where("uc.rol","DIRECTOR")
         // ->count();
-        $isDirector = DB::table('usuarios_comite as uc')
-            ->join('comite as c', 'uc.id_comite', '=', 'c.id_comite')
-            ->join('usuarios as u', 'u.id_user', '=', 'uc.id_user')  // Relación usuarios - usuarios_comite
-            ->where('uc.id_user', Auth::user()->id_user)  // Filtrar por el id_user
-            ->where('uc.rol', 'DIRECTOR')  // Verifica que el rol sea 'DIRECTOR'
-            ->count();  // Contar los registros que coinciden con la condición
+        $isDirector = isDirector();   
 
         // dd(Auth::user()->id_user);
         //dd($isDirector);

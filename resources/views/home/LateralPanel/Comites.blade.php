@@ -12,7 +12,7 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Nombre</th>
+                                <th>Nombre Completo</th>
                                 <th>Correo</th>
                                 <th>Rol</th>
                             </tr>
@@ -20,7 +20,7 @@
                         <tbody>
                             @foreach($usuarios as $usuario)
                                 <tr>
-                                    <td>{{ $usuario->nombre }}</td>
+                                    <td>{{ $usuario->nombre." ".$usuario->apellidos }}</td>
                                     <td>{{ $usuario->email }}</td>
                                     <td>{{ $usuario->rol ?? 'Miembro' }}</td>
                                 </tr>
@@ -44,7 +44,7 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Nombre</th>
+                                <th>Nombre Completo</th>
                                 <th>Correo</th>
                                 <th>Rol</th>
                             </tr>
@@ -53,7 +53,7 @@
                             @foreach($usuarios as $usuario)
                                 <tr>
                                     {{-- @dd( $usuario ) --}}
-                                    <td>{{ $usuario->nombre }}</td>
+                                    <td>{{ $usuario->nombre." ".$usuario->apellidos  }}</td>
                                     <td>{{ $usuario->correo_electronico }}</td>
                                     <td>{{ $usuario->rol  }}</td>
                                 </tr>

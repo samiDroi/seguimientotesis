@@ -65,4 +65,34 @@ class ShowInfoUser extends Controller
             return view('home.LateralPanel.Comites',compact('comitesAuditaUser','comitesPerteneceUser'));
 
     }
+
+    public function showUnidad(){
+        $usuarioId = Auth::user()->id_user;
+
+        // Obtener los programas del usuario desde la tabla pivote `programas`
+        $programas = DB::table('programa_academico as pa')
+            ->join('usuarios_programa_academico as upa', 'pa.id_programa', '=', 'upa.id_programa')
+            ->where('upa.id_user', $usuarioId)
+            ->select('pa.id_programa', 'pa.nombre_programa', 'pa.id_unidad')
+            ->get();
+    
+        // Obtener la unidad académica del primer programa (asumiendo que todos pertenecen a la misma)
+        $unidadAcademica = null;
+        if ($programas->isNotEmpty()) {
+            $unidadAcademica = DB::table('unidad_academica')
+                ->where('id_unidad', $programas->first()->id_unidad)
+                ->select('id_unidad', 'nombre_unidad as nombre')
+                ->first();
+        }
+    //     $usuario = Auth::user();
+
+    //     // Obtener los programas del usuario
+    //    $programas = $usuario->programas->with('unidad')->get();
+
+    //     // Obtener la unidad académica del primer programa (asumiendo que todos pertenecen a la misma unidad)
+    //     $unidadAcademica = $programas->first()?->unidad;
+
+        return view('home.LateralPanel.Unidad',compact('programas','unidadAcademica'));
+
+    }
 }

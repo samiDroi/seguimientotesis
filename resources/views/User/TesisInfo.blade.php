@@ -20,6 +20,10 @@
     
     <div>
         <h1>tesis auditadas</h1>
+        @if (isDirector())
+        <a href="{{ Route("tesis.index") }}">Ir a modulo de revision de tesis</a>
+
+        @endif
         {{-- @dd($tesisComite) --}}
         @if ($tesisComite)
             @foreach ($tesisComite as $tesisC)

@@ -141,6 +141,7 @@ Route::middleware(['auth'])->group(function(){
     Route::controller(ShowInfoUser::class)->prefix('myInfo')->group(function(){
         Route::get('/tesis','showTesis')->name('info.tesis');
         Route::get('/comites','showComites')->name('info.comites');
+        Route::get('/unidad','showUnidad')->name('info.unidad');
     });
 
     

@@ -41,41 +41,22 @@
             <!-- Menú lateral -->
             <div class="col-3 ms-0">
                 <nav class="nav flex-column gap-5 bg-body-tertiary pt-5 pb-5 fs-4 text-center vh-100">
-                    @if (Auth::user()->tipos->contains("nombre_tipo", "coordinador"))
-                        <div class="option my-1 py-3">
-                            <img src="{{ asset('images/people-fill.svg') }}" style="height: 25px;">
-                            <a href="" class="text-decoration-none text-dark fw-semibold">Gestionar comités</a>
-                        </div>
-                        <div class="option my-1 py-3">
-                            <img src="{{ asset('images/person-arms-up.svg') }}" style="height: 25px;">
-                            <a href="" class="text-decoration-none text-dark fw-semibold">Gestionar usuarios</a>
-                        </div>
-                        <div class="option my-1 py-3">
-                            <img src="{{ asset('images/i.svg') }}" style="height: 25px;">
-                            <a href="" class="text-decoration-none text-dark fw-semibold">Gestionar información académica</a>
-                        </div>
-                        <div class="option my-1 py-3">
-                            <img src="{{ asset('images/T.svg') }}" style="height: 25px;">
-                            <a href="" class="text-decoration-none text-dark fw-semibold diva">Gestionar tesis</a>
-                        </div>
-                    @else
                         <div class="option my-1 py-3">
                             <img src="{{ asset('images/person.svg') }}" style="height: 25px;">
                             <a href="" class="text-decoration-none text-dark fw-semibold diva">Mi perfil</a>
                         </div>
                         <div class="option my-1 py-3">
                             <img src="{{ asset('images/people.svg') }}" style="height: 25px;">
-                            <a href="" class="text-decoration-none text-dark fw-semibold diva">Mi comité</a>
+                            <a href="{{ Route('info.comites') }}" class="text-decoration-none text-dark fw-semibold diva">Mi comité</a>
                         </div>
                         <div class="option my-1 py-3">
                             <img src="{{ asset('images/archive.svg') }}" style="height: 25px;">
-                            <a href="" class="text-decoration-none text-dark fw-semibold diva">Mis tesis</a>
+                            <a href="{{ Route('info.tesis') }}" class="text-decoration-none text-dark fw-semibold diva">Mis tesis</a>
                         </div>
                         <div class="option my-1 py-3">
                             <img src="{{ asset('images/backpack.svg') }}" style="height: 25px;">
-                            <a href="" class="text-decoration-none text-dark fw-semibold diva">Mi unidad</a>
+                            <a href="{{ Route('info.unidad') }}" class="text-decoration-none text-dark fw-semibold diva">Mi unidad</a>
                         </div>
-                    @endif
                 </nav>
             </div>
     

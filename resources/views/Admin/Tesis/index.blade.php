@@ -16,11 +16,24 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <h2 class="card-title h4 font-weight-bold text-dark flex-grow-1">{{ $tesisItem->nombre_tesis }}</h2>
                             <div class="d-flex gap-2">
-                                <a href="{{ route('tesis.requerimientos', $tesisItem->id_tesis) }}" class="btn btn-sm btn-warning">Editar requerimientos</a>
-                                <form action="{{ route('tesis.delete', $tesisItem->id_tesis) }}" method="POST">
+                                @php
+                                    $tieneRequerimientos = false;
+                                    foreach ($tesisComites as $tesisComite) {
+                                        if ($tesisComite->id_tesis == $tesisItem->id_tesis && $tesisComite->requerimientos->isNotEmpty()) {
+                                            $tieneRequerimientos = true;
+                                            break;
+                                        }
+                                    }
+                                @endphp
+
+                                @if ($tieneRequerimientos)
+                                    <a href="{{ route('tesis.requerimientos', $tesisItem->id_tesis) }}" class="btn btn-sm btn-warning">Editar requerimientos</a>
+                                @endif
+                                {{-- <a href="{{ route('tesis.requerimientos', $tesisItem->id_tesis) }}" class="btn btn-sm btn-warning">Editar requerimientos</a> --}}
+                                {{-- <form action="{{ route('tesis.delete', $tesisItem->id_tesis) }}" method="POST">
                                     @csrf
                                     <button type="button" class="btn btn-sm btn-danger delete-button">Eliminar</button>
-                                </form>
+                                </form> --}}
                             </div>
                         </div>
                         <div class="mt-2">
@@ -51,7 +64,12 @@
                                                     @endif">
                                                     {{ ucfirst($requerimiento->estado) }}
                                                 </span>
+                                                @if ($requerimiento->motivo_rechazo)
+                                                @include('Admin.Tesis.Modals.MotivoRechazoModal')
+
                                                 <button class="btn btn-sm btn-secondary mt-2 ver-comentario" data-bs-toggle="modal" data-bs-target="#modalTextarea" data-comentario="{{ $requerimiento->motivo_rechazo }}">Ver comentario</button>
+                                                @endif
+                                                
                                             </li>
                                         @endforeach
                                     </ul>

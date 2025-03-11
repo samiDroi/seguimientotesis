@@ -35,11 +35,17 @@ class HomeController extends Controller
         //dd($tesisUsuario);
         $tesisComites= TesisComite::with(["tesis","comite","requerimientos"])->get();
 
-        $tesisDeComite = Tesis::whereIn('id_tesis', function($query) use ($comites) {
-            $query->select('id_tesis')
-                  ->from('tesis_comite')  // La tabla intermedia
-                  ->whereIn('id_comite', $comites->pluck('id_comite')); // Filtrar por los comités del usuario
-        })->get();
+        // $tesisDeComite = Tesis::whereIn('id_tesis', function($query) use ($comites) {
+        //     $query->select('id_tesis')
+        //           ->from('tesis_comite')  // La tabla intermedia
+        //           ->whereIn('id_comite', $comites->pluck('id_comite')); // Filtrar por los comités del usuario
+        // })->get();
+        $tesisDeComite = Tesis::with(['comites']) // Cargar relaciones
+    ->whereIn('id_tesis', function($query) use ($comites) {
+        $query->select('id_tesis')
+              ->from('tesis_comite')
+              ->whereIn('id_comite', $comites->pluck('id_comite'));
+    })->get();
 
          // Cargar la relación 'comites' en las tesis
         $tesisUsuario = Tesis::with('comites')->whereIn('id_tesis', $tesisUsuario->pluck('id_tesis'))->get();
