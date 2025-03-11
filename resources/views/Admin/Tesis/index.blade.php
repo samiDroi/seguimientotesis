@@ -10,7 +10,7 @@
     @if ($tesis->isNotEmpty())
         <div class="container mt-4">
             @foreach ($tesis as $tesisItem)
-                @include('Admin.Tesis.Modals.ComiteAlumnoModal')
+               
                 <div class="card mb-4 border-secondary">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
@@ -51,7 +51,7 @@
                                                     @endif">
                                                     {{ ucfirst($requerimiento->estado) }}
                                                 </span>
-                                                <button class="btn btn-sm btn-info mt-2 ver-comentario" data-bs-toggle="modal" data-bs-target="#modalTextarea" data-comentario="{{ $requerimiento->motivo_rechazo }}">Ver comentario</button>
+                                                <button class="btn btn-sm btn-secondary mt-2 ver-comentario" data-bs-toggle="modal" data-bs-target="#modalTextarea" data-comentario="{{ $requerimiento->motivo_rechazo }}">Ver comentario</button>
                                             </li>
                                         @endforeach
                                     </ul>
@@ -69,6 +69,7 @@
                         @endif
                     </div>
                 </div>
+                
             @endforeach
         </div>
     @else

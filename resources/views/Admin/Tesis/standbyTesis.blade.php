@@ -41,7 +41,7 @@
 
                             <div class="mt-2">
                                 @if ($tesisItem->comites->isNotEmpty())
-                                @include('views.tesis.Modals.ComiteAlumnoModal')
+                                
                                     <span class="text-muted small ms-2">Comité: {{ $tesisItem->comites->first()->nombre_comite }}</span>
                                     @foreach ($directores as $director)
                                         @if ($tesisItem->id_tesis == $director->id_tesis)
@@ -54,7 +54,8 @@
                                 @else
                                     <span class="text-danger small ms-2">Pendiente de asignación de comité</span>
                                     @if (Auth::user()->esCoordinador == 1)
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#asignarComiteModal">
+                                    @include('admin.tesis.Modals.ComiteAlumnoModal')
+                                        <button type="button" class=" ms-2 btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#asignarComiteModal">
                                             Asignar Comité
                                         </button>
                                     @endif
@@ -68,7 +69,7 @@
                                             <summary class="h6 text-secondary">Requerimientos</summary>
                                             <ul class="list-group list-group-flush">
                                                 @foreach ($tesisComite->requerimientos as $requerimiento)
-                                                @include('views.tesis.Modals.motivo_rechazo')
+                                                @include('admin.tesis.Modals.MotivoRechazoModal')
                                                     <li class="list-group-item px-0">
                                                         <strong>{{ $requerimiento->nombre_requerimiento }}</strong>
                                                         <br>
@@ -131,6 +132,7 @@
 
 @section('js')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
     $(document).ready(function() {
         let referencia;
@@ -155,6 +157,26 @@
             $(referencia).append(inputComentario);
             $(referencia).submit();
         });
+
+
+        $(document).ready(function () {
+    $(".nav-link").on("click", function () {
+        let filtro = $(this).data("filter");
+
+        // Resaltar la pestaña activa
+        $(".nav-link").removeClass("active");
+        $(this).addClass("active");
+
+        // Mostrar todas las tarjetas si el filtro es "Todos"
+        if (filtro === "Todos") {
+            $(".Tesis").show();
+        } else {
+            // Ocultar todas y luego mostrar solo las que coinciden con el filtro
+            $(".Tesis").hide();
+            $("." + filtro.replace(/ /g, "_").toLowerCase()).show();
+        }
+    });
+});
     });
 </script>
 @endsection

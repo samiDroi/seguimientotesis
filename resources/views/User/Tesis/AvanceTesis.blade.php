@@ -2,20 +2,25 @@
 @section('css')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.27.3/ui/trumbowyg.min.css" integrity="sha512-Fm8kRNVGCBZn0sPmwJbVXlqfJmPC13zRsMElZenX6v721g/H7OukJd8XzDEBRQ2FSATK8xNF9UYvzsCtUpfeJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 @endsection
-@section('content')
-    <h1>{{ $requerimiento->nombre_requerimiento }}</h1>
+@section('content') 
+<div class="container mt-5  ">
+    <h1 class="text-primary fw-semibold">{{ $requerimiento->nombre_requerimiento }}</h1>
     <!-- Textarea que será reemplazada por TinyMCE -->
     
     @foreach (getAlumnoAvance($requerimiento->id_requerimiento) as $alumno)
-        <h4>Alumno: {{ $alumno->usuario_nombre }}</h4>
+        <h4 class="text-primary  fw-semibold border-bottom border-primary p-2 mb-3">Alumno: {{ $alumno->usuario_nombre }}</h4>
     @endforeach
+
+    <p class="fs-5 fw-semibold">Ingresa el avance de el requerimiento pedido en el area de texto</p>
     
-    <form action="{{ Route("avance.create",$requerimiento->id_requerimiento) }}" method="POST">
+    <form  action="{{ Route("avance.create",$requerimiento->id_requerimiento) }}" method="POST">
         @csrf
             @if (!(comprobarIsInComite($comiteTesis->id_comite)))
-                <textarea id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea>
-                <a href="{{ Route("home") }}">Regresar y cancelar</a>
-                <button type="submit">Guardar Cambios</button>
+                <textarea   id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea>
+                
+                <a class=" mt-2 align-center" href="{{ Route("home") }}">Regresar y cancelar</a>
+                <button class=" mt-3 btn btn-primary " type="submit">Guardar Cambios</button>
+           
             @else
                 <p>{!! $avanceTesis?->contenido !!}</p>
             @endif
@@ -68,7 +73,7 @@
      @endif
     
 
-
+    </div>
 @endsection
 
 @section('js')

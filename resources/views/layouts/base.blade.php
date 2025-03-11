@@ -18,66 +18,77 @@
 
 </head>
 <body>
-<nav class="navbar  border-bottom border-dark">
-    <div class="container-fluid">
-        <div class="row d-flex justify-content-between align-items-center">
-            <div class="col-10">
-                <p class="fs-1 ms-3 display-4 text-light">Sistesis</p>
+    <nav class="navbar border-bottom border-dark">
+        <div class="container-fluid">
+            <div class="row d-flex justify-content-between align-items-center">
+                <div class="col-10">
+                    <p class="fs-1 ms-3 display-4 text-light">Sistesis</p>
+                </div>
+                <div class="col-2 d-flex justify-content-end align-items-center gap-3">
+                    <p class="text-light mt-3">{{ Auth::user()->correo_electronico }}</p>
+                    <form action="{{ Route('logout') }}" method="POST">
+                        @csrf
+                        <button class="btn btn-danger text-nowrap" type="submit">Cerrar Sesión</button>
+                    </form>
+                </div>
             </div>
-            <div class="col-2 d-flex justify-content-end align-items-center gap-3">
-               <p class="text-light mt-3">{{ Auth::user()->correo_electronico }}</p>
-                <form action="{{ Route('logout') }}" method="POST">
-                    @csrf
-                    <button class="btn btn-danger text-nowrap" type="submit">Cerrar Sesión</button>
-                </form>
+        </div>
+    </nav>
+    
+    <!-- 🟢 Agregar el contenedor de la fila para alinear el menú y el contenido -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Menú lateral -->
+            <div class="col-3 ms-0">
+                <nav class="nav flex-column gap-5 bg-body-tertiary pt-5 pb-5 fs-4 text-center vh-100">
+                    @if (Auth::user()->tipos->contains("nombre_tipo", "coordinador"))
+                        <div class="option my-1 py-3">
+                            <img src="{{ asset('images/people-fill.svg') }}" style="height: 25px;">
+                            <a href="" class="text-decoration-none text-dark fw-semibold">Gestionar comités</a>
+                        </div>
+                        <div class="option my-1 py-3">
+                            <img src="{{ asset('images/person-arms-up.svg') }}" style="height: 25px;">
+                            <a href="" class="text-decoration-none text-dark fw-semibold">Gestionar usuarios</a>
+                        </div>
+                        <div class="option my-1 py-3">
+                            <img src="{{ asset('images/i.svg') }}" style="height: 25px;">
+                            <a href="" class="text-decoration-none text-dark fw-semibold">Gestionar información académica</a>
+                        </div>
+                        <div class="option my-1 py-3">
+                            <img src="{{ asset('images/T.svg') }}" style="height: 25px;">
+                            <a href="" class="text-decoration-none text-dark fw-semibold diva">Gestionar tesis</a>
+                        </div>
+                    @else
+                        <div class="option my-1 py-3">
+                            <img src="{{ asset('images/person.svg') }}" style="height: 25px;">
+                            <a href="" class="text-decoration-none text-dark fw-semibold diva">Mi perfil</a>
+                        </div>
+                        <div class="option my-1 py-3">
+                            <img src="{{ asset('images/people.svg') }}" style="height: 25px;">
+                            <a href="" class="text-decoration-none text-dark fw-semibold diva">Mi comité</a>
+                        </div>
+                        <div class="option my-1 py-3">
+                            <img src="{{ asset('images/archive.svg') }}" style="height: 25px;">
+                            <a href="" class="text-decoration-none text-dark fw-semibold diva">Mis tesis</a>
+                        </div>
+                        <div class="option my-1 py-3">
+                            <img src="{{ asset('images/backpack.svg') }}" style="height: 25px;">
+                            <a href="" class="text-decoration-none text-dark fw-semibold diva">Mi unidad</a>
+                        </div>
+                    @endif
+                </nav>
+            </div>
+    
+            <!-- 🟢 Aquí se renderiza el contenido de cada vista dentro de la misma row -->
+            <div class="col-9">
+                @yield('content')
             </div>
         </div>
     </div>
-</nav>
-<div class="col-3 ms-0">
-            <nav class="nav flex-column gap-5 bg-body-tertiary pt-5 pb-5 fs-4 text-center vh-100">
-                @if (Auth::user()->tipos->contains("nombre_tipo", "coordinador"))
-                    <div class="option my-1 py-3 ">
-                        <img src="{{ asset('images/people-fill.svg') }}" style="height: 25px;">
-                        <a href="" class="text-decoration-none text-dark fw-semibold  ">Gestionar comités</a>
-                    </div>
-                    <div class="option my-1 py-3">
-                        <img src="{{ asset('images/person-arms-up.svg') }}" style="height: 25px;">
-                        <a href="" class="text-decoration-none text-dark fw-semibold">Gestionar usuarios</a>
-                    </div>
-                    <div class="option my-1 py-3">
-                        <img src="{{ asset('images/i.svg') }}" style="height: 25px;">
-                        <a href="" class="text-decoration-none text-dark fw-semibold">Gestionar información académica</a>
-                    </div>
-                    <div class="option my-1 py-3">
-                        <img src="{{ asset('images/T.svg') }}" style="height: 25px;">
-                        <a href="" class="text-decoration-none text-dark fw-semibold diva">Gestionar tesis</a>
-                    </div>
-                @else
-                    <div class="option my-1 py-3">
-                        <img src="{{ asset('images/person.svg') }}" style="height: 25px;">
-                        <a href="" class="text-decoration-none text-dark fw-semibold diva">Mi perfil</a>
-                    </div>
-                    <div class="option my-1 py-3">
-                        <img src="{{ asset('images/people.svg') }}" style="height: 25px;">
-                        <a href="" class="text-decoration-none text-dark fw-semibold diva">Mi comité</a>
-                    </div>
-                    <div class="option my-1 py-3">
-                        <img src="{{ asset('images/archive.svg') }}" style="height: 25px;">
-                        <a href="" class="text-decoration-none text-dark fw-semibold diva">Mis tesis</a>
-                    </div>
-                    <div class="option my-1 py-3">
-                        <img src="{{ asset('images/backpack.svg') }}" style="height: 25px;">
-                        <a href="" class="text-decoration-none text-dark fw-semibold diva">Mi unidad</a>
-                    </div>
-                @endif
-            </nav>
-        </div>
-    @yield('content')
+    
     @include('sweetalert::alert')
     <script src="{{ asset("vendor/sweetalert/sweetalert.all.js") }}"></script>
     <script src="https://cdn.tiny.cloud/1/urwrxmsleu3b744kjom91xeido5jy6oujj95v82jp8ixig9s/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     @yield('js')
-
-</body>
-</html>
+    </body>
+    </html>

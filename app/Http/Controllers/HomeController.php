@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AvanceTesis;
 use App\Models\ProgramaAcademico;
 use App\Models\Tesis;
 use App\Models\TesisComite;
@@ -42,7 +43,9 @@ class HomeController extends Controller
 
          // Cargar la relación 'comites' en las tesis
         $tesisUsuario = Tesis::with('comites')->whereIn('id_tesis', $tesisUsuario->pluck('id_tesis'))->get();
-        return view("home.index",compact("programas","comites","tesisUsuario","tesisComites","tesisDeComite"));
+        
+       
+        return view("home.index", compact("programas", "comites", "tesisUsuario", "tesisComites", "tesisDeComite"));
     }
 
     public function logout(){

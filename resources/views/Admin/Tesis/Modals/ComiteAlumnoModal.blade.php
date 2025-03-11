@@ -11,8 +11,8 @@
                 <form action="{{ route('tesis.comite.attach',$tesisItem?->id_tesis) }}" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label for="comite" class="form-label fs-4">Asignar comite a la tesis</label>
-                        <select name="comite" id="comite">
+                        <label for="comite" class="form-label fs-3 fw-semibold">Selecciona comite para asignar</label>
+                        <select class="form-select" name="comite" id="comite">
                             {{-- <option class="form-label fs-4">Seleccione el comité que estará a cargo de la tesis</option> --}}
                             @foreach ($comites as $comite)
                                 <option value="{{ $comite->id_comite }}" {{ isset($tesisComite) && $tesisComite->id_comite == $comite->id_comite ? 'selected' : '' }}>
@@ -21,8 +21,8 @@
                             @endforeach
                         </select>
 
-                        <label for="usuarios" class="form-label fs-4">Asignar alumno a la tesis</label>
-                        <select name="usuarios" id="usuarios">
+                        <label for="usuarios" class="form-label fs-3 fw-semibold">Asignar alumno a la tesis</label>
+                        <select class="form-select" name="usuarios" id="usuarios">
                             @foreach ($usuarios as $usuario)
                                 <option value="{{ $usuario->id_user }}">
                                     {{ $usuario->username }} {{ $usuario->nombre }} {{ $usuario->apellidos }}

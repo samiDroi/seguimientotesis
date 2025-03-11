@@ -2,26 +2,27 @@
 @section('form')
 <form action="{{ route("tesis.create.requerimientos",$tesisComite->id_tesis_comite) }}" method="POST">
     @csrf
-     <h1>Requerimientos de Tesis</h1>
+     <h1 class="text-center mt-5 mb-5">Requerimientos de Tesis</h1>
     <input type="hidden" name="id_tesis_comite" id="" value="{{ $tesisComite?->id_tesis_comite }}">
     
     <div id="requerimientos">
         @if($requerimientos->isNotEmpty())
             @foreach($requerimientos as $requerimiento)
-            <div>
+            <div class="border-top border-primary">
+               
                 <label for="nombre_requerimiento">¿Qué requerimientos desea poner a la tesis?</label>
-                <input type="text" required name="nombre_requerimiento[]" value="{{ $requerimiento->nombre_requerimiento }}" id="nombre_requerimiento" autocomplete="off" placeholder="Nombre del requerimiento">
-                <textarea name="descripcion[]" id="descripcion" cols="30" rows="10" placeholder="Descripcion del requerimiento">{{ $requerimiento->descripcion }}</textarea>
+                <input class="form-control mb-5" type="text" required name="nombre_requerimiento[]" value="{{ $requerimiento->nombre_requerimiento }}" id="nombre_requerimiento" autocomplete="off" placeholder="Nombre del requerimiento">
+                <textarea class="form-control" name="descripcion[]" id="descripcion" cols="30" rows="10" placeholder="Descripcion del requerimiento">{{ $requerimiento->descripcion }}</textarea>
             </div>
             @endforeach
         @else
-            <div>
-                <label for="nombre_requerimiento">¿Qué requerimientos desea poner a la tesis?</label>
-                <input type="text" required name="nombre_requerimiento[]" value="" id="nombre_requerimiento" autocomplete="off" placeholder="Nombre del requerimiento">
-                <textarea name="descripcion[]" id="descripcion" cols="30" rows="10" placeholder="Descripcion del requerimiento"></textarea>
+            <div class="border-top border-primary">
+                <label class="fs-3 fw-semibold mb-1 mt-3" for="nombre_requerimiento">¿Qué requerimientos desea poner a la tesis?</label>
+                <input class="form-control mb-3" type="text" required name="nombre_requerimiento[]" value="" id="nombre_requerimiento" autocomplete="off" placeholder="Nombre del requerimiento">
+                <textarea class="form-control" name="descripcion[]" id="descripcion" cols="30" rows="10" placeholder="Descripcion del requerimiento"></textarea>
             </div>
         @endif
-        <button id="newRequerimiento">+</button>
+        
     </div>
     
     {{-- <select name="usuarios" id="usuarios">
@@ -40,8 +41,8 @@
             </option>
         @endforeach
     </select> --}}
-
-    <button type="submit">{{ isset($tesis) ? 'Actualizar información de tesis' : 'Guardar información de tesis' }}</button>
+    <button class="btn btn-secondary mt-5" id="newRequerimiento">Agregar nuevo requerimiento</button>
+    <button class="btn btn-primary mt-5" type="submit">{{ isset($tesis) ? 'Actualizar información de tesis' : 'Guardar información de tesis' }}</button>
 </form>
 @endsection
 
@@ -51,8 +52,10 @@
         const container = document.getElementById('requerimientos');
         const newRequerimiento = document.createElement('div');
         newRequerimiento.innerHTML = `
-            <input type="text" required name="nombre_requerimiento[]" id="nombre_requerimiento" autocomplete="off" placeholder="Nombre del requerimiento">
-            <textarea name="descripcion[]" id="descripcion[]" cols="30" rows="10" placeholder="Descripcion del requerimiento"></textarea>
+        
+            <label class="fs-3 fw-semibold mb-1 mt-5 " for="nombre_requerimiento">Escribe el siguiente requerimiento</label>
+            <input class="form-control mb-3" type="text" required name="nombre_requerimiento[]" id="nombre_requerimiento" autocomplete="off" placeholder="Nombre del requerimiento">
+            <textarea class="form-control" name="descripcion[]" id="descripcion[]" cols="30" rows="10" placeholder="Descripcion del requerimiento"></textarea>
             
         `;
         container.appendChild(newRequerimiento);
