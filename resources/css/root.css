@@ -34,7 +34,11 @@
    background-color: #3a3EC8;
   }
   
- 
+  .bg-personalizado{
+   background-color: #595ffd;
+   border: white;
+   color: white;
+  }
 
 
 

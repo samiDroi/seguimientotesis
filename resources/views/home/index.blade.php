@@ -36,7 +36,7 @@
                                                         <strong>{{ $requerimiento->nombre_requerimiento }}</strong>
                                                         <a class=" text-primary fw-semibold" href="{{ route('avance.index', $requerimiento->id_requerimiento) }}">Realizar avance</a>
                                                         <br>
-                                                        <span class="fw-semibold">Descripción:</span> {{ $requerimiento->descripcion }}
+                                                        <span class="fw-semibold ">Descripción:</span> {{ $requerimiento->descripcion }}
                                                         <span class="badge 
                                                             @if($requerimiento->estado == 'pendiente') bg-warning
                                                             @elseif($requerimiento->estado == 'completado') bg-success

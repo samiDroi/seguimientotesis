@@ -39,8 +39,8 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Menú lateral -->
-            <div class="col-3 ms-0">
-                <nav class="nav flex-column gap-5 bg-body-tertiary pt-5 pb-5 fs-4 text-center vh-100">
+            <div class="col-3 ms-0 ">
+                <nav class="nav flex-column  gap-5 bg-body-tertiary pt-5 pb-5 fs-4 text-center vh-100 ">
                         <div class="option my-1 py-3">
                             <img src="{{ asset('images/person.svg') }}" style="height: 25px;">
                             <a href="" class="text-decoration-none text-dark fw-semibold diva">Mi perfil</a>

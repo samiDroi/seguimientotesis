@@ -16,7 +16,7 @@
     <form  action="{{ Route("avance.create",$requerimiento->id_requerimiento) }}" method="POST">
         @csrf
             @if (!(comprobarIsInComite($comiteTesis->id_comite)))
-                <textarea   id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea>
+                <textarea    id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea>
                 
                 <a class=" mt-2 align-center" href="{{ Route("home") }}">Regresar y cancelar</a>
                 <button class=" mt-3 btn btn-primary " type="submit">Guardar Cambios</button>
@@ -54,11 +54,11 @@
 
      {{-- cargar comentarios --}}
     @foreach (getInfoComentarioAvance( $requerimiento->id_requerimiento) as $comentario)
-       {{ $comentario->usuario_nombre }}
-       {{ $comentario->usuario_apellidos }}
-
-        {{ $comentario->usuario_rol }}
-       {!! $comentario->contenido !!}
+     <div class="card comentario mt-2 mb-3 ps-3 py-4 shadow-sm">
+       <div class=" fs-5 fw-semibold pb-2 ">{{ $comentario->usuario_nombre }}  {{ $comentario->usuario_apellidos }} <span class="badge text-light  bg-secondary "> {{ $comentario->usuario_rol }}</span> </div> 
+    
+        <div class=" "> {!! $comentario->contenido !!}</div> 
+    </div> 
     @endforeach
 
      @if (Auth::user()->comites->contains('id_comite', $comiteTesis->id_comite) && optional($avanceTesis)->contenido)
@@ -68,7 +68,7 @@
             <input type="hidden" name="id_avance_tesis" value="{{ $avanceTesis?->id_avance_tesis }}">
             {{-- @dd( $avanceTesis?->id_avance_tesis ); --}}
             <textarea id="comentario_avance" name="contenido"></textarea>
-            <button type="submit">Subir comentario</button>
+            <button class="btn btn-primary mt-3" type="submit">Subir comentario</button>
         </form>
      @endif
     
