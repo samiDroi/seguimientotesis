@@ -130,7 +130,32 @@ function isDirector(){
 
 }
 
-
+// function getUserRolesInComite($userId, $comiteId)
+// {
+//     return DB::table('usuarios_comite_roles as ucr')
+//         ->join('roles as r', 'ucr.id_rol', '=', 'r.id_rol')
+//         ->join('usuarios_comite as uc', function($join) use ($userId, $comiteId) {
+//             $join->on('ucr.id_usuario_comite', '=', 'uc.id_usuario_comite')
+//                 ->where('uc.id_user', '=', $userId)
+//                 ->where('uc.id_comite', '=', $comiteId);
+//         })
+//         ->select('ucr.rol_personalizado')
+//         ->get()
+//         ->pluck('ucr.rol_personalizado');
+// }
+function getUserRolesInComite($userId, $comiteId)
+{
+    return DB::table('usuarios_comite_roles as ucr')
+        ->join('usuarios_comite as uc', function($join) use ($userId, $comiteId) {
+            $join->on('ucr.id_usuario_comite', '=', 'uc.id_usuario_comite')
+                ->where('uc.id_user', '=', $userId)
+                ->where('uc.id_comite', '=', $comiteId);
+        })
+        ->select('ucr.rol_personalizado')
+        ->get()
+        ->pluck('rol_personalizado')
+        ->filter(); // Elimina valores nulos o vacíos
+}
 
 
 

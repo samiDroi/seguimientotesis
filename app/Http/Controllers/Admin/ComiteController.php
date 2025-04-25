@@ -12,13 +12,14 @@ use App\Models\Comite;
 use App\Models\ComiteRolUsusario;
 use App\Http\Controllers\Admin\RolController;
 use App\Models\UsuariosComite;
+use App\Models\UsuariosComiteRol;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class ComiteController extends Controller
 {
-    public function index()
+    public function index($id = null)
     {
         $title = 'Delete User!';
         $text = "Are you sure you want to delete?";
@@ -34,7 +35,10 @@ class ComiteController extends Controller
                 $query->whereIn('id_programa', Auth::user()->programas->pluck('id_programa'));
             })
             ->get();
-        return view("Admin.Comites.index", compact("comites"));
+            $comite = $id ? Comite::with('Usuarios')->find($id) : null;
+            $programas = Auth::user()->programas;
+
+        return view("Admin.Comites.index", compact("comites",'comite','programas'));
     }
    
     public function store($id = null)
@@ -44,7 +48,6 @@ class ComiteController extends Controller
         $unidades = UnidadAcademica::all();
         //dd(Auth::user()->getAuthIdentifierName());
         //return (Auth::user());
-        $programas = Auth::user()->programas;
         $roles = Rol::getEnumValues();
 
         return view("Admin.Comites.Create", compact("docentes", "unidades", "programas", "comite","roles"));
@@ -63,73 +66,28 @@ class ComiteController extends Controller
             $comite->id_programa = $programa;
         }
         $comite->save();
-        //asociar docentes y roles al comité
-        foreach ($request->docentes as $index => $username) {
-            $usuario = Usuarios::where('username', $username)->first(); // Obtener el docente por el username
-            if ($usuario) {
-                // Obtener el rol correspondiente desde el enum
-                $rol = $request->rol[$index]; // Valor del rol seleccionado
-                
-                // Verificar si el rol es válido dentro del enum
-                if (in_array($rol, Rol::getEnumValues())) {
-                    // Aquí puedes almacenar la relación entre el docente y el comité con su rol
-                    // Si usas una tabla intermedia, aquí se podría almacenar el rol
-                    DB::table('usuarios_comite')->insert([
-                        'id_user' => $usuario->id_user,
-                        'id_comite' => $comite->id_comite,
-                        'rol' => $rol]);
-                    $comite->usuarios()->attach($usuario->id, ['rol' => $rol]); // Almacenar el rol en la tabla intermedia
-                }
-            }
-        }
-        
-        //$this->setRoles();
-        // $rol = new RolController();
-        // $rol->createRol($request, $comite);
-        
         return redirect()->route("comites.index");
     }
 
-    public function getDocentes()
-    {
-        return Usuarios::whereHas('tipos', function ($query) {
-            $query->where('nombre_tipo', 'docente');
-        })->get();
+    public function saveMembers($id){
+        $comite = Comite::findOrFail($id);
+        $docentes = $this->getDocentes();
+
+        return view('Admin.Comites.AttachMembers',compact('comite','docentes'));
     }
 
-    public function destroy($id)
-    {
-        DB::beginTransaction();
-
-        try {
-            DB::table('usuarios_comite')
-                ->where('id_comite',$id)
-                ->delete();
-
-            //DB::table('comite_rol_usuario')->where('id_comite', $id)->delete();
-
-            Comite::where('id_comite', $id)->delete();
-
-            DB::commit();
-
-            Alert::success('Comite Eliminado', 'El comite ha sido eliminado con exito');
-            return redirect()->route('comites.index');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Alert::error("error","No se puede eliminar un comite si este tiene asignado una tesis, asegurese de eliminar primero la tesis antes que el comite");
-            return redirect()->route('comites.index')->with('error', 'Error al eliminar el comité: ' . $e->getMessage());
+    public function registerMembers(Request $request){
+        $comite = $request->get('id_comite');
+        foreach ($request->docentes as $username) {
+            $usuario = Usuarios::where('username', $username)->first(); // Obtener el docente por el username
+            if ($usuario) {
+                    DB::table('usuarios_comite')->insert([
+                        'id_user' => $usuario->id_user,
+                        'id_comite' => $comite,
+                        ]);
+            }
         }
-    }
-
-    public function edit($id)
-    {
-        $comite = Comite::with('roles')->findOrFail($id);
-        $roles = ComiteRolUsusario::all();
-        return view("Admin.Comites.Edit", compact("comite", "roles"));
-    }
-
-    public function setRoles(){
-
+        return redirect()->route('roles.store',$comite);
     }
 
     public function cloneComite($id)
@@ -155,5 +113,123 @@ class ComiteController extends Controller
 
         return redirect()->route('comites.store', $clonedComite->id_comite)
             ->with('success', 'Comité clonado con éxito. Puede hacer cambios si lo desea.');       
+    }
+
+
+
+   
+
+    public function edit($id)
+    {
+        $docentes = $this->getDocentes();
+        $comite = Comite::where('id_comite',$id)->first();
+        $programas = Auth::user()->programas;
+        $roles = DB::table('usuarios_comite as uc')
+        ->join('usuarios as u', 'uc.id_user', '=', 'u.id_user')
+        ->leftJoin('usuarios_comite_roles as ucr', 'uc.id_usuario_comite', '=', 'ucr.id_usuario_comite')
+        ->where('uc.id_comite', $id)
+        ->select(
+            'u.id_user',
+            'u.nombre',
+            'u.apellidos',
+            'u.correo_electronico',
+            'ucr.id_rol',
+            'ucr.id_usuario_comite',
+            'ucr.rol_personalizado'
+        )
+        ->get()
+        ->unique(function ($item) {
+        // Esto asegura registros únicos combinando id_user y rol_personalizado
+             return $item->id_user.'|'.$item->rol_personalizado;
+         });
+        // $roles = DB::table('usuarios_comite as uc')
+        // ->join('usuarios as u', 'uc.id_user', '=', 'u.id_user')
+        // ->leftJoin('usuarios_comite_roles as ucr', 'uc.id_usuario_comite', '=', 'ucr.id_usuario_comite')
+        // ->select(
+        //     'u.id_user',
+        //     'u.nombre',
+        //     'u.apellidos',
+        //     'u.correo_electronico',
+        //     'ucr.id_rol',
+        //     'ucr.id_usuario_comite',
+        //     'ucr.rol_personalizado'
+        // )
+        // ->distinct()
+        // ->get();
+        return view("Admin.Comites.Edit", compact("comite", "roles","docentes","programas"));
+    }
+
+
+    public function update(Request $request,$id){
+        $comite = Comite::where('id_comite',$id)->first();
+        $comite->nombre_comite = $request->get('nombre_comite');
+        $comite->id_programa = $request->get('ProgramaAcademico');
+        $comite->save();
+
+        $docentes = $request->input('docentes');
+        DB::table('usuarios_comite_roles as ucr')
+        ->join('usuarios_comite as uc','uc.id_usuario_comite','=','ucr.id_usuario_comite')
+        ->where('uc.id_comite',$id)
+        ->delete();
+
+        DB::table('usuarios_comite')
+        ->where('id_comite', $comite->id_comite)
+        ->delete();
+
+        foreach ($docentes as $username) {
+            $usuario = Usuarios::where('username', $username)->first(); // Obtener el docente por el username
+            if ($usuario) {
+                    DB::table('usuarios_comite')->updateOrInsert([
+                        'id_user' => $usuario->id_user,
+                        'id_comite' => $comite->id_comite,
+                        ]);
+            }
+        }
+
+        // 3. Gestión simple de roles (nueva funcionalidad)
+        if ($request->has('roles')) {
+            $defRoles = new RolController;
+            $defRoles->definirRolUsuarios($request,$id);
+        
+        }
+        return redirect()->route('comites.index');
+
+    }
+
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            DB::table('usuarios_comite_roles as ucr')
+            ->join('usuarios_comite as uc','uc.id_usuario_comite','=','ucr.id_usuario_comite')
+            ->where('uc.id_comite',$id)
+            ->delete();
+
+            DB::table('usuarios_comite')
+                ->where('id_comite',$id)
+                ->delete();
+            
+            Comite::where('id_comite', $id)->delete();
+
+         
+
+            DB::commit();
+
+            Alert::success('Comite Eliminado', 'El comite ha sido eliminado con exito');
+            return redirect()->route('comites.index');
+        } catch (\Exception $e) {
+            echo $e;
+            DB::rollBack();
+            Alert::error("error","No se puede eliminar un comite si este tiene asignado una tesis, asegurese de eliminar primero la tesis antes que el comite");
+            return redirect()->route('comites.index')->with('error', 'Error al eliminar el comité: ' . $e->getMessage());
+        }
+    }
+ 
+    public function getDocentes()
+    {
+        return Usuarios::whereHas('tipos', function ($query) {
+            $query->where('nombre_tipo', 'docente');
+        })->get();
     }
 }

@@ -1,16 +1,7 @@
-@extends('layouts.admin')
-
-@section('css')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
-@endsection
-
+{{-- @extends('layouts.base')
 @section('content')
-<!-- <button><a href="{{ Route('roles.index') }}">Personalizar roles del comité</a></button> -->
+ <button><a href="{{ Route('roles.index') }}">Personalizar roles del comité</a></button> 
 <form action="{{ Route('comites.create') }}" method="POST">
-
-
     <br>
     <h1 class="text-center">Crear comites</h1>
     <div class="container "> 
@@ -28,105 +19,48 @@
             <option  value="{{ $programa->id_programa }}">{{ $programa->nombre_programa }}</option>
         @endforeach
     </select>
-    <div class="row mt-5">
-        {{-- Tabla de docentes a la izquierda --}}
-        <div class="col-7">
-            <label for="docentes">Lista de docentes disponibles</label>
+
+    <button type="submit">Guardar Comite</button>
+@endsection --}}
 
 
+<!-- Botón que abre el modal -->
 
-            <table class="table" id="docentes">
-                <thead class="table-primary">
-                    <tr>
-                        <th>Clave de trabajador</th>
-                        <th>Nombre</th>
-                        <th>Apellidos</th>
-                        <th>Correo electrónico</th>
-                        <th>Seleccionar</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($docentes as $docente)
-                    <tr>
-                        <td>{{ $docente->username }}</td>
-                        <td>{{ $docente->nombre }}</td>
-                        <td>{{ $docente->apellidos }}</td>
-                        <td>{{ $docente->correo_electronico }}</td>
-                        <td>
-                            <input type="checkbox" class="checkbox-docente" value="{{ $docente->username }}" {{ $comite && $comite->usuarios->contains($docente->id_user) ? 'checked' : '' }}>
-                        </td>
-                    </tr>   
-                    @endforeach
-                </tbody>
-            </table>
+
+<!-- Botón para personalizar roles -->
+{{-- <a href="{{ route('roles.index') }}" class="btn btn-secondary ms-2">Personalizar roles del comité</a> --}}
+
+<!-- Modal -->
+<div class="modal fade" id="crearComiteModal" tabindex="-1" aria-labelledby="crearComiteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{{ route('comites.create') }}" method="POST">
+        @csrf
+        <div class="modal-header">
+          <h5 class="modal-title" id="crearComiteModalLabel">Crear Comité</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
-        
-        <div class="col-5">
+        <div class="modal-body">
+          <input type="hidden" name="id" value="{{ $comite?->id_comite }}">
 
-        <p class="fs-3 border-bottom border-primary border-2">Confirmar información de comité</p>
-        <div id="confirmarComite" > </div>
+          <label class="form-label fw-semibold" for="nombre_comite">Nombre del comité:</label>
+          <input class="form-control" type="text" id="nombre_comite" name="nombre_comite" required value="{{ $comite?->nombre_comite }}">
+
+          <label class="form-label fw-semibold mt-3" for="programas">Programa académico:</label>
+          <select class="form-select" name="ProgramaAcademico[]" id="programas">
+              @foreach ($programas as $programa)
+                  <option value="{{ $programa->id_programa }}">{{ $programa->nombre_programa }}</option>
+              @endforeach
+          </select>
         </div>
-       
-    
-
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Guardar</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
     </div>
-    
-   
-   
-   
-    <button class="col-12 btn btn-primary py-2 text-center mt-4" style="height: 50px;" type="submit" >{{ $comite?"Guardar cambios":"Registrar comite" }}</button>
-</form>
+  </div>
 </div>
-@endsection
 
-@section('js')
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
-<script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
-<script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
-<script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
 
-<script>
-    // Inicializar DataTables
-    new DataTable('#docentes', { responsive: true });
 
-    function actualizarConfirmacion() {
-        let confirmarComiteHtml = '';
-
-        // Procesar docentes seleccionados
-        $('.checkbox-docente:checked').each(function() {
-            const username = $(this).val(); // Obtener el valor (username)
-            const nombre = $(this).closest('tr').find('td:nth-child(2)').text(); // Obtener el nombre
-            const apellidos = $(this).closest('tr').find('td:nth-child(3)').text(); // Obtener los apellidos
-
-            confirmarComiteHtml += `
-                <div class="mb-3">
-                <div class="fs-2 fw-semibold"> ${nombre} ${apellidos}</div>
-                   
-                   
-                    <label for="rol">Selecciona Rol</label>
-                     <input type="hidden" name="docentes[]" value="${username}">
-                    <select class="form-select" name="rol[]" id="rol">
-                        @foreach($roles as $rol)
-                            <option value="{{ $rol }}">{{ ucfirst($rol) }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            `;
-        });
-
-        $('#confirmarComite').html(confirmarComiteHtml);
-    }
-
-    // Inicializar la confirmación al cargar la página si se está editando
-    $(document).ready(function() {
-        actualizarConfirmacion();
-    });
-
-    // Evento de cambio en checkboxes
-    $(document).on('change', '.checkbox-docente', function() {
-        actualizarConfirmacion();
-    });
-</script>
-@endsection

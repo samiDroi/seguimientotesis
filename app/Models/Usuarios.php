@@ -68,4 +68,15 @@ class Usuarios extends Authenticatable
     public function tesis():BelongsToMany{
         return $this->belongsToMany(Tesis::class,"tesis_usuarios","id_user","id_tesis");
     }
+
+    public function rolesEnComite($idComite){
+    return $this->belongsToMany(Rol::class, 'usuarios_comite_roles', 'id_user', 'id_rol')
+                ->wherePivot('id_usuarios_comite', function($query) use ($idComite) {
+                    $query->select('id_user')
+                          ->from('usuarios_comite')
+                          ->where('id_comite', $idComite)
+                          ->where('id_user', $this->id_user);
+                })
+                ->get();
+    }
 }

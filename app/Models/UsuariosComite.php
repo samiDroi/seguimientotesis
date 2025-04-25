@@ -18,4 +18,8 @@ class UsuariosComite extends Model
         'rol' => Rol::class,
     ];
 
+    public function rol()
+    {
+        return $this->belongsTo(Rol::class, 'id_rol');
+    }
 }

@@ -242,6 +242,7 @@ class TesisController extends Controller
         $requerimiento->save();
         $statusTesis = new StatusTesisController;
         $statusTesis->statusTesisToEnCurso($id);
+        $statusTesis->statusTesisToPorEvaluar($id);
         alert()->success("El requerimiento ha sido {$request->estado} satisfactoriamente.")->persistent(true,false);
         return redirect()->route('tesis.review');
     }

@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comite_tesis_requerimientos', function (Blueprint $table) {
-            $table->bigIncrements('id_requerimiento');
-            $table->foreignId('id_tesis_comite')->constrained('tesis_comite','id_tesis_comite');
-            $table->string('nombre_requerimiento');
+        Schema::create('roles', function (Blueprint $table) {
+            // $table->id();
+            $table->bigIncrements('id_rol');
+            $table->string('nombre_rol');
             $table->text('descripcion');
-            $table->text('motivo_rechazo')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comite_tesis_requerimientos');
+        Schema::dropIfExists('roles');
     }
 };

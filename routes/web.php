@@ -95,12 +95,14 @@ Route::middleware(['auth'])->group(function(){
         
         Route::controller(ComiteController::class)->prefix("/comites")->group(function(){
             Route::get("/","index")->name("comites.index");
-            Route::get("/create/{id?}","store")->name("comites.store");
+            Route::get("/comite-members/{id}","saveMembers")->name("comites.members");
+            Route::get("/edit-comite/{id}","edit")->name("comites.edit");
+
+            Route::post("/comite-members/save","registerMembers")->name("comites.save.members");
+            // Route::get("/create/{id?}","store")->name("comites.store");
             
-        
             Route::post("/create/registro","create")->name("comites.create");
             Route::post('/{id}/copy','cloneComite')->name('comites.clone');
-        
         
             Route::post('/{id}','destroy')->name('comites.destroy');
             Route::put('/edit/{id}', "update")->name("comites.update");
@@ -113,6 +115,10 @@ Route::middleware(['auth'])->group(function(){
     //Ruta temporal que quiza se use para personalizar roles
     Route::controller(RolController::class)->group(function(){
         Route::get("admin/roles","index")->name("roles.index");
+        Route::get('admin/roles/store/{id}','storeRoles')->name('roles.store');
+        Route::post('admin/roles/create','createRol')->name('roles.create');
+        Route::post("/admin/roles/define-roles/{id}","definirRolUsuarios")->name('comites.saveRoles');
+        Route::post("/admin/roles/update-roles","updateRoles")->name('roles.update');
     });
     //DOCENTES
     //CREAR MIDDLEWARE PARA QUE ESTO SOLO SEA PARA DIRECTORES DE TESIS

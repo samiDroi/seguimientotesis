@@ -12,10 +12,12 @@
 <div class="col-4"> 
 <button class="btn btn-secondary btn-sm  mt-1" id="Btn_buscar" >Buscar</button>
 </div>
-    <div class="col-4 text-end"><a class="text-decoration-none btn btn-outline-primary me-5" href="{{ Route("comites.store")}}">Crear nuevo comite</a></div>
+    <div class="col-4 text-end"><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearComiteModal">
+        Crear Comité
+    </button></div>
 </div>
 
-
+@include('Admin.Comites.Create')
 @if ($comites->isEmpty())
     <div class="px-5">
        
@@ -36,8 +38,10 @@
             @csrf
             <button type="submit" class="btn btn-primary col-12 mt-2">Clonar Comité</button>
         </form>
-
-
+        @if ($comite->usuarios->isEmpty())
+            <a href="{{ Route("comites.members",$comite->id_comite) }}">Definir miembros del comite</a>
+        @endif
+       
         <form action="{{ route('comites.destroy', $comite->id_comite) }}" method="POST" style="display:inline-block;" class="delete">
             @csrf
             <button type="button" class="btn btn-danger col-12 mt-2">
@@ -46,7 +50,7 @@
         </form>
        
 
-        <div class=" mt-2"><a class=" text-decoration-none" href="{{ Route("comites.store",$comite->id_comite) }}">Editar comite </a></div>
+        <div class=" mt-2"><a class=" text-decoration-none" href="{{ Route("comites.edit",$comite->id_comite) }}">Editar comite </a></div>
         
        
         
@@ -71,7 +75,11 @@
                         {{-- <td>{{ $comite->nombre_comite }}</td> --}}
                         <td>{{ $usuario->nombre }}</td>
                         <td>{{ $usuario->apellidos }}</td>
-                        <td class="text-primary fw-bold">{{ ucfirst($usuario->pivot->rol) }}</td> <!-- 'pivot' te da acceso al campo 'rol' de la tabla pivot -->
+                        <td class="text-primary fw-bold"> 
+                            @foreach (getUserRolesInComite($usuario->id_user, $comite->id_comite) as $rol)
+                                <span class="badge bg-primary me-1">{{ ucfirst($rol) }}</span>
+                            @endforeach
+                    </td> 
                     </tr>
                 @endforeach
             </tbody>
