@@ -19,6 +19,28 @@ function comprobarRolComite($rol, $comite){
     
     //return Auth::user()?->roles->where('nombre_rol',$rol)->where('id_comite',$comite)->count();
 }
+
+function userHasPermisos($permisos,$id_comite){
+    return getPermisos($permisos,$id_comite) || null;
+}
+
+function getPermisos($permisos,$id_comite){
+    return DB::table('usuarios as u')
+        ->join('usuarios_comite as uc','uc.id_user','=',Auth::user()->id_user)
+        ->join('comites as c','c.id_comite','=','uc.id_comite')
+        ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.id_usuario_comite')
+        ->join('roles as r','r.id_rol','=','ucr.id_rol')
+        ->join('roles_permisos as rp','rp.id_rol','=','r.id_rol')
+        ->join('permisos as p','p.id_permiso','=','rp.id_permiso')
+        ->where('p.clave',$permisos)
+        ->where('id_comite',$id_comite)
+        ->select(
+            'p.*',
+            'r.*',
+            'ucr.rol_personalizado'
+        )
+        ->get();
+}
 function getInfoComentarioAvance($id_requerimiento){
     return DB::table('comentario_avance as ca')
     ->join('avance_tesis as at', 'ca.id_avance_tesis', '=', 'at.id_avance_tesis')

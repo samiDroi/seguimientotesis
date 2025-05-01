@@ -28,7 +28,7 @@
     </form>
    
     
-    @if (comprobarRolComite("DIRECTOR", $comiteTesis->id_comite) > 0 && optional($avanceTesis)->contenido)
+    @if (userHasPermisos('tesis.create'))
                             <!-- Mostrar los botones solo si es DIRECTOR -->
                             {{-- @dd($avanceTesis->id_avance_tesis) --}}
                             <div class="mt-2">

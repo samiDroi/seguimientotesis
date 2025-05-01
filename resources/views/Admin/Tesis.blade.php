@@ -27,13 +27,13 @@
                     @if ($tesisComite->id_tesis == $tesis->id_tesis)
                         @if ($tesisComite->requerimientos->isNotEmpty())
                             <details>
-                                <summary class="h6 text-secondary">Requerimientos</summary>
+                                <summary class="h6 text-secondary">Estructura de la tesis</summary>
                                 <ul class="list-group list-group-flush">
                                     @foreach ($tesisComite->requerimientos as $requerimiento)
                                         <li class="list-group-item px-0">
                                             <strong>{{ $requerimiento->nombre_requerimiento }}</strong>
                                             
-                                            <a href="{{ Route("avance.index", $requerimiento->id_requerimiento) }}">Realizar avance a este requerimiento</a>
+                                            <a href="{{ Route("avance.index", $requerimiento->id_requerimiento) }}">Realizar avance a este capitulo de la estructura</a>
                                             
                                             <br>
                                             <span>Descripción:</span> {{ $requerimiento->descripcion }}
@@ -49,7 +49,7 @@
                                 </ul>
                             </details>
                         @else
-                            <p>No hay requerimientos para esta tesis.</p>
+                            <p>No hay ninguna estructura aun para esta tesis.</p>
                         @endif
                     @endif
                 @endforeach
@@ -81,13 +81,13 @@
                     @if ($tesisComite->id_tesis == $tesisComiteItem->id_tesis)
                         @if ($tesisComite->requerimientos->isNotEmpty())
                             <details>
-                                <summary class="h6 text-secondary">Requerimientos</summary>
+                                <summary class="h6 text-secondary">Estructura de la tesis</summary>
                                 <ul class="list-group list-group-flush">
                                     @foreach ($tesisComite->requerimientos as $requerimiento)
                                         <li class="list-group-item px-0">
                                             <strong>{{ $requerimiento->nombre_requerimiento }}</strong>
                                             @if ($requerimiento->avances->isNotEmpty())
-                                                <a href="{{ Route("avance.index", $requerimiento->id_requerimiento) }}">Revisar avance de este requerimiento</a>
+                                                <a href="{{ Route("avance.index", $requerimiento->id_requerimiento) }}">Revisar avance de este capitulo de la estructura</a>
                                             @endif
                                             {{-- <a href="{{ Route("avance.index", $requerimiento->id_requerimiento) }}">Revisar avance de este requerimiento</a> --}}
                                             <br>
@@ -104,7 +104,7 @@
                                 </ul>
                             </details>
                         @else
-                            <p>No hay requerimientos para esta tesis.</p>
+                            <p>No hay estructura aun para esta tesis.</p>
                         @endif
                     @endif
                 @endforeach
