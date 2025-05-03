@@ -16,6 +16,7 @@ use App\Models\UsuariosComiteRol;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Models\Rol as ModelsRol;
 
 class ComiteController extends Controller
 {
@@ -121,6 +122,12 @@ class ComiteController extends Controller
 
     public function edit($id)
     {
+        $rolesExistentes = DB::table('usuarios_comite_roles')
+            ->where('id_user_creador', Auth::id())
+            ->select('id_rol', 'rol_personalizado as nombre_rol')
+            ->get()
+            ->unique('nombre_rol') // <-- aquí se filtran los duplicados
+            ->values();
         $docentes = $this->getDocentes();
         $comite = Comite::where('id_comite',$id)->first();
         $programas = Auth::user()->programas;
@@ -142,6 +149,13 @@ class ComiteController extends Controller
         // Esto asegura registros únicos combinando id_user y rol_personalizado
              return $item->id_user.'|'.$item->rol_personalizado;
          });
+         $rolesPersonalizados = DB::table('usuarios_comite_roles')
+            ->where('id_user_creador', Auth::user()->id_user)
+            ->count();
+        $rolesBase = ModelsRol::all();
+        $roles = DB::table('usuarios_comite_roles')
+             ->where('id_user_creador', Auth::user()->id_user)
+            ->get();
         // $roles = DB::table('usuarios_comite as uc')
         // ->join('usuarios as u', 'uc.id_user', '=', 'u.id_user')
         // ->leftJoin('usuarios_comite_roles as ucr', 'uc.id_usuario_comite', '=', 'ucr.id_usuario_comite')
@@ -156,7 +170,7 @@ class ComiteController extends Controller
         // )
         // ->distinct()
         // ->get();
-        return view("Admin.Comites.Edit", compact("comite", "roles","docentes","programas"));
+        return view("Admin.Comites.Edit", compact("comite", "roles","docentes","programas","rolesExistentes","rolesBase"));
     }
 
 

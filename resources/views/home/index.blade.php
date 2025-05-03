@@ -40,7 +40,7 @@
                             @if ($tesisComite->id_tesis == $tesis->id_tesis)
                                 @if ($tesisComite->requerimientos->isNotEmpty())
                                     <details>
-                                        <summary class="h5 text-primary">Requerimientos</summary>
+                                        <summary class="h5 text-primary">Estructura de tesis</summary>
                                         <ul class="list-group list-group-flush text-start py-1">
                                             @foreach ($tesisComite->requerimientos as $requerimiento)
                                                 <li class="list-group-item px-0 rounded-4 ps-5 py-2 mx-5">
@@ -60,7 +60,7 @@
                                         </ul>
                                     </details>
                                 @else
-                                    <p class="text-danger">No hay requerimientos para esta tesis.</p>
+                                    <p class="text-danger">No hay capitulos para esta tesis.</p>
                                 @endif
                             @endif
                         @endforeach
