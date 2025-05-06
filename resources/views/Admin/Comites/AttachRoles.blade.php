@@ -135,7 +135,6 @@
         options.forEach(opt => {
             optionsHtml += `<option value="${opt.id}" data-descripcion="${opt.descripcion}">${opt.nombre}</option>`;
         });
-
         // let inputsHtml = '';
         // usuarios.forEach(user => {
         // inputsHtml += `
@@ -145,21 +144,24 @@
         //     </div>
         // `;
     // });
-
-        newRol.innerHTML = `
-            <div class="col-md-6">
-                <label class="form-label">Nombre del Rol Personalizado</label>
-                <input class="form-control" type="text" name="nombre_rol[]" autocomplete="off" required>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Tipo de Rol Base</label>
-                <select class="form-select mb-2 rol-base-select" name="tipo_rol_base[]">
-                    ${optionsHtml}
-                </select>
-                <label class="form-label">Descripción del Rol</label>
-                <textarea class="form-control descripcion-rol" name="descripcion_rol[]" rows="2" readonly></textarea>
-            </div>
-        `;
+        let clonar = document.querySelector('.rol-item').cloneNode(true);
+        clonar.querySelector("input").value = "";
+        clonar.querySelector("textarea").value = "";
+        newRol.appendChild(clonar)
+        // newRol.innerHTML = `
+        //     <div class="col-md-6">
+        //         <label class="form-label">Nombre del Rol Personalizado</label>
+        //         <input class="form-control" type="text" name="nombre_rol[]" autocomplete="off" required>
+        //     </div>
+        //     <div class="col-md-6">
+        //         <label class="form-label">Tipo de Rol Base</label>
+        //         <select class="form-select mb-2 rol-base-select" name="tipo_rol_base[]">
+        //             ${optionsHtml}
+        //         </select>
+        //         <label class="form-label">Descripción del Rol</label>
+        //         <textarea class="form-control descripcion-rol" name="descripcion_rol[]" rows="2" readonly></textarea>
+        //     </div>
+        // `;
 
         container.appendChild(newRol);
     });
