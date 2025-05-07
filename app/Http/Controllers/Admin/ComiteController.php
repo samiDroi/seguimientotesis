@@ -217,11 +217,11 @@ class ComiteController extends Controller
             }
         }
         // 3. Gestión simple de roles (nueva funcionalidad)
-        // if ($request->has('roles')) {
-        //     $defRoles = new RolController;
-        //     $defRoles->definirRolUsuarios($request,$id);
+        if ($request->has('roles')) {
+            $defRoles = new RolController;
+            $defRoles->definirRolUsuarios($request,$id);
         
-        // }
+        }
         return redirect()->route('comites.index');
 
     }

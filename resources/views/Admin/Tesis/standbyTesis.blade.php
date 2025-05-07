@@ -2,7 +2,7 @@
 @section('content')
 
 <div class="container">
-    <h1>Todas las Tesis y su contenido</h1>
+    <h1>Todas las Tesis y sus Requerimientos</h1>
 
     <ul class="nav nav-tabs fs-5" id="filterNav">
         <li class="nav-item"><a class="nav-link active" data-filter="Todos">Todos</a></li>
@@ -66,7 +66,7 @@
                                 @if ($tesisComite->id_tesis == $tesisItem->id_tesis)
                                     @if ($tesisComite->requerimientos->isNotEmpty())
                                         <details>
-                                            <summary class="h6 text-secondary">Contenido</summary>
+                                            <summary class="h6 text-secondary">Requerimientos</summary>
                                             <ul class="list-group list-group-flush">
                                                 @foreach ($tesisComite->requerimientos as $requerimiento)
                                                 @include('admin.tesis.Modals.MotivoRechazoModal')
@@ -106,14 +106,14 @@
                                             </ul>
                                         </details>
                                     @else
-                                        <p>No hay contenido para esta tesis.</p>
+                                        <p>No hay requerimientos para esta tesis.</p>
                                     @endif
                                 @endif
                             @endforeach
 
                             @if ($tesisItem->comites->isNotEmpty() && optional($tesisComite)->requerimientos->isEmpty())
                                 <a href="{{ route('tesis.requerimientos', optional($tesisComite)->id_tesis_comite) }}">
-                                    Tiene permitido crear el contenido para esta tesis
+                                    Tiene permitido crear requerimientos para esta tesis
                                 </a>
                             @endif
 

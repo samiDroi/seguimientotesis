@@ -2,7 +2,7 @@
 @section('content')
 
 <div class="container">
-    <h1>Todas las Tesis y su contenido</h1>
+    <h1>Todas las Tesis y sus Requerimientos</h1>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tesisModal">
         Crear Título de la Tesis
     </button>
@@ -27,7 +27,7 @@
                                 @endphp
 
                                 @if ($tieneRequerimientos)
-                                    <a href="{{ route('tesis.requerimientos', $tesisItem->id_tesis) }}" class="btn btn-sm btn-warning">Editar contenido</a>
+                                    <a href="{{ route('tesis.requerimientos', $tesisItem->id_tesis) }}" class="btn btn-sm btn-warning">Editar requerimientos</a>
                                 @endif
                                 {{-- <a href="{{ route('tesis.requerimientos', $tesisItem->id_tesis) }}" class="btn btn-sm btn-warning">Editar requerimientos</a> --}}
                                 {{-- <form action="{{ route('tesis.delete', $tesisItem->id_tesis) }}" method="POST">
@@ -49,7 +49,7 @@
                             @if ($tesisComite->id_tesis == $tesisItem->id_tesis && $tesisComite->requerimientos->isNotEmpty())
                                 @php $tieneRequerimientos = true; @endphp
                                 <details>
-                                    <summary class="h6 text-secondary">Contenido</summary>
+                                    <summary class="h6 text-secondary">Requerimientos</summary>
                                     <ul class="list-group list-group-flush">
                                         @foreach ($tesisComite->requerimientos as $requerimiento)
                                             <li class="list-group-item px-0">
@@ -78,7 +78,7 @@
                         @endforeach
 
                         @if (!$tieneRequerimientos)
-                            <p class="text-muted">No hay contenido aun para esta tesis.</p>
+                            <p class="text-muted">No hay requerimientos para esta tesis.</p>
                         @endif
 
                         @if ($tesisItem->comites->isNotEmpty() && isset($tesisComite) && $tesisComite->requerimientos->isEmpty()
