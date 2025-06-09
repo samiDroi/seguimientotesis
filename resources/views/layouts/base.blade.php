@@ -42,19 +42,19 @@
             <div class="col-3 ms-0 ">
                 <nav class="nav flex-column  gap-5 bg-body-tertiary pt-5 pb-5 fs-4 text-center vh-100 ">
                         <div class="option my-1 py-3">
-                            <img src="{{ asset('images/person.svg') }}" style="height: 25px;">
-                            <a href="" class="text-decoration-none text-dark fw-semibold diva">Mi perfil</a>
+                            <img src="{{ asset('images/person.svg') }}" style="height: 20px;">
+                            <a href="{{ Route('home') }}" class="text-decoration-none text-dark fw-semibold diva">Inicio</a>
                         </div>
                         <div class="option my-1 py-3">
-                            <img src="{{ asset('images/people.svg') }}" style="height: 25px;">
+                            <img src="{{ asset('images/people.svg') }}" style="height: 20px;">
                             <a href="{{ Route('info.comites') }}" class="text-decoration-none text-dark fw-semibold diva">Mi comité</a>
                         </div>
                         <div class="option my-1 py-3">
-                            <img src="{{ asset('images/archive.svg') }}" style="height: 25px;">
+                            <img src="{{ asset('images/archive.svg') }}" style="height: 20px;">
                             <a href="{{ Route('info.tesis') }}" class="text-decoration-none text-dark fw-semibold diva">Mis tesis</a>
                         </div>
                         <div class="option my-1 py-3">
-                            <img src="{{ asset('images/backpack.svg') }}" style="height: 25px;">
+                            <img src="{{ asset('images/backpack.svg') }}" style="height: 20px;">
                             <a href="{{ Route('info.unidad') }}" class="text-decoration-none text-dark fw-semibold diva">Mi unidad</a>
                         </div>
                 </nav>

@@ -66,7 +66,7 @@
                                 @if ($tesisComite->id_tesis == $tesisItem->id_tesis)
                                     @if ($tesisComite->requerimientos->isNotEmpty())
                                         <details>
-                                            <summary class="h6 text-secondary">Requerimientos</summary>
+                                            <summary class="h6 text-secondary">Estructura</summary>
                                             <ul class="list-group list-group-flush">
                                                 @foreach ($tesisComite->requerimientos as $requerimiento)
                                                 @include('admin.tesis.Modals.MotivoRechazoModal')

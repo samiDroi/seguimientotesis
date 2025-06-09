@@ -10,16 +10,16 @@
             @foreach($requerimientos as $requerimiento)
             <div class="border-top border-primary">
                
-                <label for="nombre_requerimiento">¿Qué requerimientos desea poner a la tesis?</label>
-                <input class="form-control mb-5" type="text" required name="nombre_requerimiento[]" value="{{ $requerimiento->nombre_requerimiento }}" id="nombre_requerimiento" autocomplete="off" placeholder="Nombre del requerimiento">
-                <textarea class="form-control" name="descripcion[]" id="descripcion" cols="30" rows="10" placeholder="Descripcion del requerimiento">{{ $requerimiento->descripcion }}</textarea>
+                <label for="nombre_requerimiento">¿Qué estructura desea generar a la tesis?</label>
+                <input class="form-control mb-5" type="text" required name="nombre_requerimiento[]" value="{{ $requerimiento->nombre_requerimiento }}" id="nombre_requerimiento" autocomplete="off" placeholder="Nombre del capitulo">
+                <textarea class="form-control" name="descripcion[]" id="descripcion" cols="30" rows="10" placeholder="Descripcion del capitulo">{{ $requerimiento->descripcion }}</textarea>
             </div>
             @endforeach
         @else
             <div class="border-top border-primary">
-                <label class="fs-3 fw-semibold mb-1 mt-3" for="nombre_requerimiento">¿Qué requerimientos desea poner a la tesis?</label>
-                <input class="form-control mb-3" type="text" required name="nombre_requerimiento[]" value="" id="nombre_requerimiento" autocomplete="off" placeholder="Nombre del requerimiento">
-                <textarea class="form-control" name="descripcion[]" id="descripcion" cols="30" rows="10" placeholder="Descripcion del requerimiento"></textarea>
+                <label class="fs-3 fw-semibold mb-1 mt-3" for="nombre_requerimiento">¿Qué estructura desea generar a la tesis?</label>
+                <input class="form-control mb-3" type="text" required name="nombre_requerimiento[]" value="" id="nombre_requerimiento" autocomplete="off" placeholder="Nombre del capitulo">
+                <textarea class="form-control" name="descripcion[]" id="descripcion" cols="30" rows="10" placeholder="Descripcion del capitulo"></textarea>
             </div>
         @endif
         
@@ -41,7 +41,7 @@
             </option>
         @endforeach
     </select> --}}
-    <button class="btn btn-secondary mt-5" id="newRequerimiento">Agregar nuevo requerimiento</button>
+    <button class="btn btn-secondary mt-5" id="newRequerimiento">Agregar nuevo capitulo</button>
     <button class="btn btn-primary mt-5" type="submit">{{ isset($tesis) ? 'Actualizar información de tesis' : 'Guardar información de tesis' }}</button>
 </form>
 @endsection
@@ -53,7 +53,7 @@
         const newRequerimiento = document.createElement('div');
         newRequerimiento.innerHTML = `
         
-            <label class="fs-3 fw-semibold mb-1 mt-5 " for="nombre_requerimiento">Escribe el siguiente requerimiento</label>
+            <label class="fs-3 fw-semibold mb-1 mt-5 " for="nombre_requerimiento">Escribe el siguiente elemento de la estructura</label>
             <input class="form-control mb-3" type="text" required name="nombre_requerimiento[]" id="nombre_requerimiento" autocomplete="off" placeholder="Nombre del requerimiento">
             <textarea class="form-control" name="descripcion[]" id="descripcion[]" cols="30" rows="10" placeholder="Descripcion del requerimiento"></textarea>
             

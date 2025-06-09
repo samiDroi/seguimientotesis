@@ -2,7 +2,7 @@
 @section('content')
 
 <div class="container">
-    <h1>Todas las Tesis y sus Requerimientos</h1>
+    <h1>Todas las Tesis y su estructura</h1>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tesisModal">
         Crear Título de la Tesis
     </button>
@@ -49,7 +49,7 @@
                             @if ($tesisComite->id_tesis == $tesisItem->id_tesis && $tesisComite->requerimientos->isNotEmpty())
                                 @php $tieneRequerimientos = true; @endphp
                                 <details>
-                                    <summary class="h6 text-secondary">Requerimientos</summary>
+                                    <summary class="h6 text-secondary">Estructura de la tesis</summary>
                                     <ul class="list-group list-group-flush">
                                         @foreach ($tesisComite->requerimientos as $requerimiento)
                                             <li class="list-group-item px-0">
@@ -83,7 +83,7 @@
 
                         @if ($tesisItem->comites->isNotEmpty() && isset($tesisComite) && $tesisComite->requerimientos->isEmpty()
                              && $tesisItem->comites->pluck('id_comite')->contains(fn($id) => comprobarRolComite('DIRECTOR', $id)))
-                            <a href="{{ Route('tesis.requerimientos', $tesisComite->id_tesis_comite) }}" class="">Tiene permitido crear requerimientos para esta tesis</a>
+                            <a href="{{ Route('tesis.requerimientos', $tesisComite->id_tesis_comite) }}" class="">Tiene permitido crearla estructura para esta tesis</a>
                         @endif
                     </div>
                 </div>
