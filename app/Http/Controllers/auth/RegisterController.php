@@ -27,10 +27,7 @@ use RealRashid\SweetAlert\Facades\Alert;
             //Retornar true o false si la validación fue exitosa o no
             $validator = $this->validateUser($request);
 
-            // $validated = $request->validate([
-            //     'nombre_tipo' => 'required|array',
-            //     'nombre_tipo.*' => 'exists:tipo_usuario,id_tipo',  // Verifica que cada tipo de usuario exista
-            // ]);        
+            
             if (!$validator->fails()) {
                 $user = new Usuarios;
                 $user->username = $request->get('username');
@@ -43,6 +40,7 @@ use RealRashid\SweetAlert\Facades\Alert;
                 $user->nombre = $request->get('nombre');
                 $user->apellidos = $request->get('apellidos');
                 $user->correo_electronico = $request->get('correo_electronico');
+                $user->generacion = $request->get('generacion');
                 // Obtener el ID del tipo "Coordinador"
                 $coordinadorId = DB::table('tipo_usuario')->where('nombre_tipo', 'Coordinador')->value('id_tipo');
 

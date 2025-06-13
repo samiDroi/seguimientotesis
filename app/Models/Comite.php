@@ -15,7 +15,7 @@ class Comite extends Model
     protected $primaryKey = 'id_comite';
 
  
-
+    
     public function usuarios():BelongsToMany {
         return $this->belongsToMany(Usuarios::class,"usuarios_comite","id_comite","id_user")->withPivot("rol");
     }

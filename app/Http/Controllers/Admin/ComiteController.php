@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Rol as ModelsRol;
+use App\Models\TesisComite;
 
 class ComiteController extends Controller
 {
@@ -31,15 +32,15 @@ class ComiteController extends Controller
         //     $query->whereIn('id_programa', Auth::user()->programas->pluck('id_programa'));
         // })
         // ->get();
-        $comites = Comite::with(['usuarios', 'programas']) // Cargar ambas relaciones
+        $comites = Comite::with(['usuarios', 'programas','tesis.usuarios']) // Cargar ambas relaciones
             ->whereHas('programas', function ($query) {
                 $query->whereIn('id_programa', Auth::user()->programas->pluck('id_programa'));
             })
             ->get();
-            $comite = $id ? Comite::with('Usuarios')->find($id) : null;
+            $comite = $id ? Comite::with('usuarios', 'tesis.usuarios')->find($id) : null;
             $programas = Auth::user()->programas;
-
-        return view("Admin.Comites.index", compact("comites",'comite','programas'));
+            $tesis = getTesisByUserProgram();
+        return view("Admin.Comites.index", compact("comites",'comite','programas','tesis'));
     }
    
     public function store($id = null)
@@ -50,8 +51,8 @@ class ComiteController extends Controller
         //dd(Auth::user()->getAuthIdentifierName());
         //return (Auth::user());
         $roles = Rol::getEnumValues();
-
-        return view("Admin.Comites.Create", compact("docentes", "unidades", "programas", "comite","roles"));
+        $tesis = getTesisByUserProgram();
+        return view("Admin.Comites.Create", compact("docentes", "unidades", "programas", "comite","roles","tesis"));
     }
 
     public function create(Request $request)
@@ -67,7 +68,11 @@ class ComiteController extends Controller
             $comite->id_programa = $programa;
         }
         $comite->save();
-        return redirect()->route("comites.index");
+        TesisComite::create([
+            "id_tesis" => $request->get('tesis'),
+            "id_comite" => $comite->id_comite,
+        ]);
+        return redirect()->route("comites.members",$comite->id_comite);
     }
 
     public function saveMembers($id){

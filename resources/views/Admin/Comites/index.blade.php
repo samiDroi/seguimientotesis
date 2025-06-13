@@ -1,4 +1,3 @@
-
 @extends('layouts.admin')
 @section('content')
 <h1 class="text-center mt-4">Lista de Comités</h1>
@@ -27,78 +26,112 @@
           </span>
     </div>
 @else
-    <div class="d-flex gap-4 ms-4">
-    @foreach ($comites as $comite)
-        <div class="card px-4 py-2 border-black border-2 ">
-    
-        <h2 class="text-center title">{{ $comite->nombre_comite }}</h2>
-        <div class="row">
 
-        <form action="{{ route('comites.clone', $comite->id_comite) }}" method="POST">
-            @csrf
-            <button type="submit" class="btn btn-primary col-12 mt-2">Clonar Comité</button>
-        </form>
-        @if ($comite->usuarios->isEmpty())
-            <a href="{{ Route("comites.members",$comite->id_comite) }}">Definir miembros del comite</a>
-        @endif
-       
-        <form action="{{ route('comites.destroy', $comite->id_comite) }}" method="POST" style="display:inline-block;" class="delete">
-            @csrf
-            <button type="button" class="btn btn-danger col-12 mt-2">
-                Eliminar Comité
-            </button>
-        </form>
-       
-
-        <div class=" mt-2"><a class=" text-decoration-none" href="{{ Route("comites.edit",$comite->id_comite) }}">Editar comite </a></div>
-        
-       
-        
-        </div>
-        
-
-
-
-      
-        <table class="mt-3">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Rol</th>
-                </tr>
-            </thead>
-            <tbody>
-            
-                @foreach ($comite->usuarios as $usuario)
-                    <tr>
-                        {{-- <td>{{ $comite->nombre_comite }}</td> --}}
-                        <td>{{ $usuario->nombre }}</td>
-                        <td>{{ $usuario->apellidos }}</td>
-                        <td class="text-primary fw-bold"> 
-                            @foreach (getUserRolesInComite($usuario->id_user, $comite->id_comite) as $rol)
-                                <span class="badge bg-primary me-1">{{ ucfirst($rol) }}</span>
-                            @endforeach
-                    </td> 
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-        <details>
-            <summary class="text-center mt-3">Tesis asignadas</summary>
-            @if ($comite->tesis->isNotEmpty())
-                <ul >
-                    @foreach ($comite->tesis as $tesis)
-                        <li>{{ $tesis->nombre_tesis }}</li>
-                    @endforeach
-                </ul>
-            @else
-                <p>No hay tesis asignadas a este comité.</p>
-            @endif
-        </details>
-        </div>
+<table class="table table-bordered table align-middle    ">
+        <thead class="table-primary" >
+            <tr>
+                <th class="col ">Alumno</th>
+                <th class="col ">Nombre Tesis </th>
+                <th class="col ">Generacion</th>
+                <th class="col ">Roles</th>
+                <th class="col ">Estado</th>
+                <th class="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody class="">
+            @forEach($comites as $comite) 
+            <tr>
+                <td>
+    @foreach ($comite->tesis->pluck('usuarios')->flatten()->unique('id_user') as $usuario)
+        <p>{{ $usuario->nombre }}</p>
     @endforeach
+                <td>
+                    <ol>
+                        
+                          @foreach ($comite->tesis as $tesis)
+                            <li>
+                                {{ $tesis->nombre_tesis }}
+                            </li>
+                         @endforeach
+                   
+                    </ol>
+                </td>
+                    
+                <td>
+                     @foreach ($comite->tesis->pluck('usuarios')->flatten()->unique('id_user') as $usuario)
+        <p>{{ $usuario->generacion }}</p>
+    @endforeach
+                </td>
+                <td>
+                    @foreach ($comite->usuarios as $usuario)
+                        {{ $usuario->nombre . " " . $usuario->apellidos }} 
+                        @foreach (getUserRolesInComite($usuario->id_user, $comite->id_comite) as $rol)
+                            <span class="badge bg-primary me-1">{{ ucfirst($rol) }}</span>    
+                        @endforeach
+                        
+                    @endforeach
+                </td>
+                
+              <td>    
+    <ol>
+        @foreach ($comite->tesis as $tesis)
+            <li>
+                @php
+                    switch (strtolower($tesis->estado)) {
+                        case 'en definición':
+                        case 'en definicion': // por si falta tilde
+                        $badgeClass = 'text-secondary';
+                        break;
+                        case 'en curso':
+                            $badgeClass = 'text-primary ';
+                            break;
+                        case 'por evaluar':
+                        case 'por evalular': // corregido posible typo
+                            $badgeClass = 'text-warning ';
+                            break;
+                        case 'rechazada':
+                            $badgeClass = 'text-danger';
+                            break;
+                        case 'aceptada':
+                            $badgeClass = 'text-success';
+                            break;
+                        default:
+                            $badgeClass = 'text-dark';
+                            break;
+                    }
+                @endphp
+                <span class="fw-bold {{ $badgeClass }}">{{ $tesis->estado }}</span>
+            </li>
+        @endforeach
+    </ol>
+</td>
+                
+              
+               <td class="d-flex flex-column align-items-center">
+                     {{-- <button class="btn  mb-2 btn-sm text-light" style="background-color: #9FA6B2"><i class="fa-regular fa-eye"></i> Ver</button>
+                    <button class="btn  mb-2 btn-sm text-light" style="background-color: #4C6EF5"> <i class="fa-solid fa-briefcase"></i> Plan de trabajo</button>
+                    <button class="btn  mb-2 btn-sm text-light" style="background-color:#355C7D"><i class="fa-solid fa-pencil"></i> Modificar comite</button>
+                      <button class="btn  mb-2 btn-sm text-white" style="background-color:#d2ca37"><i class="fa-solid fa-pencil"></i> Editar</button> --}}
+                      <a href="" class="btn mb-2 btn-sm text-light" style="background-color: #9FA6B2">
+                            <i class="fa-regular fa-eye"></i> Ver
+                        </a>
+                        <a href="{{ route('plan.index', $comite->id_comite) }}" class="btn mb-2 btn-sm text-light" style="background-color: #4C6EF5">
+                            <i class="fa-solid fa-briefcase"></i> Plan de trabajo
+                        </a>
+                        <a href="" class="btn mb-2 btn-sm text-light" style="background-color:#355C7D">
+                            <i class="fa-solid fa-pencil"></i> Modificar comité
+                        </a>
+                        <a href="" class="btn mb-2 btn-sm text-white" style="background-color:#d2ca37">
+                            <i class="fa-solid fa-pencil"></i> Editar
+                        </a>
+
+            </td>
+            </tr>
+             @endforeach
+        </tbody>
+    </table>
+
+   
     </div>
 @endif
 
@@ -161,15 +194,3 @@
     });
     </script>
 @endsection
-
-
-
-
-
-
-
-
-
-
-
-

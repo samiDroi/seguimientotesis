@@ -53,6 +53,7 @@
     @yield('content')
     @include('sweetalert::alert')
     <script src="{{ asset("vendor/sweetalert/sweetalert.all.js") }}"></script>
+    <script src="https://kit.fontawesome.com/eaefdedbbf.js" crossorigin="anonymous"></script>
     @yield('js')
 
 </body>

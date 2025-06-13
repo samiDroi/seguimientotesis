@@ -62,6 +62,12 @@
                 </div>
             </div>
 
+             <div class="row mb-3">
+                 <label for="apellidos" class="col-12 col-md-2 text-center mb-1" >Generacion de ingreso alumno<span class="text-warning">*</span></label>
+                 <div class="col-12 col-md-10">
+                    <input id='apellidos' type="text" name="generacion"class="col-12 form-control" autocomplete="off" required>
+                </div>
+            </div>
 
                 <div class="row mb-3">
                  <label for="username" class="col-12 col-md-2 text-center mb-2 ">Clave de trabajador<span class="text-warning">*</span></label>

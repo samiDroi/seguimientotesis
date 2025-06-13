@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Models\UnidadAcademica;
 use App\Http\Controllers\AcademicControl\UnidadController;
 use App\Http\Controllers\AcademicControl\ProgramaController;
+use App\Http\Controllers\AcademicDocs\PlanDeTrabajoController;
 use App\Http\Controllers\Admin\ComiteController;
 use App\Http\Controllers\Admin\RolController;
 use App\Http\Controllers\Auth\ResetPwsdController;
@@ -158,3 +159,6 @@ Route::get("home/index",function(){
     return Auth::user()->programas;
 });
 
+Route::controller(PlanDeTrabajoController::class)->prefix('plan-trabajo')->group(function(){
+    Route::get('/{id}','index')->name('plan.index');
+});
