@@ -179,5 +179,18 @@ function getUserRolesInComite($userId, $comiteId)
         ->filter(); // Elimina valores nulos o vacíos
 }
 
+function getRolesComite($comiteId)
+{
+    return DB::table('usuarios_comite_roles as ucr')
+        ->join('usuarios_comite as uc', 'ucr.id_usuario_comite', '=', 'uc.id_usuario_comite')
+        ->join('usuarios as u', 'uc.id_user', '=', 'u.id_user') // Asumiendo que es 'id_user'
+        ->where('uc.id_comite', $comiteId)
+        ->select('u.id_user', 'u.nombre', 'ucr.rol_personalizado')
+        ->get();
+}
+function getAlumnoComite(){
+    
+}
+
 
 

@@ -13,14 +13,14 @@
             <th>responsable</th>
         </tr>    
     </thead>
-    
+
     <tbody>
         <tr>
             <td><input type="text" name="actividad[]"></td>
             <td><input type="text" name="descripcion[]"></td>
-            <td><input type="date" name="fecha_entrega" id=""></td>
+            <td><input type="date" name="fecha_entrega[]" id=""></td>
             <td>
-                <select name="responsable" id="">
+                <select name="responsable[]" id="">
                     @foreach ($comite->usuarios as $usuario)
                         <option value="{{ $usuario->id_user }}">{{ $usuario->nombre. " " .$usuario->apellidos }}</option>
                     @endforeach
