@@ -162,5 +162,5 @@ Route::get("home/index",function(){
 Route::controller(PlanDeTrabajoController::class)->prefix('plan-trabajo')->group(function(){
     Route::get('/historial/{id}','historial')->name('plan.historial');
     Route::get('/{id}','index')->name('plan.index');
-
+    Route::post('/create','create')->name('plan.create');
 });

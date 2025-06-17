@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class PlanesTrabajoActividades extends Model
 {
     use HasFactory;
+    protected $table = 'plan_trabajo_actividades';
     protected $primaryKey = 'id_actividad';
     protected $fillable = [
+        'id_plan',
         'tema','descripcion','fecha_entrega'
     ];
 

@@ -1,9 +1,11 @@
 @extends('layouts.base')
 @section('content')
 <h1>formulario de plan de trabajo</h1>
+<form action="{{ Route('plan.create') }}" method="POST">
+    @csrf
 <label for="objetivo">Objetivo</label>
 <input type="text" id="objetivo" name="objetivo">
-
+<input type="hidden" name="id_comite" value="{{ $comite->id_comite }}">
 <table>
     <thead>
         <tr>
@@ -45,4 +47,7 @@
     <li><span></span></li>
     <li><input type="text" name="compromisos[]"></li>
 </ol>
+<button type="submit">Crear</button>
+</form>
+
 @endsection
