@@ -1,4 +1,3 @@
-
 @extends("layouts.form")
 @section('form')
     {{-- @dd(Auth::user()) --}}
@@ -66,21 +65,21 @@
              <div class="row mb-3" id="generacion" style="display: none">
                  <label for="apellidos" class="col-12 col-md-2 text-center mb-1" >Generacion de ingreso alumno<span class="text-warning">*</span></label>
                  <div class="col-12 col-md-10">
-                    <input id='generacion' type="text" name="generacion"class="col-12 form-control" autocomplete="off" required>
+                    <input id='generacion' type="text" name="generacion"class="col-12 form-control" autocomplete="off">
                 </div>
             </div>
 
                 <div class="row mb-3" id="claveT" style="display: none">
                  <label for="username" class="col-12 col-md-2 text-center mb-2 " >Clave de trabajador<span class="text-warning">*</span></label>
                  <div class=" col-12 col-md-10">
-                     <input type="text" name="username"class="col-12 form-control" autocomplete="off" " required> 
+                     <input type="text" name="username"class="col-12 form-control" autocomplete="off" "> 
                     </div>
 
                 </div>
                 <div class="row mb-3" id="matricula" style="display: none">
                  <label for="username" class="col-12 col-md-2 text-center mb-2 " >Matricula<span class="text-warning">*</span></label>
                  <div class=" col-12 col-md-10">
-                     <input type="text" name="matricula"class="col-12 form-control" autocomplete="off" " required> 
+                     <input type="text" name="matricula"class="col-12 form-control" autocomplete="off" "> 
                     </div>
 
                 </div>
@@ -93,10 +92,15 @@
                  </div>
                  
         </div>
-
                  <button type="submit" class="btn btn-primary  mb-4 ">Registrarse</button>
         </form>
         </div>
+        
 </div>
     
+@endsection
+
+@section('js')
+ <script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.js"></script>
+        <script src="js/usuarios/registros.js"></script>
 @endsection

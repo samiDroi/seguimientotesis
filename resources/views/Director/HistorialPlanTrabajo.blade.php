@@ -25,14 +25,14 @@
                                 <small>
                                     <strong>Fecha de creación:</strong> {{ $historial->fecha_creacion }}<br>
                                     <strong>Estado:</strong> {{ $historial->estado }}<br>
-                                    <strong>ID del Plan:</strong> {{ $historial->id_plan }}
+                                    {{-- <strong>ID del Plan:</strong> {{ $historial->id_plan }} --}}
                                 </small>
                             </p>
                         </div>
 
                         <div class="btn-group mt-2 mt-md-0" role="group">
-                            <a href="#" class="btn btn-primary btn-sm">Editar</a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm">Imprimir</a>
+                            <a href="{{ Route('plan.edit', ['id_comite' => $id, 'id_plan' => $historial->id_plan]) }}" class="btn btn-primary btn-sm">Editar</a>
+                            <a href="{{ Route('plan.print',$historial->id_plan) }}" class="btn btn-outline-secondary btn-sm">Imprimir</a>
                         </div>
 
                         <span class="badge bg-dark mt-2 mt-md-0 ms-md-3">

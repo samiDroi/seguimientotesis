@@ -56,9 +56,9 @@ Route::middleware(['auth'])->group(function(){
     Route::prefix('/sys/admin')->middleware(['isAdmin'])->group(function(){
         
         Route::get('',function(){
-            //return Auth::user()->roles->where('nombre_rol','asesor')->where('id_comite',2)->count();
-            //return comprobarRolComite('asesor','2');
-            return view('admin.index');
+            $estadosTesis = getEstadosTesisConConteo();
+            $alumnosPrograma = getAlumnosPorPrograma();
+            return view('admin.index',compact('estadosTesis','alumnosPrograma'));
         })->name('administrador');
         Route::controller(TesisController::class)->group(function(){
             Route::get('/review-tesis','standbyIndex')->name('tesis.review');
@@ -162,5 +162,9 @@ Route::get("home/index",function(){
 Route::controller(PlanDeTrabajoController::class)->prefix('plan-trabajo')->group(function(){
     Route::get('/historial/{id}','historial')->name('plan.historial');
     Route::get('/{id}','index')->name('plan.index');
+    Route::get('/{id_comite}/plan-edit/{id_plan}','edit')->name('plan.edit');
+    Route::get('/print-plan/{id}','exportarPDF')->name('plan.print');
     Route::post('/create','create')->name('plan.create');
+    Route::post('/plan-history/{id_plan}','update')->name('plan.update');
+
 });

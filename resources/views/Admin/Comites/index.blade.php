@@ -126,7 +126,7 @@
                         <a href="{{ route('plan.historial',$comite->id_comite) }}" class="btn mb-2 btn-sm text-light" style="background-color: #4C6EF5">
                             <i class="fa-solid fa-briefcase"></i> Plan de trabajo
                         </a>
-                        <a href="" class="btn mb-2 btn-sm text-light" style="background-color:var(--color-azul-principal)">
+                        <a href="{{ Route("comites.edit",$comite->id_comite) }}" class="btn mb-2 btn-sm text-light" style="background-color:#355C7D">
                             <i class="fa-solid fa-pencil"></i> Modificar comité
                         </a>
                         <a href="" class="btn mb-2 btn-sm text-white" style="background-color:#d2ca37">

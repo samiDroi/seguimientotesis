@@ -14,4 +14,14 @@ class PlanesTrabajo extends Model
     protected $fillable = [
         'objetivos','metas','criterios','compromisos','fecha_creacion','estado'
     ];
+    protected $casts = [
+    'metas' => 'array',
+    'criterios' => 'array',
+    'compromisos' => 'array',
+];
+
+  public function actividades()
+    {
+        return $this->hasMany(PlanesTrabajoActividades::class, 'id_plan', 'id_plan');   
+    }
 }

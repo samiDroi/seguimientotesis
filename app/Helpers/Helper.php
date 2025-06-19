@@ -185,12 +185,29 @@ function getRolesComite($comiteId)
         ->join('usuarios_comite as uc', 'ucr.id_usuario_comite', '=', 'uc.id_usuario_comite')
         ->join('usuarios as u', 'uc.id_user', '=', 'u.id_user') // Asumiendo que es 'id_user'
         ->where('uc.id_comite', $comiteId)
-        ->select('u.id_user', 'u.nombre', 'ucr.rol_personalizado')
+        ->select('u.id_user', 'u.nombre','u.apellidos','ucr.rol_personalizado')
         ->get();
 }
-function getAlumnoComite(){
-    
+//  function getEstadoTesisGeneral($state){
+//     return DB::table('tesis as t')
+//         ->where('t.estado',$state)
+//         ->count();
+//  }
+function getEstadosTesisConConteo(){
+    return DB::table('tesis')
+        ->select('estado', DB::raw('COUNT(*) as total'))
+        ->groupBy('estado')
+        ->get();
 }
+
+function getAlumnosPorPrograma(){
+    return DB::table('usuarios as u')
+        ->join('programa_academico as p', 'u.id_programa', '=', 'p.id_programa')
+        ->select('p.nombre_programa', DB::raw('COUNT(*) as total_alumnos'))
+        ->groupBy('p.nombre_programa')
+        ->get();
+}
+
 
 
 

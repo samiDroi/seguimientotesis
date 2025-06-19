@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -11,11 +11,6 @@
     
   <!-- TinyMCE CDN -->
 <!-- Place the first <script> tag in your HTML's <head> -->
-    
-
-   
-
-
 </head>
 <body>
     <nav class="navbar  " style="height: 70px; background-color:var(--color-belize);">

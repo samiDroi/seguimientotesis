@@ -180,7 +180,7 @@ class ComiteController extends Controller
 
 
     public function update(Request $request,$id){
-        dd($request);
+        // dd($request);
         $comite = Comite::where('id_comite',$id)->first();
         $comite->nombre_comite = $request->get('nombre_comite');
         $comite->id_programa = $request->get('ProgramaAcademico');
@@ -208,7 +208,7 @@ class ComiteController extends Controller
 
         foreach ($request->userRoles as $idUser => $idTipos) {
             $usuarioComite = UsuariosComite::where('id_comite',$id)
-                        ->where('id_user',$idUser);
+                        ->where('id_user',$idUser)->first();
             
             if ($usuarioComite) {
                 foreach ($idTipos as $idTipo => $nombreRol) {
