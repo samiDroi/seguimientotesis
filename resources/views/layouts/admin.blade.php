@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Landing page</title>
+   
     @yield("css")
-    @vite(['resources/css/app.css', 'resources/js/app.js','resources/css/root.css'])
+    @vite(['resources/css/app.css', 'resources/js/app.js','resources/css/root.css','resources/css/variables.css'])
     @vite(['resources/js/app.js', 'resources/css/app.scss'])
+    
+    
    
 </head>
 <body>
     {{-- @dd(Auth::user()) --}}
     {{-- barra superior --}}
-    <nav class="navbar navbar-expand-lg" style="background-color: #007bff;">
+    <nav class="navbar navbar-expand-lg" style="background-color: var(--color-azul-obscuro);">
         <div class="container">
             <a class="navbar-brand text-white" href="{{ Route('administrador') }}">Sistesis</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -42,7 +45,7 @@
                     <li class="nav-item">
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
-                            <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+                            <button type="submit" class="btn text-light "   style="background-color: var(--color-delete)">Cerrar sesión</button>
                         </form>
                     </li>
                 </ul>

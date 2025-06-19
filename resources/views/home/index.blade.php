@@ -11,10 +11,11 @@
 </ul>
 
 <!-- Tab panes -->
+
 <div class="tab-content" id="tesisTabsContent">
 
     <!-- TAB 1: Mis Tesis -->
-    <div class="tab-pane fade show active" id="mis-tesis" role="tabpanel">
+    <div class="tab-pane fade show active " id="mis-tesis" role="tabpanel">
         @foreach ($tesisUsuario as $tesis)
             <div class="card border-3 border-primary rounded-5 ps-3 mb-4 mt-5 mx-5">
                 <div class="card-body row border-secondary border-2 rounded-4">

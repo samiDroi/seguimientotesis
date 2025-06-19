@@ -1,20 +1,22 @@
 @extends('layouts.admin')
+@section('css')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
+@endsection 
 @section('content')
+
+
 <h1 class="text-center mt-4">Lista de Comités</h1>
 
 
 <div class="container  py-5">
 
-<div class=" row mb-5 ">
-    <div class="col-4 text-start "><input id="inputBuscar" class="ms-2 form-control" placeholder="Buscar Comite" type="text"> 
-</div>
-<div class="col-4"> 
-<button class="btn btn-secondary btn-sm  mt-1" id="Btn_buscar" >Buscar</button>
-</div>
-    <div class="col-4 text-end"><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearComiteModal">
-        Crear Comité
+
+    <div class="text-start mb-5 "><button class="btn text-light" style="background-color: var(--color-azul-principal)" data-bs-toggle="modal" data-bs-target="#crearComiteModal">
+      <i class="fa-solid fa-users"></i>   Crear Comité
     </button></div>
-</div>
+
 
 @include('Admin.Comites.Create')
 @if ($comites->isEmpty())
@@ -26,16 +28,16 @@
           </span>
     </div>
 @else
-
-<table class="table table-bordered table align-middle    ">
-        <thead class="table-primary" >
+<div class="container">
+<table class="table table-bordered table align-middle display mt-4   " id="miTabla" >
+        <thead class="table-primary">
             <tr>
-                <th class="col ">Alumno</th>
-                <th class="col ">Nombre Tesis </th>
-                <th class="col ">Generacion</th>
-                <th class="col ">Roles</th>
-                <th class="col ">Estado</th>
-                <th class="col">Acciones</th>
+                <th class="col-2 ">Alumno</th>
+                <th class="col-2 ">Nombre Tesis </th>
+                <th class="col-1 ">Generacion</th>
+                <th class="col-2 ">Roles</th>
+                <th class="col-2 ">Estado</th>
+                <th class="col-2">Acciones</th>
             </tr>
         </thead>
         <tbody class="">
@@ -63,13 +65,22 @@
     @endforeach
                 </td>
                 <td>
+                   
                     @foreach ($comite->usuarios as $usuario)
+                       
                         {{ $usuario->nombre . " " . $usuario->apellidos }} 
+                       
+                       <ul>
                         @foreach (getUserRolesInComite($usuario->id_user, $comite->id_comite) as $rol)
-                            <span class="badge bg-primary me-1">{{ ucfirst($rol) }}</span>    
+                            
+                                <li> <span class="badge bg-primary me-1">{{ ucfirst($rol) }}</span>   </li>
+                            
+                           
+                             
                         @endforeach
-                        
+                       </ul>    
                     @endforeach
+                   
                 </td>
                 
               <td>    
@@ -108,17 +119,14 @@
                 
               
                <td class="d-flex flex-column align-items-center">
-                     {{-- <button class="btn  mb-2 btn-sm text-light" style="background-color: #9FA6B2"><i class="fa-regular fa-eye"></i> Ver</button>
-                    <button class="btn  mb-2 btn-sm text-light" style="background-color: #4C6EF5"> <i class="fa-solid fa-briefcase"></i> Plan de trabajo</button>
-                    <button class="btn  mb-2 btn-sm text-light" style="background-color:#355C7D"><i class="fa-solid fa-pencil"></i> Modificar comite</button>
-                      <button class="btn  mb-2 btn-sm text-white" style="background-color:#d2ca37"><i class="fa-solid fa-pencil"></i> Editar</button> --}}
+                   
                       <a href="" class="btn mb-2 btn-sm text-light" style="background-color: #9FA6B2">
                             <i class="fa-regular fa-eye"></i> Ver
                         </a>
                         <a href="{{ route('plan.index', $comite->id_comite) }}" class="btn mb-2 btn-sm text-light" style="background-color: #4C6EF5">
                             <i class="fa-solid fa-briefcase"></i> Plan de trabajo
                         </a>
-                        <a href="" class="btn mb-2 btn-sm text-light" style="background-color:#355C7D">
+                        <a href="" class="btn mb-2 btn-sm text-light" style="background-color:var(--color-azul-principal)">
                             <i class="fa-solid fa-pencil"></i> Modificar comité
                         </a>
                         <a href="" class="btn mb-2 btn-sm text-white" style="background-color:#d2ca37">
@@ -130,6 +138,7 @@
              @endforeach
         </tbody>
     </table>
+    </div>
 
    
     </div>
@@ -192,5 +201,11 @@
             }
         });
     });
+    
     </script>
+    <script>
+  $(document).ready(function() {
+    $('#miTabla').DataTable();
+  });
+</script>
 @endsection

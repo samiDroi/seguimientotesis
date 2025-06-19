@@ -8,7 +8,8 @@
 
 @section('content')
 
-<div class="text-end me-5 mt-5 mb-4"><button class="btn btn-primary"><a href="{{ route("register.index") }}" class="text-decoration-none text-light">Añadir nuevo usuario</a></button></div>
+<div class="text-end me-5 mt-5 mb-4"><button class="btn " style="background-color: var(--color-azul-principal)"><a href="{{ route("register.index") }}" class="text-decoration-none text-light">Añadir nuevo usuario</a></button></div>
+
 <div class="container bg-body-secondary py-3 shadow-lg">
     <div class="row row mx-5 mt-3">
     <table id="users" class="table mt-4 table-bordered text-center table-striped">

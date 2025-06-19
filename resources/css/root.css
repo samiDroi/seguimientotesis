@@ -1,11 +1,6 @@
 
-.navbar{
-   background-color: #3a3EC8;
-}
-   .puprplecolor{
-    background-color: #a133e8;
-    color: white;
-   }
+
+   
 
    .purplecolor:hover{
     background-color:#e7c3ff ;
@@ -18,10 +13,11 @@
   
      
    .option:hover {
+      
       border-top-right-radius: 40px;
       border-bottom-right-radius: 40px;
-      background: rgba(58, 62, 200, 0.3); /* Transparencia con tu color */
-      box-shadow: 0 0 10px rgba(58, 62, 200, 0.3);
+      background: rgba(58, 62, 200, 0.4); /* Transparencia con tu color */
+      box-shadow: 0 0 10px rgba(58, 62, 200, 0.8);
   }
  
 
@@ -34,12 +30,7 @@
    background-color: #3a3EC8;
   }
   
-  .bg-personalizado{
-   background-color: #595ffd;
-   border: white;
-   color: white;
-  }
-
+  
 
 
 

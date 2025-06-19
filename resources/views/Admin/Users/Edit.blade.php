@@ -4,7 +4,7 @@
     @csrf
     @method('PUT')
     <h1 class="text-center mt-5">Informacion personal</h1>
-    <div class="container bg-body-secondary shadow-lg">
+    <div class="container bg-body-secondary shadow-lg mb-5">
         <p class="fs-4 pt-3 fw-semibold text-center ">Seleccione los Tipos de Usuario:</p>
         {{-- @dd($tiposUsuario) --}}
         <div class="row mb-5 ">
@@ -37,7 +37,18 @@
     <input class="form-control" id='apellidos' type="text" name="apellidos" required value="{{ $usuario->apellidos }}">
     </div>
 
-    <div class="px-5 mt-3">
+    <div class="px-5 mt-3" id="generacion" style="display: none">
+    <label for="apellidos">Generacion</label>
+    <input class="form-control" id='apellidos' type="text" name="generacion" required value="{{ $usuario->generacion }}">
+    </div>
+
+    <div class="px-5 mt-3" id="matricula" style="display: none">
+    <label for="username">Matricula</label>
+    <input class="form-control" type="text" name="matricula" required value="{{ $usuario->matricula }}"> 
+    </div>
+
+  
+    <div class="px-5 mt-3" id="claveT" style="display: none">
     <label for="username">Clave de trabajador</label>
     <input class="form-control" type="text" name="username" required value="{{ $usuario->username }}"> 
     </div>
