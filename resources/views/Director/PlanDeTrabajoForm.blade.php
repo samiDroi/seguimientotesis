@@ -23,12 +23,12 @@
             
         </tr>    
     </thead>
-    
+
     <tbody id="tablaActividades">
         <tr class="filaBase">
             <td><input class="form-control" type="text" name="actividad[]"></td>
             <td><input class="form-control" type="text" name="descripcion[]"></td>
-            <td><input class="form-control" type="date" name="fecha_entrega" id=""></td>
+            <td><input class="form-control" type="date" name="fecha_entrega[]" id=""></td>
             <td>
                 <select name="responsable" id="" class="form-select">
                     @foreach ($comite->usuarios as $usuario)

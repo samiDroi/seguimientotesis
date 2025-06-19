@@ -79,4 +79,7 @@ class Usuarios extends Authenticatable
                 })
                 ->get();
     }
+    public function actividades(){
+        return $this->belongsToMany(Usuarios::class, 'responsables','id_user', 'id_actividad' );
+    }
 }
