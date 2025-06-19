@@ -202,7 +202,8 @@ function getEstadosTesisConConteo(){
 
 function getAlumnosPorPrograma(){
     return DB::table('usuarios as u')
-        ->join('programa_academico as p', 'u.id_programa', '=', 'p.id_programa')
+        ->join('usuarios_programa_academico as upc','upc.id_user','=','u.id_user')
+        ->join('programa_academico as p', 'upc.id_programa', '=', 'p.id_programa')
         ->select('p.nombre_programa', DB::raw('COUNT(*) as total_alumnos'))
         ->groupBy('p.nombre_programa')
         ->get();
