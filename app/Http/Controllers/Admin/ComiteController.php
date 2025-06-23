@@ -26,12 +26,6 @@ class ComiteController extends Controller
         $title = 'Delete User!';
         $text = "Are you sure you want to delete?";
         confirmDelete($title, $text);
-        // $comites = Comite::with('usuarios')->get();
-        // $comites = Comite::with('programas')  // Cargar la relación programas
-        // ->whereHas('programas', function ($query) {
-        //     $query->whereIn('id_programa', Auth::user()->programas->pluck('id_programa'));
-        // })
-        // ->get();
         $comites = Comite::with(['usuarios', 'programas','tesis.usuarios']) // Cargar ambas relaciones
             ->whereHas('programas', function ($query) {
                 $query->whereIn('id_programa', Auth::user()->programas->pluck('id_programa'));

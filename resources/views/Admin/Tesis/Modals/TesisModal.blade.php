@@ -9,14 +9,30 @@
             </div>
             <div class="modal-body">
               <!-- Formulario dentro de la modal -->
-              <form action="{{ route("tesis.create") }}"  method="POST">
+              <form action="{{ route("tesis.create") }}" method="POST">
                 @csrf
                 <div class="mb-3">
                   <!-- Poner el texto arriba con una clase adicional -->
                   {{-- {{ isset($tesis) ? $tesis->nombre_tesis : '' }} --}}
                   <label for="nombre_tesis" class="form-label fs-4">Ingrese el título que llevará la tesis</label>
                   <input type="text" name="nombre_tesis" id="nombre_tesis" class="form-control form-control-lg" required autocomplete="off" placeholder="Título de la tesis">
-    
+                  
+                  <label for="alumno">Asignacion de tesis a alumno</label>
+                  <select class="form-select" name="alumno" id="alumno">
+                    @foreach ($alumnos as $alumno)
+                      <option value="{{ $alumno->id_user }}">{{ $alumno->nombre . " " . $alumno->apellidos}}</option>    
+                    @endforeach
+                  </select>
+                </div>
+                <label for="comite">Continuar con la creacion del comite</label>
+                <input type="checkbox" name="comite" id="comite">
+                <div id="programa_comite">
+                   <label for="programa">Asignacion de tesis a alumno</label>
+                  <select class="form-select" name="programa" id="programa">
+                    @foreach (Auth::user()->programas as $programa)
+                      <option value="{{ $programa->id_programa }}">{{ $programa->nombre_programa}}</option>    
+                    @endforeach
+                  </select>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>

@@ -12,6 +12,7 @@ use App\Models\Tesis;
 use App\Models\TesisComite;
 use App\Models\TesisProgramaAcademico;
 use App\Models\TesisUsuarios;
+use Hamcrest\Arrays\IsArray;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -111,18 +112,37 @@ class TesisController extends Controller
         $tesis = Tesis::create([
             'nombre_tesis' => $nombreTesis
         ]);
-        // foreach (Auth::user()->programas as $programa) {
-        //     TesisProgramaAcademico::create([
-        //         'id_tesis' => $tesis->id_tesis,
-        //         'id_programa' => $programa->id_programa,
-        //     ]);
-        // }
-        $idProgramas = Auth::user()->programas->pluck('id_programa')->toArray();
 
-        $tesis->programas()->attach($idProgramas);
+        // $idProgramas = Auth::user()->programas->pluck('id_programa')->toArray();
+
+        // $tesis->programas()->attach($idProgramas);
+        if (is_array($request->input('alumno'))) {
+            foreach ($request->input('alumno') as $alumno) {
+            TesisUsuarios::create([
+                'id_tesis' => $tesis->id_tesis,
+                'id_user' =>  $alumno
+            ]);
+        }
+
+        }else{
+             TesisUsuarios::create([
+                'id_tesis' => $tesis->id_tesis,
+                'id_user' =>  $request->get('alumno')
+            ]);
+        }
         
-
+        if ($request->boolean('comite')) {
+            $comite = Comite::create([
+            'id_programa'   => $request->get('programa'),
+            ]);
+            TesisComite::create([
+                'id_tesis' => $tesis->id_tesis,
+                'id_comite' => $comite->id_comite
+            ]);
+            return redirect()->route('comites.members',$comite->id_comite);
+        }
         return redirect()->route('tesis.index');
+
     }
     
 
@@ -207,20 +227,11 @@ class TesisController extends Controller
          $tesis = getTesisByUserProgram();
          
        
-        $usuarios = Usuarios::whereIn('usuarios.id_user', function ($query) {
-            $query->select('usuarios_programa_academico.id_user') // Especifica la tabla en la subconsulta
-                ->from('usuarios_programa_academico')
-                ->whereIn('usuarios_programa_academico.id_programa', Auth::user()->programas->pluck('id_programa'));
-        })->get();
-        
+       $alumnos = filterAlumnosPrograma();        
         // Obtener los comités relacionados con los programas del usuario
-        $comites = Comite::with('programas')  // Cargar la relación programas
-        ->whereHas('programas', function ($query) {
-            $query->whereIn('id_programa', Auth::user()->programas->pluck('id_programa'));
-        })
-        ->get();
+        $comites = filterComiteProgramasAuth();
 
-        return view('Admin.Tesis.standbyTesis', compact('tesis','requerimientos','tesisComites','comites','usuarios','directores'));
+        return view('Admin.Tesis.standbyTesis', compact('tesis','requerimientos','tesisComites','comites','alumnos','directores'));
         //return view('Admin.Tesis.standbyTesis', compact('tesisComites','requerimientos','directores'));
     }
 
@@ -281,5 +292,17 @@ class TesisController extends Controller
         //return view('Admin.Tesis', compact('tesis','requerimientos','tesisComites','comites','usuarios'));
         return view('Admin.Tesis',compact("programas","comites","tesisUsuario","tesisComites","tesisDeComite"));
 
+    }
+
+    public function showAvanceAdmin($id_tesis){
+        $tesis = DB::table('tesis as t')
+        ->join('tesis_comite as tc','tc.id_tesis','=','t.id_tesis')
+        ->join('comite_tesis_requerimientos as ctr','ctr.id_tesis_comite','=','tc.id_tesis_comite')
+        ->join('avance_tesis as at','at.id_requerimiento','=','ctr.id_requerimiento')
+        ->where('t.id_tesis',$id_tesis)
+        ->select('ctr.*','at.*','t.nombre_tesis')
+        ->get();
+        //dd($tesis);
+        return view('Admin.Tesis.VerAvance',compact('tesis'));
     }
 }

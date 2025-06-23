@@ -13,7 +13,9 @@ class Comite extends Model
     use HasFactory;
     protected $table = 'comite';
     protected $primaryKey = 'id_comite';
-
+    protected $fillable = [
+        'id_programa','nombre_programa'
+    ];
  
     
     public function usuarios():BelongsToMany {

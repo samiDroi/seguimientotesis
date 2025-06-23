@@ -4,9 +4,9 @@
 <div class="container">
     <h1 class="mb-4">Historial de Planes de Trabajo</h1>
 
-    <div class="mb-3">
+    {{-- <div class="mb-3">
         <a href="{{ route('plan.index', $id) }}" class="btn btn-success">Crear nuevo plan de trabajo</a>
-    </div>
+    </div> --}}
 
     @forelse ($planMes as $mes => $items)
         <div class="mb-5">

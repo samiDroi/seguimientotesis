@@ -1,6 +1,6 @@
-@extends('layouts.base')
+@extends('layouts.form')
 
-@section('content')
+@section('form')
 <h1>{{ isset($plan) ? 'Editar plan de trabajo' : 'Formulario de plan de trabajo' }}</h1>
 
 <form action="{{ isset($plan) ? route('plan.update', $plan->id_plan) : route('plan.create') }}" method="POST">

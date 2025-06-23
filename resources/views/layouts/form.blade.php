@@ -10,7 +10,7 @@
 </head>
 <body>
     <div id="principal">
-        <button class="ms-5 mt-4 btn btn-secondary" > <i class="fa-solid fa-left-long"></i>  Volver</button>
+        <button class="ms-5 mt-4 btn btn-secondary" onclick="window.history.back();"> <i class="fa-solid fa-left-long"></i>Volver</button>
         <div class="row text-center ">
             <h1 class="text-primary" id="SistesisTitulo">Sistesis</h1>
         </div>

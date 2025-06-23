@@ -1,7 +1,13 @@
 @extends('layouts.admin')
 @section('content')
-
+{{-- @dd($usuarios) --}}
 <div class="container">
+    <br>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tesisModal">
+        Crear Título de la Tesis
+    </button>
+    @include('Admin.Tesis.Modals.TesisModal')
+
     <h1>Todas las Tesis y sus Requerimientos</h1>
 
     <ul class="nav nav-tabs fs-5" id="filterNav">

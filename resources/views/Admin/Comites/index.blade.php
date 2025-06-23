@@ -120,9 +120,14 @@
               
                <td class="d-flex flex-column align-items-center">
                    
-                      <a href="" class="btn mb-2 btn-sm text-light" style="background-color: #9FA6B2">
+                      {{-- <a href="{{ Route('tesis.avance.admin',$tesis->id_tesis) }}" class="btn mb-2 btn-sm text-light" style="background-color: #9FA6B2">
                             <i class="fa-regular fa-eye"></i> Ver
-                        </a>
+                        </a> --}}
+                            @foreach ($comite->tesis as $tesis)
+                                <a href="{{ route('tesis.avance.admin', $tesis->id_tesis) }}" class="btn mb-2 btn-sm text-light" style="background-color: #9FA6B2">
+                                    <i class="fa-regular fa-eye"></i> Ver {{ $loop->iteration }}
+                                </a>
+                            @endforeach
                         <a href="{{ route('plan.historial',$comite->id_comite) }}" class="btn mb-2 btn-sm text-light" style="background-color: #4C6EF5">
                             <i class="fa-solid fa-briefcase"></i> Plan de trabajo
                         </a>

@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Comite;
 use App\Models\Tesis;
+use App\Models\Usuarios;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -26,14 +28,15 @@ function userHasPermisos($permisos,$id_comite){
 
 function getPermisos($permisos,$id_comite){
     return DB::table('usuarios as u')
-        ->join('usuarios_comite as uc','uc.id_user','=',Auth::user()->id_user)
-        ->join('comites as c','c.id_comite','=','uc.id_comite')
+        ->join('usuarios_comite as uc','uc.id_user','=','u.id_user')
+        ->join('comite as c','c.id_comite','=','uc.id_comite')
         ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.id_usuario_comite')
         ->join('roles as r','r.id_rol','=','ucr.id_rol')
         ->join('roles_permisos as rp','rp.id_rol','=','r.id_rol')
-        ->join('permisos as p','p.id_permiso','=','rp.id_permiso')
+        ->join('permisos as p','p.id_permisos','=','rp.id_permisos')
         ->where('p.clave',$permisos)
-        ->where('id_comite',$id_comite)
+        ->where('c.id_comite',$id_comite)
+        ->where('u.id_user',Auth::user()->id_user)
         ->select(
             'p.*',
             'r.*',
@@ -207,6 +210,28 @@ function getAlumnosPorPrograma(){
         ->select('p.nombre_programa', DB::raw('COUNT(*) as total_alumnos'))
         ->groupBy('p.nombre_programa')
         ->get();
+}
+
+function filterAlumnosPrograma(){
+     return Usuarios::whereIn('usuarios.id_user', function ($query) {
+            $query->select('usuarios_programa_academico.id_user') // Especifica la tabla en la subconsulta
+                ->from('usuarios_programa_academico')
+                ->whereIn('usuarios_programa_academico.id_programa', Auth::user()->programas->pluck('id_programa'));
+        })->get();
+    // $programas = Auth::user()->programas->pluck('id_programa');
+    // return DB::table('usuarios as u')
+    //     ->join('usuarios_programa_academico as upa','upa.id_user','=','u.id_user')
+    //     ->join('programa_academico as pa','pa.id_programa','=','upa.id_programa')
+    //     ->whereIn('pa.id_programa',$programas)
+    //     ->select('u.*')
+    //     ->get();
+}
+
+function filterComiteProgramasAuth(){
+    return Comite::with('programas')  
+        ->whereHas('programas', function ($query) {
+            $query->whereIn('id_programa', Auth::user()->programas->pluck('id_programa'));
+        });
 }
 
 

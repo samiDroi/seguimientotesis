@@ -90,35 +90,25 @@ class PlanDeTrabajoController extends Controller
 
     public function historial($id){
         $tesisComite = TesisComite::where('id_comite',$id)->first();
-        $planMes = PlanesTrabajo::select(
+        $planExist = PlanesTrabajo::where('id_tesis_comite',$tesisComite->id_tesis_comite)->first();
+        if ($planExist) {
+             $planMes = PlanesTrabajo::select(
             DB::raw('DATE_FORMAT(fecha_creacion, "%Y-%m") as mes'),
             'plan_trabajo.*'
-        )
-        ->where('id_tesis_comite',$tesisComite->id_tesis_comite)
-        ->orderBy('fecha_creacion', 'desc')
-        ->get()
-        ->groupBy('mes'); // Agrupa por año-mes
+            )
+            ->where('id_tesis_comite',$tesisComite->id_tesis_comite)
+            ->orderBy('fecha_creacion', 'desc')
+            ->get()
+            ->groupBy('mes'); // Agrupa por año-mes
+            
+            return view('Director.HistorialPlanTrabajo',compact('planMes','id'));
+        }else{
+            return redirect()->route('plan.index',$id);
+        }
         
-        return view('Director.HistorialPlanTrabajo',compact('planMes','id'));
+       
     }
-    // public function exportarPDF($id_plan){
-    //     $plan = PlanesTrabajo::with('actividades')->findOrFail($id_plan);
-    //     $comiteUsuarios = DB::table('plan_trabajo as pt')
-    //     ->join('tesis_comite as tc','tc.id_tesis_comite','=','pt.id_tesis_comite')
-    //     ->join('comite as c','c.id_comite','=','tc.id_comite')
-    //     ->join('tesis as t','t.id_tesis','=','tc.id_tesis')
-    //     ->join('tesis_usuarios as tu','tu.id_tesis','=','t.id_tesis')
-    //     ->join('usuarios as u','u.id_user','=','tu.id_tesis')
-    //     ->where('pt.id_plan',$plan->id_plan)
-    //     ->select('c.*,u.nombre,u.apellidos,u.generacion','t.nombre_tesis')
-    //     ->get();
-
-    //     $rolesComite = getRolesComite($comiteUsuarios->id_comite);
-    //     // Puedes pasar datos a tu vista
-    //     $pdf = Pdf::loadView('Docs.PlanDeTrabajo', ['plan' => $plan,'comiteUsuarios' => $comiteUsuarios]);
-
-    //     return $pdf->stream('plan_trabajo_'.$id_plan.'.pdf');
-    // }
+    
     public function exportarPDF($id_plan) {
     $plan = PlanesTrabajo::with('actividades')->findOrFail($id_plan);
 

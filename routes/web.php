@@ -63,8 +63,10 @@ Route::middleware(['auth'])->group(function(){
         Route::controller(TesisController::class)->group(function(){
             Route::get('/review-tesis','standbyIndex')->name('tesis.review');
             Route::get('/current-tesis','showCurrentlyTesis')->name('tesis.admin');
+            Route::get('/view-avance/{id_tesis}','showAvanceAdmin')->name('tesis.avance.admin');
             Route::post('/review-tesis/updateState/{id}','updateState')->name('tesis.review.update');
             Route::post('tesis/asignar-comite/{id}','asignarComite')->name('tesis.comite.attach');
+            Route::post("/formulary","create")->name("tesis.create");
 
         });
        
@@ -127,7 +129,7 @@ Route::middleware(['auth'])->group(function(){
         Route::get("/","index")->name("tesis.index"); 
         Route::get("/formulary/{id?}","viewRequerimientos")->name("tesis.requerimientos");
         //Route::get("/formulary/requerimientos/{id?}")
-        Route::post("/formulary","create")->name("tesis.create");
+        //Route::post("/formulary","create")->name("tesis.create");
         Route::post("/formulary/delete/{id}","delete")->name("tesis.delete");
         Route::post("formulary/requerimientos/{id}","createRequerimientos")->name("tesis.create.requerimientos");
     });

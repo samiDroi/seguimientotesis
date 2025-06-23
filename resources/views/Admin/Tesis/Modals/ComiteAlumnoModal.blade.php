@@ -23,9 +23,9 @@
 
                         <label for="usuarios" class="form-label fs-3 fw-semibold">Asignar alumno a la tesis</label>
                         <select class="form-select" name="usuarios" id="usuarios">
-                            @foreach ($usuarios as $usuario)
-                                <option value="{{ $usuario->id_user }}">
-                                    {{ $usuario->username }} {{ $usuario->nombre }} {{ $usuario->apellidos }}
+                            @foreach ($alumnos as $alumno)
+                                <option value="{{ $alumno->id_user }}">
+                                    {{ $alumno->username }} {{ $alumno->nombre }} {{ $alumno->apellidos }}
                                 </option>
                             @endforeach
                         </select>
