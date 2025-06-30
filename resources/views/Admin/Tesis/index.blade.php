@@ -6,7 +6,7 @@
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tesisModal">
         Crear Título de la Tesis
     </button>
-
+    
     @if ($tesis->isNotEmpty())
         <div class="container mt-4">
             @foreach ($tesis as $tesisItem)

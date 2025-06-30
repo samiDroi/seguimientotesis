@@ -8,6 +8,7 @@
 
 @section('content')
     <h1>{{ $comite->nombre_comite }}</h1>
+    <div class="container">
     <form action="{{ Route("comites.save.members",$comite->id_comite) }}" method="POST">
         @csrf
         <input type="hidden" name="id_comite" value="{{ $comite->id_comite }}">
@@ -15,6 +16,7 @@
         {{-- Tabla de docentes a la izquierda --}}
         <div class="col-7">
             <label for="docentes">Lista de docentes disponibles</label>
+            <
             <table class="table" id="docentes">
                 <thead class="table-primary">
                     <tr>
@@ -45,7 +47,7 @@
             <p class="fs-3 border-bottom border-primary border-2">Confirmar información de comité</p>
             <div id="confirmarComite" > </div>
         </div>
-    </div>
+    
 
 
 
@@ -54,6 +56,7 @@
 
     </form>
 
+    </div>
     </div>
 @endsection
 @section('js')

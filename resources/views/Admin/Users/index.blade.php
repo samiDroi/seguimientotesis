@@ -10,12 +10,12 @@
 
 <div class="text-end me-5 mt-5 mb-4"><button class="btn " style="background-color: var(--color-azul-principal)"><a href="{{ route("register.index") }}" class="text-decoration-none text-light">Añadir nuevo usuario</a></button></div>
 
-<div class="container bg-body-secondary py-3 shadow-lg">
-    <div class="row row mx-5 mt-3">
-    <table id="users" class="table mt-4 table-bordered text-center table-striped">
-            <thead class="table-primary">
+<div class="container  py-3 mb-5" ">
+    <div class="row row mx-2 mt-3">
+    <table id="users" class="table rounded mt-4 table-bordered text-center ">
+            <thead class="table-primary" >
                 <tr>
-                    <th>clave</th>
+                    <th>Clave</th>
                     <th>Nombre</th>
                     <th>Apellidos</th>
                     <th>Correo_electronico</th>
@@ -40,7 +40,7 @@
                             {{-- @dd($usuario->latest()->first())    --}}
                         </td> 
                         <td>
-                            <button class="btn btn-sm btn-secondary">
+                            <button class="btn btn-sm "style="background-color:var(--color-amarillo)">
                                 <a class="text-light text-decoration-none" href="{{ route("users.edit",$usuario->id_user) }}">Editar</a>
                             </button>
                             <form action='{{ route("users.delete",$usuario->id_user) }}' method="POST" style="display:inline;">

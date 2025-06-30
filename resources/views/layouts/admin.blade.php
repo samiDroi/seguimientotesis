@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Landing page</title>
-   
+  
     @yield("css")
     @vite(['resources/css/app.css', 'resources/js/app.js','resources/css/root.css','resources/css/variables.css'])
-    @vite(['resources/js/app.js', 'resources/css/app.scss'])
+    @vite(['resources/js/app.js', 'resources/css/app.scss',])
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
     
     
    
@@ -33,7 +35,7 @@
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{{ Route('unidades.index') }}">Unidades Academicas</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" style="display: none"> 
                         <a class="nav-link text-white" href="{{ Route('info.tesis') }}">Mis tesis</a>
                     </li>
                     <li class="nav-item">
@@ -55,8 +57,11 @@
     
     @yield('content')
     @include('sweetalert::alert')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{ asset("vendor/sweetalert/sweetalert.all.js") }}"></script>
     <script src="https://kit.fontawesome.com/eaefdedbbf.js" crossorigin="anonymous"></script>
+  
+
     @yield('js')
 
 </body>

@@ -7,10 +7,10 @@
 @endsection
 
 @section('content')
-<div class="text-end mt-5 me-5 mb-3"><button class="btn btn-primary"><a href="{{ route('unidades.create') }}" class="text-decoration-none text-light">Agregar nueva Unidad</a></button> </div>
+<div class="text-end mt-5 me-5 mb-4"><button data-bs-toggle="modal" data-bs-target="#modalCrear" class="btn" style="background-color: var(--color-verde-Nephiris)"><a  class="text-decoration-none text-light"> <i class="fa-solid fa-plus"></i> Agregar nueva Unidad</a></button> </div>
 
     <div class="container bg-light py-3 shadow-lg">
-        <div class="row mx-5 mt-3">
+        <div class="row ms-2  mt-3">
             <div> 
                 <table id="unidades" class="table mt-4 table-bordered text-center table-striped ">
                 <thead class="table-primary  ">
@@ -27,16 +27,16 @@
                             <td class="text-start ">{{ $unidad->nombre_unidad }}</td>
 
                             <td >
-                                <button class="btn btn-outline-secondary btn-sm"><a href="{{ route('programas.index',$unidad->id_unidad) }}" class="text-decoration-none text-black">Programas</a></button>
+                                <button class="btn btn-outline-secondary btn-sm"><a href="{{ route('programas.index',$unidad->id_unidad) }}" class="text-decoration-none text-black"> <i class="fa-solid fa-graduation-cap"></i> Programas</a></button>
                             </td>
 
 
                             <td >
-                                <button class="btn btn-primary btn-sm"><a href="{{ route('unidades.edit', $unidad->id_unidad) }}" class="text-decoration-none text-light">Editar</a></button>
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#modalEditar" class="btn  btn-sm" style="background-color: var(--color-amarillo)"><i class="fa-solid fa-pen-to-square text-light"></i><span class="text-light"> Editar</span> </button>
                                 <form action="{{ route('unidades.destroy', $unidad->id_unidad) }}" method="POST" style="display:inline;" class="delete">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger btn-sm" type="submit">Eliminar</button>
+                                    <button class="btn btn-danger btn-sm" type="submit"> <i class="fa-solid fa-trash"></i> Eliminar</button>
                                 </form>
                             </td>
                            
@@ -51,6 +51,71 @@
             
         </div>
     </div>
+
+    <!-- Modal -->
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar Unidad</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+          <form action="{{ route('unidades.update', $unidad->id_unidad) }}" method="POST">
+             @csrf
+              @method('PUT') <!-- Necesario para indicar que se trata de una actualización -->
+
+            <div class="container">
+            <div class="row  text-center ">
+                  <div class="mb-4 ">
+                        <label class=" my-4 fs-3 fw-semibold" for="nombre_unidad">Nombre de la Unidad</label>
+                        <div class=""><input type="text" class="form-control form-control-lg form-floating mb-4 " id="nombre_unidad" name="nombre_unidad" value="{{ old('nombre_unidad', $unidad->nombre_unidad) }}" required></div>
+                    </div>
+                    
+          </div>
+                
+                    </div>
+      </div>
+      <div class="modal-footer border-0 justify-content-center pb-4">
+        
+         <button class="btn btn-success mb-4" type="submit"> <i class="fa-solid fa-check me-2"></i> Actualizar Unidad</button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>  
+
+
+
+
+<div class="modal fade" id="modalCrear" tabindex="-1" aria-labelledby="modalCrearLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content shadow-lg rounded-4">
+      
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold" id="modalCrearLabel">Crear Unidad Académica</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <form action="{{ route('unidades.store') }}" method="POST">
+        @csrf
+        <div class="modal-body">
+          <div class="mb-4 text-center">
+            <label for="unidadAcademica" class="form-label fs-3 fw-semibold">Nombre de la nueva unidad</label>
+            <input type="text" class="form-control form-control-lg  mx-auto" id="unidadAcademica" name="nombre_unidad" placeholder="Ej. Licenciatura en Economia" required>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0 justify-content-center pb-4">
+          <button type="submit" class="btn text-light px-4 py-2" style="background-color: var(--color-verde-Nephiris)">
+            <i class="fa-solid fa-plus me-2"></i>Crear
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
 
 @endsection
 @section('js')

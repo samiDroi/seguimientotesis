@@ -23,7 +23,7 @@
             @endforeach
         </div>
     @else
-        <h4 class="text-danger">No se encontraron requerimientos para esta tesis.</h4>
+        <h4 class="text-danger">No se encontraron requerimientos para esta tesi.</h4>
     @endif
 </div>
 

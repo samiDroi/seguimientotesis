@@ -1,3 +1,5 @@
+
+
 $('[name="nombre_tipo[]"]').on("change", function () {
     let mostrarGeneracion = false;
     let mostrarClaveT = false;
@@ -68,6 +70,7 @@ $('[name="nombre_tipo[]"]').on("change", function () {
     } else {
         $("#matricula").hide();
     }
+
+
+    
 });
-
-

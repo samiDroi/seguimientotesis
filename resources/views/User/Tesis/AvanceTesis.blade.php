@@ -4,25 +4,32 @@
 @endsection
 @section('content') 
 <div class="container mt-5  ">
-    <h1 class="text-primary fw-semibold">{{ $requerimiento->nombre_requerimiento }}</h1>
+    <h1 class=" fw-semibold" style="color: var(--color-azul-principal)">{{ $requerimiento->nombre_requerimiento }}</h1>
     <!-- Textarea que será reemplazada por TinyMCE -->
     
     @foreach (getAlumnoAvance($requerimiento->id_requerimiento) as $alumno)
-        <h4 class="text-primary  fw-semibold border-bottom border-primary p-2 mb-3">Alumno: {{ $alumno->usuario_nombre }}</h4>
+        <h4 class="  fw-semibold border-bottom border-primary p-2 mb-3">Alumno: <span style="color: var(--color-azul-principal)">{{ $alumno->usuario_nombre }}</span></h4>
     @endforeach
 
-    <p class="fs-5 fw-semibold">Ingresa el avance de el requerimiento pedido en el area de texto</p>
     
+   
     <form  action="{{ Route("avance.create",$requerimiento->id_requerimiento) }}" method="POST">
         @csrf
+         
             @if (!(comprobarIsInComite($comiteTesis->id_comite)) && Auth::user()->isCoordinador == 1)
+            <p class="fs-4 fw-semibold">Ingresa el avance de el requerimiento :</p>
+            
                 <textarea    id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea>
                 
                 <a class=" mt-2 align-center" href="{{ Route("home") }}">Regresar y cancelar</a>
                 <button class=" mt-3 btn btn-primary " type="submit">Guardar Cambios</button>
            
             @else
-                <p>{!! $avanceTesis?->contenido !!}</p>
+                
+            <div class="fs-5 mb-5 py-4 px-4 " >
+                <p class="fw-semibold fs-4"> <i class="fa-regular fa-file-lines"></i> Contenido:</p>
+                 {!! $avanceTesis?->contenido !!} 
+            </div>
             @endif
         
     </form>
@@ -51,7 +58,7 @@
                                 </div>
                             </div>
      @endif
-
+    <h2 class="mb-1 mt-5"> <i class="fa-regular fa-comments"></i> Comentarios   </h2>
      {{-- cargar comentarios --}}
     @foreach (getInfoComentarioAvance( $requerimiento->id_requerimiento) as $comentario)
      <div class="card comentario mt-2 mb-3 ps-3 py-4 shadow-sm">
@@ -63,6 +70,7 @@
 
      @if (Auth::user()->comites->contains('id_comite', $comiteTesis->id_comite) && optional($avanceTesis)->contenido)
         <form action="{{ Route("comentario.create") }}" method="post">
+           
             @csrf
             <input type="hidden" name="id_requerimiento" value="{{ $requerimiento->id_requerimiento }}">
             <input type="hidden" name="id_avance_tesis" value="{{ $avanceTesis?->id_avance_tesis }}">

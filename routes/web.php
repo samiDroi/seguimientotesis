@@ -80,12 +80,12 @@ Route::middleware(['auth'])->group(function(){
         });
         
         Route::controller(ProgramaController::class)->prefix('/programas')->group(function(){
-            Route::get("index/{id}","index")->name('programas.index');//devuelve vista del index
+            Route::get("index/{id?}","index")->name('programas.index');//devuelve vista del index
             Route::get('create', 'store')->name('programas.store');//devuelve vista del create
             Route::post('/', 'create')->name('programas.create');//Metodo para subir los datos del formulario
         
             Route::get('{id}/edit', 'edit')->name('programas.edit');//devuelve vista del update
-            Route::put('{id}', 'update')->name('programas.update');//metodo para editar el programa seleccionado
+            Route::put('{id?}', 'update')->name('programas.update');//metodo para editar el programa seleccionado
             Route::delete('{id}', 'delete')->name('programas.destroy');//metodo que elimina el programa
         });
         
