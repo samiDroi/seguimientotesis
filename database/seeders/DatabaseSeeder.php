@@ -20,10 +20,10 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // // ]);
-        // $this->call(TiposUsuariosSeeder::class); 
-        // $this->call(UnidadAcademicaSeeder::class);
-        // $this->call(ProgramaAcademicoSeeder::class);
-        // $this->call(PermisosSeeder::class);
+        $this->call(TiposUsuariosSeeder::class); 
+        $this->call(UnidadAcademicaSeeder::class);
+        $this->call(ProgramaAcademicoSeeder::class);
+        $this->call(PermisosSeeder::class);
         $this->call(RolesSeeder::class);
     }
 }

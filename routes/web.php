@@ -8,6 +8,7 @@ use App\Http\Controllers\AcademicControl\UnidadController;
 use App\Http\Controllers\AcademicControl\ProgramaController;
 use App\Http\Controllers\AcademicDocs\PlanDeTrabajoController;
 use App\Http\Controllers\Admin\ComiteController;
+use App\Http\Controllers\Admin\PanelController;
 use App\Http\Controllers\Admin\RolController;
 use App\Http\Controllers\Auth\ResetPwsdController;
 use App\Http\Controllers\Admin\ShowUsers;
@@ -54,12 +55,8 @@ Route::withoutMiddleware(['auth'])->group(function(){
 Route::middleware(['auth'])->group(function(){
     //Rutas para admin
     Route::prefix('/sys/admin')->middleware(['isAdmin'])->group(function(){
-        
-        Route::get('',function(){
-            $estadosTesis = getEstadosTesisConConteo();
-            $alumnosPrograma = getAlumnosPorPrograma();
-            return view('admin.index',compact('estadosTesis','alumnosPrograma'));
-        })->name('administrador');
+        Route::get('',[PanelController::class,'index'])->name('administrador');
+
         Route::controller(TesisController::class)->group(function(){
             Route::get('/review-tesis','standbyIndex')->name('tesis.review');
             Route::get('/current-tesis','showCurrentlyTesis')->name('tesis.admin');
@@ -134,9 +131,8 @@ Route::middleware(['auth'])->group(function(){
         Route::post("formulary/requerimientos/{id}","createRequerimientos")->name("tesis.create.requerimientos");
     });
     
-    Route::controller(HomeController::class)->prefix("/home")->group(function(){
+    Route::controller(HomeController::class)->prefix("/home")->middleware(['isEstudiante'])->group(function(){
         Route::get("/","index")->name("home");
-        //Route::post("/logout","logout")->name("logout");
         Route::get("/comites","showComite")->name("home.comite");
     });
 
@@ -168,5 +164,4 @@ Route::controller(PlanDeTrabajoController::class)->prefix('plan-trabajo')->group
     Route::get('/print-plan/{id}','exportarPDF')->name('plan.print');
     Route::post('/create','create')->name('plan.create');
     Route::post('/plan-history/{id_plan}','update')->name('plan.update');
-
 });

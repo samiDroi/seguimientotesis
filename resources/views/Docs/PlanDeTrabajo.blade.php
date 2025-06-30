@@ -105,7 +105,8 @@
                     <td>{{ $actividad->tema }}</td>
                     <td>{{ $actividad->descripcion }}</td>
                     <td>{{ \Carbon\Carbon::parse($actividad->fecha_entrega)->format('d/m/Y') }}</td>
-                    <td>{{ $actividad->responsable->nombre ?? 'Sin asignar' }}</td>
+                   
+                    <td>{{ $actividad->responsables->first()->nombre." ".$actividad->responsables->first()->apellidos ?? 'Sin asignar' }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -134,6 +135,9 @@
     <div class="section">
         <strong>Compromisos del comité tutorial</strong>
         <ol type="a">
+              <li><span>El Comité Tutorial se compromete a revisar los avances entregados por el(la) alumno(a) y proporcionar retroalimentación oportuna para garantizar el cumplimiento de los objetivos de la tesis.</span></li>
+              <li><span>El Comité Tutorial acuerda realizar reuniones periódicas (establecer cada cuando y por cual medio) con el alumno(a) para supervisar el progreso y resolver dudas o problemas que puedan surgir.</span></li>
+              <li><span>El Comité Tutorial se compromete a presentar avances a la coordinación del programa académico cuando se solicite. </span></li>
             @foreach ($plan->compromisos as $compromiso)
                 <li>{{ $compromiso }}</li>
             @endforeach
@@ -181,6 +185,7 @@
             <li>Se deberá enviar una copia firmada a la Coordinación del PA de la MTIEAE para su resguardo.</li>
             <li>Este documento deberá ser llenado al inicio del seguimiento de la tesis y actualizado conforme sea necesario.</li>
             <li>Se deberá enviar una copia firmada al Tutor(a) de seguimiento para su seguimiento.</li>
+        
         </ul>
     </div>
 </body>

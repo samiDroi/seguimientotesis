@@ -106,22 +106,14 @@ function getDirectores(){
 }
 
 function getTesisByUserProgram(){
-    // return Tesis::with('comites')  // Cargar la relación comites
-    // ->join('tesis_comite as tc', 'tesis.id_tesis', '=', 'tc.id_tesis')
-    // ->join('usuarios_comite as uc', 'tc.id_comite', '=', 'uc.id_comite')
-    // ->join('usuarios_programa_academico as upa', 'uc.id_user', '=', 'upa.id_user')
-    // ->whereIn('upa.id_programa', Auth::user()->programas->pluck('id_programa'))
-    // ->select('tesis.*')
-    // ->distinct()
-    // ->get();
+ 
     return Tesis::with('comites')
-    //->table('tesis as t')
-    ->join('tesis_programa_academico as tap', 'tesis.id_tesis', '=', 'tap.id_tesis')
-    ->join('programa_academico as pa', 'pa.id_programa', '=', 'tap.id_programa')
-    ->join('usuarios_programa_academico as upa', 'upa.id_programa', '=', 'pa.id_programa')
-    ->whereIn('pa.id_programa', Auth::user()->programas->pluck("id_programa")->toArray())  // Filtrar por el usuario autenticado
-    ->select('tesis.*')  // Seleccionar todas las columnas de tesis
-    ->groupBy('tesis.id_tesis')
+    ->join('tesis_comite as tc', 'tc.id_tesis', '=', 'tesis.id_tesis')
+    ->join('comite as c', 'c.id_comite', '=', 'tc.id_comite')
+    ->join('programa_academico as pa', 'pa.id_programa', '=', 'c.id_programa')
+    ->whereIn('pa.id_programa', Auth::user()->programas->pluck('id_programa')->toArray())
+    ->select('tesis.*')
+    ->distinct()
     ->get();
 }
 function getRequerimientos($id_requerimiento){
@@ -148,26 +140,16 @@ function getTesisByUserProgramAndComite() {
 function isDirector(){
     return DB::table('usuarios_comite as uc')
     ->join('comite as c', 'uc.id_comite', '=', 'c.id_comite')
-    ->join('usuarios as u', 'u.id_user', '=', 'uc.id_user')  // Relación usuarios - usuarios_comite
+    ->join('usuarios as u', 'u.id_user', '=', 'uc.id_user')
+    ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.id_usuario_comite')
+    ->join('roles as r','r.id_rol','=','ucr.id_rol')  // Relación usuarios - usuarios_comite
     ->where('uc.id_user', Auth::user()->id_user)  // Filtrar por el id_user
-    ->where('uc.rol', 'DIRECTOR')  // Verifica que el rol sea 'DIRECTOR'
+    ->where('r.nombre_rol', 'administrador')  // Verifica que el rol sea 'DIRECTOR'
     ->count();  // Contar los registros que coinciden con la condición
 
 }
 
-// function getUserRolesInComite($userId, $comiteId)
-// {
-//     return DB::table('usuarios_comite_roles as ucr')
-//         ->join('roles as r', 'ucr.id_rol', '=', 'r.id_rol')
-//         ->join('usuarios_comite as uc', function($join) use ($userId, $comiteId) {
-//             $join->on('ucr.id_usuario_comite', '=', 'uc.id_usuario_comite')
-//                 ->where('uc.id_user', '=', $userId)
-//                 ->where('uc.id_comite', '=', $comiteId);
-//         })
-//         ->select('ucr.rol_personalizado')
-//         ->get()
-//         ->pluck('ucr.rol_personalizado');
-// }
+
 function getUserRolesInComite($userId, $comiteId)
 {
     return DB::table('usuarios_comite_roles as ucr')
@@ -191,11 +173,7 @@ function getRolesComite($comiteId)
         ->select('u.id_user', 'u.nombre','u.apellidos','ucr.rol_personalizado')
         ->get();
 }
-//  function getEstadoTesisGeneral($state){
-//     return DB::table('tesis as t')
-//         ->where('t.estado',$state)
-//         ->count();
-//  }
+
 function getEstadosTesisConConteo(){
     return DB::table('tesis')
         ->select('estado', DB::raw('COUNT(*) as total'))
@@ -233,7 +211,42 @@ function filterComiteProgramasAuth(){
             $query->whereIn('id_programa', Auth::user()->programas->pluck('id_programa'));
         });
 }
+function getDirectorTesis(){
+    return DB::table('tesis as t')
+        ->join('tesis_comite as tc','tc.id_tesis','=','t.id_tesis')
+        ->join('comite as c','c.id_comite','=','tc.id_comite')
+        ->join('usuarios_comite as uc','uc.id_comite','=','c.id_comite')
+        ->join('usuarios as u','u.id_user','=','uc.id_user')
+        ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.id_usuario_comite')
+        ->join('roles as r','r.id_rol','=','ucr.id_rol')
+       ->leftJoin('comite_tesis_requerimientos as ctr', 'ctr.id_tesis_comite', '=', 'tc.id_tesis_comite')
 
+        ->where('uc.id_user',Auth::user()->id_user)
+        ->where('r.nombre_rol','administrador')
+        ->select('t.*','c.*','ctr.*','ucr.*','r.*','tc.id_tesis_comite as id_tc','ctr.descripcion as desc')
+        ->orderBy('ctr.id_requerimiento','asc')
+        ->get();
+}
 
+function getRolComite($id_comite){
+     return DB::table('usuarios_comite as uc')
+    ->join('comite as c', 'uc.id_comite', '=', 'c.id_comite')
+    ->join('usuarios as u', 'u.id_user', '=', 'uc.id_user')
+    ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.id_usuario_comite')
+    ->join('roles as r','r.id_rol','=','ucr.id_rol')  // Relación usuarios - usuarios_comite
+    ->where('uc.id_user', Auth::user()->id_user)  // Filtrar por el id_user
+    ->where('uc.id_comite',$id_comite)
+    ->select('ucr.rol_personalizado','uc.id_comite') // Verifica que el rol sea 'DIRECTOR'
+    ->get();  // Contar los registros que coinciden con la condición
+}
+
+function isEstudiante(){
+    return DB::table('usuarios as u')
+    ->join('tesis_usuarios as tu','tu.id_user','=','u.id_user')
+    ->join('tesis as t','t.id_tesis','=','tu.id_tesis')
+    ->where('u.id_user',Auth::user()->id_user)
+    ->where('esCoordinador',0)
+    ->count();
+}
 
 

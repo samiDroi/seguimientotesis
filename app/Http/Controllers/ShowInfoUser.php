@@ -15,9 +15,7 @@ class ShowInfoUser extends Controller
         // Obtener los comités del usuario autenticado
           // Obtener los comités del usuario
         $comites = Auth::user()->comites;
-        //dd($comites->isNotEmpty());
-    // Si el usuario tiene comités, obtener las tesis relacionadas a esos comités
-    //dd($comites);
+        
         if ($comites->isNotEmpty()) {
             $tesisComite = Tesis::whereIn('id_tesis', function($query) use ($comites) {
                 $query->select('id_tesis')
@@ -45,9 +43,10 @@ class ShowInfoUser extends Controller
             ->join('tesis_usuarios as tu', 't.id_tesis', '=', 'tu.id_tesis')  // Relación tesis - usuarios
             ->join('usuarios_comite as uc', 'c.id_comite', '=', 'uc.id_comite')  // Relación comités - usuarios
             ->join('usuarios as u', 'uc.id_user', '=', 'u.id_user')
+            ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.id_usuario_comite')
             ->where('tu.id_user', Auth::user()->id_user)  // Filtrar tesis del usuario autenticado
             ->where('uc.id_user', '!=', Auth::user()->id_user)  // Excluir al usuario autenticado del comité
-            ->select('c.*','u.*','uc.rol')  // Obtener datos del comité
+            ->select('c.*','u.*','ucr.rol_personalizado')  // Obtener datos del comité
             ->distinct()
             ->get()
             ->groupBy('id_comite');
@@ -56,8 +55,10 @@ class ShowInfoUser extends Controller
             ->join("comite as c", "uc.id_comite", "=", "c.id_comite")  // Relación usuarios - comités
             ->join("usuarios_comite as uc2", "c.id_comite", "=", "uc2.id_comite")  // Relación para obtener otros usuarios del comité
             ->join("usuarios as u", "uc2.id_user", "=", "u.id_user")  // Relación usuarios_comite - usuarios
+            ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.id_usuario_comite')
+            ->join('roles as r','r.id_rol','=','ucr.id_rol')
             ->where("uc.id_user", Auth::user()->id_user)  // Filtrar por comités donde el usuario pertenece
-            ->select('c.*', 'u.*','uc.rol')  // Obtener información del comité y los usuarios
+            ->select('c.*', 'u.*','uc.*','ucr.rol_personalizado')  // Obtener información del comité y los usuarios
             ->distinct()
             ->get()
             ->groupBy('id_comite');

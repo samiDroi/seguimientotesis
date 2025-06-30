@@ -15,11 +15,8 @@
    
     <form  action="{{ Route("avance.create",$requerimiento->id_requerimiento) }}" method="POST">
         @csrf
-         
-            @if (!(comprobarIsInComite($comiteTesis->id_comite)) && Auth::user()->isCoordinador == 1)
-            <p class="fs-4 fw-semibold">Ingresa el avance de el requerimiento :</p>
-            
-                <textarea    id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea>
+            @if (!(comprobarIsInComite($comiteTesis->id_comite)))
+                <textarea id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea>
                 
                 <a class=" mt-2 align-center" href="{{ Route("home") }}">Regresar y cancelar</a>
                 <button class=" mt-3 btn btn-primary " type="submit">Guardar Cambios</button>

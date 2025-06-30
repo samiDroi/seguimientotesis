@@ -110,7 +110,7 @@ class PlanDeTrabajoController extends Controller
     }
     
     public function exportarPDF($id_plan) {
-    $plan = PlanesTrabajo::with('actividades')->findOrFail($id_plan);
+    $plan = PlanesTrabajo::with('actividades.responsables')->findOrFail($id_plan);
 
     $comiteUsuarios = DB::table('plan_trabajo as pt')
         ->join('tesis_comite as tc','tc.id_tesis_comite','=','pt.id_tesis_comite')

@@ -25,4 +25,5 @@
 <div class="mt-3 roles-buttons {{ $rolesExistentes->isNotEmpty() ? 'd-none' : '' }}">
     <button class="btn btn-primary" type="button" id="agregarRol">Agregar otro rol</button>
     <button class="btn btn-success" type="button" id="definirRoles">Definir Roles</button>
+    <button type="button" id="cancelRoles">Cancelar</button>
 </div>

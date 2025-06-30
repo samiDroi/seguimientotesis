@@ -1,93 +1,98 @@
-@extends('layouts.admin')
+@extends('layouts.base')
 @section('content')
+
+@php
+    $agrupadasPorTesis = $datosTesis->groupBy('id_tesis');
+@endphp
 
 <div class="container">
     <h1>Todas las Tesis y su estructura</h1>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tesisModal">
-        Crear Título de la Tesis
-    </button>
-    
-    @if ($tesis->isNotEmpty())
+
+    @if (Auth::user()->esCoordinador == 1)
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tesisModal">
+            Crear Título de la Tesis
+        </button>
+    @endif
+        {{-- @dd($datosTesis) --}}
+    @if ($agrupadasPorTesis->isNotEmpty())
         <div class="container mt-4">
-            @foreach ($tesis as $tesisItem)
-               
+            @foreach ($agrupadasPorTesis as $idTesis => $itemsTesis)
+                @php
+                    $primero = $itemsTesis->first(); // Todas las filas tienen los mismos datos de tesis y comité
+                @endphp
                 <div class="card mb-4 border-secondary">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h2 class="card-title h4 font-weight-bold text-dark flex-grow-1">{{ $tesisItem->nombre_tesis }}</h2>
+                            <h2 class="card-title h4 font-weight-bold text-dark flex-grow-1">{{ $primero->nombre_tesis }}</h2>
+
                             <div class="d-flex gap-2">
                                 @php
-                                    $tieneRequerimientos = false;
-                                    foreach ($tesisComites as $tesisComite) {
-                                        if ($tesisComite->id_tesis == $tesisItem->id_tesis && $tesisComite->requerimientos->isNotEmpty()) {
-                                            $tieneRequerimientos = true;
-                                            break;
-                                        }
-                                    }
+                                    $tieneRequerimientos = $itemsTesis->contains(function($item) {
+                                        return !empty($item->nombre_requerimiento);
+                                    });
                                 @endphp
 
-                                @if ($tieneRequerimientos)
-                                    <a href="{{ route('tesis.requerimientos', $tesisItem->id_tesis) }}" class="btn btn-sm btn-warning">Editar requerimientos</a>
+                                @if ($tieneRequerimientos && !$todosAceptados)
+                                    <a href="{{ route('tesis.requerimientos', $idTesis) }}" class="btn btn-sm btn-warning text-light">Editar requerimientos</a>
                                 @endif
-                                {{-- <a href="{{ route('tesis.requerimientos', $tesisItem->id_tesis) }}" class="btn btn-sm btn-warning">Editar requerimientos</a> --}}
-                                {{-- <form action="{{ route('tesis.delete', $tesisItem->id_tesis) }}" method="POST">
-                                    @csrf
-                                    <button type="button" class="btn btn-sm btn-danger delete-button">Eliminar</button>
-                                </form> --}}
+                                    <a href="{{ route('plan.historial',$primero->id_comite) }}">Generar plan de trabajo</a>
                             </div>
                         </div>
+
                         <div class="mt-2">
-                            @if ($tesisItem->comites->isNotEmpty())
-                                <span class="text-muted small ms-2">Comité: {{ $tesisItem->comites->first()->nombre_comite }}</span>
+                            @if (!empty($primero->id_comite))
+                                <span class="text-muted small ms-2">Comité: {{ $primero->nombre_comite }}</span>
                             @else
                                 <span class="text-danger small ms-2">Pendiente de asignación de comité</span>
                             @endif
                         </div>
 
-                        @php $tieneRequerimientos = false; @endphp
-                        @foreach ($tesisComites as $tesisComite)
-                            @if ($tesisComite->id_tesis == $tesisItem->id_tesis && $tesisComite->requerimientos->isNotEmpty())
-                                @php $tieneRequerimientos = true; @endphp
-                                <details>
-                                    <summary class="h6 text-secondary">Estructura de la tesis</summary>
-                                    <ul class="list-group list-group-flush">
-                                        @foreach ($tesisComite->requerimientos as $requerimiento)
+                        @if ($tieneRequerimientos)
+                            <details>
+                                <summary class="h6 text-secondary">Estructura de la tesis</summary>
+                                <ul class="list-group list-group-flush">
+                                    @foreach ($itemsTesis as $fila)
+                                        @if (!empty($fila->nombre_requerimiento))
                                             <li class="list-group-item px-0">
-                                                <strong>{{ $requerimiento->nombre_requerimiento }}</strong>
+                                                <strong>{{ $fila->nombre_requerimiento }}</strong>
                                                 <br>
-                                                <span>Descripción:</span> {{ $requerimiento->descripcion }}
+                                                <span>Descripción:</span> {{ $fila->desc }}
                                                 <span class="badge
-                                                    @if(strtolower($requerimiento->estado) == 'pendiente') bg-warning 
-                                                    @elseif(strtolower($requerimiento->estado) == 'aceptado') bg-success 
-                                                    @elseif(strtolower($requerimiento->estado) == 'rechazado') bg-info
+                                                    @if(strtolower($fila->estado) == 'pendiente') bg-warning 
+                                                    @elseif(strtolower($fila->estado) == 'aceptado') bg-success 
+                                                    @elseif(strtolower($fila->estado) == 'rechazado') bg-info
                                                     @else bg-dark 
                                                     @endif">
-                                                    {{ ucfirst($requerimiento->estado) }}
+                                                    {{ ucfirst($fila->estado) }}
                                                 </span>
-                                                @if ($requerimiento->motivo_rechazo)
-                                                @include('Admin.Tesis.Modals.MotivoRechazoModal')
+                                                @if ($fila->motivo_rechazo && Auth::user()->esCoordinador == 1)
+                                                    @include('Admin.Tesis.Modals.MotivoRechazoModal')
 
-                                                <button class="btn btn-sm btn-secondary mt-2 ver-comentario" data-bs-toggle="modal" data-bs-target="#modalTextarea" data-comentario="{{ $requerimiento->motivo_rechazo }}">Ver comentario</button>
+                                                    <button class="btn btn-sm btn-secondary mt-2 ver-comentario" data-bs-toggle="modal" data-bs-target="#modalTextarea" data-comentario="{{ $fila->motivo_rechazo }}">Ver comentario</button>
                                                 @endif
-                                                
                                             </li>
-                                        @endforeach
-                                    </ul>
-                                </details>
-                            @endif
-                        @endforeach
-
-                        @if (!$tieneRequerimientos)
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            </details>
+                        @else
                             <p class="text-muted">No hay requerimientos para esta tesis.</p>
                         @endif
 
-                        @if ($tesisItem->comites->isNotEmpty() && isset($tesisComite) && $tesisComite->requerimientos->isEmpty()
-                             && $tesisItem->comites->pluck('id_comite')->contains(fn($id) => comprobarRolComite('DIRECTOR', $id)))
-                            <a href="{{ Route('tesis.requerimientos', $tesisComite->id_tesis_comite) }}" class="">Tiene permitido crearla estructura para esta tesis</a>
+                        {{-- Mensaje si el usuario tiene permiso para crear estructura --}}
+                        @if ($primero->nombre_rol === 'administrador' && !$primero->id_requerimiento)
+                            <a href="{{ route('tesis.requerimientos', $primero->id_tc) }}">
+                                Tiene permitido crear la estructura para esta tesis
+                            </a>
+
+                        @elseif($todosAceptados)
+                            <a href="{{ route('tesis.requerimientos', $primero->id_tc) }}">
+                                Tiene permitido crear la estructura para esta tesis
+                            </a>
+                        
                         @endif
                     </div>
                 </div>
-                
             @endforeach
         </div>
     @else
@@ -95,51 +100,40 @@
     @endif
 </div>
 
+@if (Auth::user()->esCoordinador == 1)
+    @include('Admin.Tesis.Modals.TesisModal')
+@endif
+
 @endsection
-@include('Admin.Tesis.Modals.TesisModal')
-
-
-
- 
-
 
 @section('js')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.js"></script>
-    <script>
-        
-        $("body").on("click",".delete > button",function(){
-            event.preventDefault();
-            console.log("boton clickeado");
-            
-            let formulario = $(this).closest("form");
-            Swal.fire({
-                title: "Eliminar Tesis",
-                text: "Estas a punto de eliminar esta tesis, esto no puede ser reversible ¿Estas seguro?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Si, eliminar"
-            }).then((result) => {
+
+<script>
+    $("body").on("click",".delete > button",function(event){
+        event.preventDefault();
+        let formulario = $(this).closest("form");
+        Swal.fire({
+            title: "Eliminar Tesis",
+            text: "Estas a punto de eliminar esta tesis, esto no puede ser reversible ¿Estas seguro?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, eliminar"
+        }).then((result) => {
             if (result.isConfirmed) {
                 $(formulario).submit();
-               
             }
         });
     });
-    </script>
 
-    <script>
-        // Esto captura el comentario del requerimiento y lo coloca en el textarea del modal
-        $('#modalTextarea').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget) // Botón que activó el modal
-            var comentario = button.data('comentario') // Extrae el comentario
-
-            var modal = $(this)
-            modal.find('.modal-body #comentariosTextarea').val(comentario) // Coloca el comentario en el textarea
-        })
-
-    </script>
-
+    $('#modalTextarea').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var comentario = button.data('comentario')
+        var modal = $(this)
+        modal.find('.modal-body #comentariosTextarea').val(comentario)
+    });
+</script>
 @endsection

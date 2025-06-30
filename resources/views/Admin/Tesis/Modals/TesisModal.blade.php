@@ -19,9 +19,12 @@
                   
                   <label for="alumno">Asignacion de tesis a alumno</label>
                   <select class="form-select" name="alumno" id="alumno">
-                    @foreach ($alumnos as $alumno)
-                      <option value="{{ $alumno->id_user }}">{{ $alumno->nombre . " " . $alumno->apellidos}}</option>    
-                    @endforeach
+                    
+                      @foreach ($alumnos as $alumno)
+                      <option value="{{ $alumno?->id_user }}">{{ $alumno?->nombre . " " . $alumno->apellidos}}</option>    
+                      @endforeach
+                    
+                    
                   </select>
                 </div>
                 <label for="comite">Continuar con la creacion del comite</label>

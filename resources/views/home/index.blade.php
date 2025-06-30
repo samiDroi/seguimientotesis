@@ -25,7 +25,8 @@
 
                     <div class="col-12">
                         @if ($tesis->comites->isNotEmpty())
-                            <span class="small ms-2">Comité: <b>{{ $tesis->comites->first()->nombre_comite }}</b></span>
+                            
+                            <span class="small ms-2">el pepe: <b>{{ $tesis->comites->first()->nombre_comite }}</b></span>
                         @else
                             <span class="text-danger small ms-2">Pendiente de asignación de comité</span>
                             @if (Auth::user()->esCoordinador == 1)
@@ -83,7 +84,20 @@
 
                         <div class="col-12">
                             @if ($tesis->comites->isNotEmpty())
-                                <span class="small ms-2">Comité: <b>{{ $tesis->comites->first()->nombre_comite }}</b></span>
+                                {{-- <span class="small ms-2">: <b>{{ $tesis->comites->first()->nombre_comite }}</b></span> --}}
+                                @php
+                                    $comite = $tesis->comites->first();
+                                    $roles = $comite ? getRolComite($comite->id_comite)->pluck('rol_personalizado')->toArray() : [];
+                                @endphp
+
+                                <span class="small ms-2">
+                                    
+                                    @if (!empty($roles))
+                                        <span class="badge bg-secondary ms-2">
+                                            Tu(s) rol(es): {{ implode(', ', $roles) }}
+                                        </span>
+                                    @endif
+                                </span>
                             @else
                                 <span class="text-danger small ms-2">Pendiente de asignación de comité</span>
                                 @if (Auth::user()->esCoordinador == 1)

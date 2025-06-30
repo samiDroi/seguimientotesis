@@ -52,8 +52,9 @@ use RealRashid\SweetAlert\Facades\Alert;
                 //asignar los tipos de usuario en la tabla
                 $user->tipos()->sync($request->nombre_tipo);
                 alert()->success("El usuario se ha registrado satisfactoriamente")->persistent(true,false);
-                return redirect()->route('login');
+                return redirect()->route('users.index');
             } else {
+                // dd($request->all());
                 Alert::error("Error","este usuario ya existe en el sistema, favor de verificar los datos");
                 return redirect()->route('register.index');
                 // foreach ($validator->errors()->all() as $error) {
@@ -84,8 +85,9 @@ use RealRashid\SweetAlert\Facades\Alert;
         }
 
         public function validateUser(Request $request){
-           return $validator = Validator::make($request->all(), [
-                'username' => 'required|string|max:255|unique:usuarios,username',
+           return Validator::make($request->all(), [
+                'username' => 'nullable|max:255|unique:usuarios,username',
+                'matricula' => 'nullable|max:255|unique:usuarios,matricula',
                 'correo_electronico' => 'required|string|email|max:255|unique:usuarios,correo_electronico',]);
         }
 

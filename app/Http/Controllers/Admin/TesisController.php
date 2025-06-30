@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Usuarios;
 use App\Models\Comite;
 use App\Models\ComiteTesisRequerimientos;
+use App\Models\Logs;
 use App\Models\Tesis;
 use App\Models\TesisComite;
 use App\Models\TesisProgramaAcademico;
@@ -22,26 +23,12 @@ use function Laravel\Prompts\table;
 class TesisController extends Controller
 {
     public function index(){
-        $tesisComites= TesisComite::with(["tesis","comite","requerimientos"])->get();
-        $requerimientos = ComiteTesisRequerimientos::with('tesisComite')->get();
-        $tesis = getTesisByUserProgram();
-         
-       
-        $usuarios = Usuarios::whereIn('usuarios.id_user', function ($query) {
-            $query->select('usuarios_programa_academico.id_user') // Especifica la tabla en la subconsulta
-                ->from('usuarios_programa_academico')
-                ->whereIn('usuarios_programa_academico.id_programa', Auth::user()->programas->pluck('id_programa'));
-        })->get();
-        
-        // Obtener los comités relacionados con los programas del usuario
-        $comites = Comite::with('programas')  // Cargar la relación programas
-        ->whereHas('programas', function ($query) {
-            $query->whereIn('id_programa', Auth::user()->programas->pluck('id_programa'));
-        })
-        ->get();
+        $datosTesis = getDirectorTesis();
+        $todosAceptados = $datosTesis->every(function ($item) {
+            return $item->estado === 'ACEPTADO' || is_null($item->estado);
+        });
 
-
-        return view('Admin.Tesis.index', compact('tesis','requerimientos','tesisComites','comites','usuarios'));
+        return view('Admin.Tesis.index', compact('datosTesis','todosAceptados'));
     }
 
    
@@ -80,8 +67,15 @@ class TesisController extends Controller
     //elementos llamados para crear elementos del formulario de tesis
     public function createRequerimientos(Request $request,$idTesisComite){
         $existsRequerimientos = ComiteTesisRequerimientos::where('id_tesis_comite',$idTesisComite);
-        if ($existsRequerimientos) {
+        $todosAceptados = ComiteTesisRequerimientos::where('id_tesis_comite', $idTesisComite)
+            ->get()
+            ->every(function ($req) {
+                return $req->estado === 'ACEPTADO';
+            });
+            
+        if ($existsRequerimientos && !$todosAceptados) {
             $this->updateRequerimientos($request,$idTesisComite);
+
         }else{
             $nombreRequerimientos = $request->input('nombre_requerimiento', []);
             $descripciones = $request->input('descripcion', []);
@@ -118,11 +112,11 @@ class TesisController extends Controller
         // $tesis->programas()->attach($idProgramas);
         if (is_array($request->input('alumno'))) {
             foreach ($request->input('alumno') as $alumno) {
-            TesisUsuarios::create([
-                'id_tesis' => $tesis->id_tesis,
-                'id_user' =>  $alumno
-            ]);
-        }
+                TesisUsuarios::create([
+                    'id_tesis' => $tesis->id_tesis,
+                    'id_user' =>  $alumno
+                ]);
+            }
 
         }else{
              TesisUsuarios::create([
@@ -159,8 +153,8 @@ class TesisController extends Controller
 
     public function updateRequerimientos(Request $request, $idTesisComite) {
         $tesisComite = TesisComite::findOrFail($idTesisComite); // Obtener el TesisComite con el id proporcionado
-        $requerimientos = ComiteTesisRequerimientos::where('id_tesis_comite', $idTesisComite)->get(); // Obtener los requerimientos existentes
-    
+        $requerimientos = ComiteTesisRequerimientos::where('id_tesis_comite', $idTesisComite)->whereNotIn('estado',['ACEPTADO'])->get(); // Obtener los requerimientos existentes
+       
         // Obtener los nuevos valores para los requerimientos
         $nombresRequerimientos = $request->input('nombre_requerimiento', []);
         $descripcionesRequerimientos = $request->input('descripcion', []);
@@ -225,9 +219,10 @@ class TesisController extends Controller
         $tesisComites= TesisComite::with(["tesis","comite","requerimientos"])->get();
         $requerimientos = ComiteTesisRequerimientos::with('tesisComite')->get();
          $tesis = getTesisByUserProgram();
-         
+        //  dd($tesis);   
        
-       $alumnos = filterAlumnosPrograma();        
+       $alumnos = filterAlumnosPrograma();
+            
         // Obtener los comités relacionados con los programas del usuario
         $comites = filterComiteProgramasAuth();
 
@@ -304,5 +299,20 @@ class TesisController extends Controller
         ->get();
         //dd($tesis);
         return view('Admin.Tesis.VerAvance',compact('tesis'));
+    }
+    
+    public function updateTesis(Request $request){
+        $tesis = Tesis::findOrFail($request->get('id_tesis'));
+        $log = new LoggerController;
+        $log->logRegister(
+            $tesis->id_tesis,
+            'tesis',
+            'tesis.update',
+            'Se actualizo el nombre de la tesis',
+            $tesis->nombre_tesis,
+            $request->get('nombre_tesis')
+        );
+        $tesis->nombre_tesis = $request->get('nombre_tesis');
+        $tesis->save();
     }
 }

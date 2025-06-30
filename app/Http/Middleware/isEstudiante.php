@@ -5,10 +5,9 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
-class isDirector
+class isEstudiante
 {
     /**
      * Handle an incoming request.
@@ -17,12 +16,12 @@ class isDirector
      */
     public function handle(Request $request, Closure $next): Response
     {
-        
-        $isDirector = isDirector();   
+        $isAdmin = Auth::user()->esCoordinador;   
 
-        if ($isDirector == 0) {
+        if ($isAdmin == 1) {
            return redirect()->back();
         }
         return $next($request);
+        
     }
 }

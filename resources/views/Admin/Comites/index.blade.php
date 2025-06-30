@@ -134,10 +134,26 @@
                         <a href="{{ Route("comites.edit",$comite->id_comite) }}" class="btn mb-2 btn-sm text-light" style="background-color: #355C7D">
                             <i class="fa-solid fa-pencil"></i> Modificar comité
                         </a>
-                        <a href="" class="btn mb-2 btn-sm text-white" style="background-color:var(--color-amarillo)">
+                        <!-- Botón -->
+                        {{-- <button type="button" class="btn mb-2 btn-sm text-white" style="background-color:#d2ca37" data-bs-toggle="modal" data-bs-target="#miModal">
                             <i class="fa-solid fa-pencil"></i> Editar
-                        </a>
+                        </button> --}}
+                        @foreach ($comite->tesis as $tesis)
+    <button type="button"
+        class="btn mb-2 btn-sm text-white btn-editar"
+        style="background-color:#d2ca37"
+        data-bs-toggle="modal"
+        data-bs-target="#miModal"
+        data-idtesis="{{ $tesis->id_tesis }}"
+        data-titulotesis="{{ $tesis->nombre_tesis }}"
+        data-idalumno="{{ $tesis->usuarios->first()->id_user ?? '' }}"
+    >
+        <i class="fa-solid fa-pencil"></i> Editar {{ $loop->iteration }}
+    </button>
+@endforeach
 
+
+                        @include('Admin.Comites.Modals.EditModal')
             </td>
             </tr>
              @endforeach
@@ -212,5 +228,19 @@
   $(document).ready(function() {
     $('#miTabla').DataTable();
   });
+</script>
+<script>
+$(document).ready(function () {
+    $('.btn-editar').on('click', function () {
+        let idTesis = $(this).data('idtesis');
+        let tituloTesis = $(this).data('titulotesis');
+        let idAlumno = $(this).data('idalumno');
+
+        $('#id_tesis').val(idTesis);
+        $('#titulo_tesis').val(tituloTesis);
+        $('#alumno').val(idAlumno);
+    });
+});
+
 </script>
 @endsection

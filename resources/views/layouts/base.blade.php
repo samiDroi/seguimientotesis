@@ -44,10 +44,13 @@
                             <img src="{{ asset('images/people.svg') }}" style="height: 20px;">
                             <a href="{{ Route('info.comites') }}" class="text-decoration-none text-dark fw-semibold diva">Mi comité</a>
                         </div>
-                        <div class="option my-1 py-3">
+                        @if (isDirector() > 0)
+                            <div class="option my-1 py-3">
                             <img src="{{ asset('images/archive.svg') }}" style="height: 20px;">
-                            <a href="{{ Route('info.tesis') }}" class="text-decoration-none text-dark fw-semibold diva">Mis tesis</a>
+                            <a href="{{ Route('tesis.index') }}" class="text-decoration-none text-dark fw-semibold diva">Mis tesis</a>
                         </div>
+                        @endif
+                        
                         <div class="option my-1 py-3">
                             <img src="{{ asset('images/backpack.svg') }}" style="height: 20px;">
                             <a href="{{ Route('info.unidad') }}" class="text-decoration-none text-dark fw-semibold diva">Mi unidad</a>

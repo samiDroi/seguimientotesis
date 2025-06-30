@@ -34,7 +34,14 @@ class ComiteController extends Controller
             $comite = $id ? Comite::with('usuarios', 'tesis.usuarios')->find($id) : null;
             $programas = Auth::user()->programas;
             $tesis = getTesisByUserProgram();
-        return view("Admin.Comites.index", compact("comites",'comite','programas','tesis'));
+        // $alumnos = DB::table('usuarios as u')
+        //     ->join('tesis_usuarios as tu','tu.id_user')
+        $alumnos = Usuarios::whereDoesntHave('tesis')
+            ->whereHas('tipos', function ($q) {
+                $q->where('nombre_tipo', 'alumno');
+            })
+            ->get();
+        return view("Admin.Comites.index", compact('alumnos',"comites",'comite','programas','tesis'));
     }
    
     public function store($id = null)
@@ -261,4 +268,13 @@ class ComiteController extends Controller
             $query->where('nombre_tipo', 'docente');
         })->get();
     }
+    public function editButton(Request $request){
+        $updateTesis = new TesisController;
+        $updateTesis->updateTesis($request);
+        
+    }
+    public function reasignarAlumno(){
+
+    }
 }
+

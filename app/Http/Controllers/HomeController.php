@@ -41,17 +41,22 @@ class HomeController extends Controller
         //           ->whereIn('id_comite', $comites->pluck('id_comite')); // Filtrar por los comités del usuario
         // })->get();
         $tesisDeComite = Tesis::with(['comites']) // Cargar relaciones
-    ->whereIn('id_tesis', function($query) use ($comites) {
-        $query->select('id_tesis')
+         ->whereIn('id_tesis', function($query) use ($comites) {
+            $query->select('id_tesis')
               ->from('tesis_comite')
               ->whereIn('id_comite', $comites->pluck('id_comite'));
-    })->get();
+            })->get();
 
          // Cargar la relación 'comites' en las tesis
         $tesisUsuario = Tesis::with('comites')->whereIn('id_tesis', $tesisUsuario->pluck('id_tesis'))->get();
-        
+        $rolesUsuarioActual = [];
+        foreach ($comites as $comite) {
+            $rol = getRolComite($comite->id_comite)->first();
+            $rolesUsuarioActual[$comite->id_comite] = $rol ? $rol->rol_personalizado : 'Miembro';
+        }
+
        
-        return view("home.index", compact("programas", "comites", "tesisUsuario", "tesisComites", "tesisDeComite"));
+        return view("home.index", compact("programas", "comites", "tesisUsuario", "tesisComites", "tesisDeComite",'rolesUsuarioActual'));
     }
 
     public function logout(){
