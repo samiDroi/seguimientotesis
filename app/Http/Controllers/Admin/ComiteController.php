@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Rol as ModelsRol;
 use App\Models\TesisComite;
+use App\Models\TesisUsuarios;
 
 class ComiteController extends Controller
 {
@@ -122,10 +123,6 @@ class ComiteController extends Controller
             ->with('success', 'Comité clonado con éxito. Puede hacer cambios si lo desea.');       
     }
 
-
-
-   
-
     public function edit($id)
     {
         $rolesExistentes = DB::table('usuarios_comite_roles')
@@ -162,20 +159,7 @@ class ComiteController extends Controller
         $roles = DB::table('usuarios_comite_roles')
              ->where('id_user_creador', Auth::user()->id_user)
             ->get();
-        // $roles = DB::table('usuarios_comite as uc')
-        // ->join('usuarios as u', 'uc.id_user', '=', 'u.id_user')
-        // ->leftJoin('usuarios_comite_roles as ucr', 'uc.id_usuario_comite', '=', 'ucr.id_usuario_comite')
-        // ->select(
-        //     'u.id_user',
-        //     'u.nombre',
-        //     'u.apellidos',
-        //     'u.correo_electronico',
-        //     'ucr.id_rol',
-        //     'ucr.id_usuario_comite',
-        //     'ucr.rol_personalizado'
-        // )
-        // ->distinct()
-        // ->get();
+        
         return view("Admin.Comites.Edit", compact("comite", "roles","docentes","programas","rolesExistentes","rolesBase"));
     }
 
@@ -262,8 +246,7 @@ class ComiteController extends Controller
         }
     }
  
-    public function getDocentes()
-    {
+    public function getDocentes(){
         return Usuarios::whereHas('tipos', function ($query) {
             $query->where('nombre_tipo', 'docente');
         })->get();
@@ -271,10 +254,17 @@ class ComiteController extends Controller
     public function editButton(Request $request){
         $updateTesis = new TesisController;
         $updateTesis->updateTesis($request);
-        
+        $this->reasignarAlumno($request);
+        Alert::success('Éxito', 'Los datos de tesis y alumno se han actualizado correctamente');
+        return redirect()->route('comites.index');
     }
-    public function reasignarAlumno(){
-
+    public function reasignarAlumno($request){
+        $alumnoData = $request->input('alumno');
+        
+        foreach ($alumnoData as $id_tesis => $id_alumno) {
+            TesisUsuarios::where('id_tesis', $id_tesis)
+                ->update(['id_user' => $id_alumno]);
+        }    
     }
 }
 

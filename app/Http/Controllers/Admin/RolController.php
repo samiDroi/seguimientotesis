@@ -95,63 +95,6 @@ class RolController extends Controller
         }
          return redirect()->route('comites.index')->with('success', 'Roles asignados correctamente');
     }
-    // public function definieRolUsuarios(Request $request, $id_comite)
-    // {
-    //     //dd($request);
-    //     dd($request->all());
-    //     if (!$request->has('roles_json')) {
-    //         return redirect()->back()->with('error', 'No se han seleccionado roles para asignar');
-    //     }
-    
-    //     DB::beginTransaction();
-    
-    //     try {
-    //         foreach ($request->roles_json as $id_user => $jsonRoles) {
-    
-    //             $usuarioComite = UsuariosComite::where('id_user', $id_user)
-    //                 ->where('id_comite', $id_comite)
-    //                 ->first();
-    
-    //             if (!$usuarioComite) continue;
-    
-    //             // Eliminar roles anteriores
-    //             UsuariosComiteRol::where('id_usuario_comite', $usuarioComite->id_usuario_comite)->delete();
-    
-    //             $roles = json_decode($jsonRoles, true);
-    
-    //             foreach ($roles as $rolData) {
-    //                 $id_rol = $rolData['id_tipo'] ?? null;
-    //                 $nombre_rol = $rolData['nombre_rol'] ?? null;
-    
-    //                 // Si el nombre_rol no viene, es un nuevo rol creado manualmente (desde newRoles)
-    //                 if ($nombre_rol === null) {
-    //                     $newRoles = $request->input('newRoles');
-    
-    //                     // Validar que exista para ese usuario y ese tipo de rol
-    //                     if (isset($newRoles[$id_user][$id_rol])) {
-    //                         $nombre_rol = $newRoles[$id_user][$id_rol];
-    //                     }
-    //                 }
-    
-    //                 UsuariosComiteRol::create([
-    //                     'id_user_creador'   => Auth::id(),
-    //                     'id_usuario_comite' => $usuarioComite->id_usuario_comite,
-    //                     'id_rol'            => $id_rol,
-    //                     'rol_personalizado' => $nombre_rol,
-    //                 ]);
-    //             }
-    //         }
-    
-    //         DB::commit();
-    //         return redirect()->route('comites.index')->with('success', 'Roles asignados correctamente');
-    
-    //     } catch (\Exception $e) {
-    //         echo $e;
-    //         // DB::rollBack();
-    //         //return redirect()->back()->with('error', 'Error al asignar los roles: ' . $e->getMessage());
-    //     }
-    // }
-
     public function updateRoles(Request $request)
     {
         $roles = $request->input('nombre_rol');

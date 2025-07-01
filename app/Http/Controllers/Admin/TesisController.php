@@ -301,18 +301,33 @@ class TesisController extends Controller
         return view('Admin.Tesis.VerAvance',compact('tesis'));
     }
     
-    public function updateTesis(Request $request){
-        $tesis = Tesis::findOrFail($request->get('id_tesis'));
-        $log = new LoggerController;
-        $log->logRegister(
-            $tesis->id_tesis,
-            'tesis',
-            'tesis.update',
-            'Se actualizo el nombre de la tesis',
-            $tesis->nombre_tesis,
-            $request->get('nombre_tesis')
-        );
-        $tesis->nombre_tesis = $request->get('nombre_tesis');
-        $tesis->save();
+    public function updateTesis($request){
+
+        $tesisData = $request->input('tesis');
+        // dd($tesisData);
+        foreach ($tesisData as $id_tesis => $nombre_tesis) {
+            $tesis = Tesis::findOrFail($id_tesis);
+            $log = new LoggerController;
+            $log->logRegister(
+                $tesis->id_tesis,
+                'tesis',
+                'tesis.update',
+                'Se actualizo el nombre de la tesis',
+                $tesis->nombre_tesis,
+                $nombre_tesis
+            );
+           $tesis->nombre_tesis = $nombre_tesis;
+           $tesis->save();
+        }  
+    }
+    public function historialTesis($id_tesis){
+        
+        $logs = Logs::where('clave','tesis.update')
+                ->where('model_id',$id_tesis)
+                ->orderBy('created_at', 'desc')
+                ->get();
+        return view('Admin.Tesis.HistorialTesis',compact('logs'));
+
+
     }
 }

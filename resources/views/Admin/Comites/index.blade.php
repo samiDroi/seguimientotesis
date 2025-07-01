@@ -51,9 +51,12 @@
                     <ol>
                         
                           @foreach ($comite->tesis as $tesis)
-                            <li>
-                                {{ $tesis->nombre_tesis }}
-                            </li>
+                            <a href="{{ Route('tesis.historial',$tesis->id_tesis) }}">
+                                 {{ $tesis->nombre_tesis }}
+                            </a>
+                            {{-- <li>
+                               
+                            </li> --}}
                          @endforeach
                    
                     </ol>
@@ -175,10 +178,6 @@
 
              
               let boton=document.querySelector("#Btn_buscar")
-             
-              
-              
-
               boton.addEventListener("click",()=>{
                 let input = document.querySelector("#inputBuscar")
                 let value = input.value.toLowerCase();
@@ -196,10 +195,6 @@
 
               })
          });
-
-       
-
-
 
         $("body").on("click",".delete > button",function(){
          

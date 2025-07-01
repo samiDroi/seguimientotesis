@@ -58,6 +58,7 @@ Route::middleware(['auth'])->group(function(){
         Route::get('',[PanelController::class,'index'])->name('administrador');
 
         Route::controller(TesisController::class)->group(function(){
+            Route::get('/review-historial/{id}','historialTesis')->name('tesis.historial');
             Route::get('/review-tesis','standbyIndex')->name('tesis.review');
             Route::get('/current-tesis','showCurrentlyTesis')->name('tesis.admin');
             Route::get('/view-avance/{id_tesis}','showAvanceAdmin')->name('tesis.avance.admin');
@@ -100,7 +101,7 @@ Route::middleware(['auth'])->group(function(){
 
             Route::post("/comite-members/save","registerMembers")->name("comites.save.members");
             // Route::get("/create/{id?}","store")->name("comites.store");
-            
+            Route::post('edit-tesis','editButton')->name('comites.edit.button');
             Route::post("/create/registro","create")->name("comites.create");
             Route::post('/{id}/copy','cloneComite')->name('comites.clone');
         
