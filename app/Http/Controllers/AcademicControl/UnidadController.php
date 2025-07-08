@@ -29,11 +29,14 @@ namespace App\Http\Controllers\AcademicControl;
             $validator = $this->validateUnidad($request);
             if($validator->fails()){
                 foreach ($validator->errors()->all() as $error) {
-                    echo "<p style='color: red;'>$error</p>";
+                    Alert::error('chin','no salio');
+                    return redirect()->route('unidades.index');
+                    // echo "<p style='color: red;'>$error</p>";
                 }
             }else {
                 $unidad->nombre_unidad=$request->input('nombre_unidad');
                 $unidad->save();
+                Alert::success('Unidad creada','ya se creo');
                 return redirect()->route('unidades.index');
             }
             
@@ -44,7 +47,8 @@ namespace App\Http\Controllers\AcademicControl;
             $validator = $this->validateUnidad($request);
             if ($validator->fails()) {
                 foreach ($validator->errors()->all() as $error) {
-                    echo "<p style='color: red;'>$error</p>";
+                 Alert::error('chin','no salio');
+                  return redirect()->route('unidades.index');
                 }
             }else{
                 $unidad->nombre_unidad = $request->input('nombre_unidad');
@@ -62,7 +66,7 @@ namespace App\Http\Controllers\AcademicControl;
         }
 
         public function validateUnidad(Request $request){
-            return $validator = Validator::make($request->all(), [
+            return Validator::make($request->all(), [
                 'nombre_unidad' => 'required|string|max:255|unique:unidad_academica,nombre_unidad',
             ]);
         }

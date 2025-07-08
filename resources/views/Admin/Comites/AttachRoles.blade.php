@@ -114,7 +114,7 @@
     });
 
    document.getElementById('mostrarRoles')?.addEventListener('click', function () {
-       
+       document.getElementById('cancelRoles').classList.remove('d-none');
         // Ocultar la vista de asignación de roles
         document.getElementById('users-roles').classList.add('d-none');
         
@@ -176,6 +176,7 @@
                     //const existingRoles = Array.from(select.options).map(option => option.value); // Extraemos los valores de los roles existentes
                     option.value = tipo;
                     option.textContent = nombre;
+                    option.classList.add('fs-4');
                     select.appendChild(option);
                 });
            

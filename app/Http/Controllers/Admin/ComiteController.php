@@ -255,6 +255,7 @@ class ComiteController extends Controller
             $defRoles->definirRolUsuarios($request,$id);
         
         }
+        alert::success('Que bieeen','Si se pudo editar');
         return redirect()->route('comites.index');
 
     }

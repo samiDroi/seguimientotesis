@@ -44,7 +44,7 @@
             </div>
         </div>
     @empty
-        <p>No hay comités auditándote.</p>
+        <p class="text-danger">No hay comités auditándote.</p>
     @endforelse
 </div>
 
@@ -79,7 +79,7 @@
             </div>
         </div>
     @empty
-        <p>No perteneces a ningún comité.</p>
+        <p class="text-danger">No perteneces a ningún comité.</p>
     @endforelse
 </div>
     </div>

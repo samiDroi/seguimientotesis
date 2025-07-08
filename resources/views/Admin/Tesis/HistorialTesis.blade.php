@@ -1,14 +1,26 @@
 @extends('layouts.admin')
 @section('content')
-<h1>Historial de títulos de tesis</h1>
-    @foreach ($logs->sortByDesc('created_at') as $log)
-        <div class="mb-3 border-bottom pb-2">
-            <h4>Nuevo</h4>
-            <span>{{ $log->nuevo }}</span>
-            <h4 class="mt-2">Anterior</h4>
-            <span>{{ $log->original }}</span>
-            <br>
-            <small>Fecha de cambio: {{ $log->created_at->format('d/m/Y H:i') }}</small>
-        </div>
-    @endforeach
+<h1 class="text-center mt-4 " style="color: var(--color-azul-obscuro)">Historial de títulos de tesis</h1>
+
+
+<table class="table table-hover table-bordered table-striped  mx-auto mt-4 shadow-sm rounded" style="max-width: 90%;">
+    <thead class="table-primary">
+        <tr>
+            <th scope="col">Nombre anterior</th>
+            <th scope="col">Nombre actualizado</th>
+            <th scope="col">Fecha de cambio</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($logs->sortByDesc('created_at') as $log)
+        <tr>
+            <td class="fw-semibold text-danger">{{ $log->original }}</td>
+            <td class="fw-semibold text-success">{{ $log->nuevo }}</td>
+            <td class="fw-semibold">{{ $log->created_at->format('d/m/Y H:i') }}</td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+
+   
 @endsection

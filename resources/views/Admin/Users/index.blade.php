@@ -44,13 +44,13 @@
                        
                         <td>
                             <button class="btn btn-sm "style="background-color:var(--color-amarillo)">
-                                <a class="text-light text-decoration-none" href="{{ route("users.edit",$usuario->id_user) }}">Editar</a>
+                                <a class="text-light text-decoration-none" href="{{ route("users.edit",$usuario->id_user) }}"><i class="fa-solid fa-pen-to-square text-light"></i>   Editar</a>
                             </button>
                             <form action='{{ route("users.delete",$usuario->id_user) }}' method="POST" style="display:inline;">
                                 @csrf
                                 @method("DELETE")
                                 <button class="btn btn-sm btn-danger" type="submit">
-                                    Eliminar
+                                 <i class="fa-solid fa-trash"></i> Eliminar
                                 </button>
                             </form>
 

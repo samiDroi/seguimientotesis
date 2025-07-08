@@ -27,19 +27,19 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ Route('users.index') }}">Usuarios</a>
+                        <a class="nav-link text-white" href="{{ Route('users.index') }}"> <i class="fa-solid fa-user"></i> Usuarios</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ Route('comites.index') }}">Comites</a>
+                        <a class="nav-link text-white" href="{{ Route('comites.index') }}"><i class="fa-solid fa-users"></i> Comites</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ Route('unidades.index') }}">Unidades Academicas</a>
+                        <a class="nav-link text-white" href="{{ Route('unidades.index') }}"><i class="fa-solid fa-school"></i> Unidades Academicas</a>
                     </li>
                     <li class="nav-item" style="display: none"> 
-                        <a class="nav-link text-white" href="{{ Route('info.tesis') }}">Mis tesis</a>
+                        <a class="nav-link text-white" href="{{ Route('info.tesis') }}"> <i class="fa-solid fa-file"></i>Mis tesis</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ Route('tesis.admin') }}">Tesis</a>
+                        <a class="nav-link text-white" href="{{ Route('tesis.admin') }}"><i class="fa-solid fa-file"></i> Tesis</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white" href="#">{{ Auth::user()->nombre ." ".Auth::user()->apellidos }}</a>

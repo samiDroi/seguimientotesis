@@ -17,6 +17,7 @@ $('[name="nombre_tipo[]"]').on("change", function () {
             mostrarClaveT = true;
         }
     });
+   
 
     if (mostrarGeneracion) {
         $("#generacion").show();

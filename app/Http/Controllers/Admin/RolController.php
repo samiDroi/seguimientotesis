@@ -93,6 +93,7 @@ class RolController extends Controller
                     ]);
             }
         }
+            
          return redirect()->route('comites.index')->with('success', 'Roles asignados correctamente');
     }
     public function updateRoles(Request $request)

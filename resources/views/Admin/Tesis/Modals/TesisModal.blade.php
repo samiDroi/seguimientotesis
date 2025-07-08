@@ -29,14 +29,17 @@
                 </div>
                 <label for="comite">Continuar con la creacion del comite</label>
                 <input type="checkbox" name="comite" id="comite">
-                <div id="programa_comite">
-                   <label for="programa">Asignacion de tesis a alumno</label>
+
+
+                <div id="programa_comite" class="mt-2" style="display: none">
+                   <label for="programa">Asignacion de Programa academico</label>
                   <select class="form-select" name="programa" id="programa">
                     @foreach (Auth::user()->programas as $programa)
                       <option value="{{ $programa->id_programa }}">{{ $programa->nombre_programa}}</option>    
                     @endforeach
                   </select>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
@@ -46,6 +49,22 @@
            
           </div>
         </div>
-      </div> 
+      </div>
+      
+      
+      <script>
+
+  const checkbox = document.getElementById('comite');
+  const divPrograma = document.getElementById('programa_comite');
+
+  // Detectar cambios en el checkbox
+  checkbox.addEventListener('change', function() {
+    if (this.checked) {
+      divPrograma.style.display = 'block';
+    } else {
+      divPrograma.style.display = 'none';
+    }
+  });
+     </script>
  
    

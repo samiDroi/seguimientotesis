@@ -18,17 +18,17 @@
 
 @section('content')
 <div class="container">
-    <h1 class="text-center">{{ $comite ? 'Editar' : 'Crear' }} Comité</h1>
+    <h1 class="text-center mt-4 ">{{ $comite ? 'Editar' : 'Crear' }} Comité</h1>
     
     <form action="{{ $comite ? route('comites.update', $comite->id_comite) : route('comites.create') }}" id="edit-form" method="POST">
         @csrf
-        @if($comite) @method('PUT') @endif
+        @if($comite) @method('PUT') @endif 
 
         <input type="hidden" name="id" value="{{ $comite?->id_comite }}">
-        <a href="{{ Route("roles.index") }}">Editar roles</a>
+        <button class="btn mb-4 " style="background-color:var(--color-amarillo)"><a class="text-decoration-none text-light" href="{{ Route("roles.index") }}"> <i class="fa-solid fa-pencil"></i> Editar roles</a></button>
         
-        <button type="button" id="mostrarRoles" class="btn btn-info {{ $rolesExistentes->isNotEmpty() ? '' : 'd-none' }}">
-            Crear Nuevos Roles
+        <button  type="button" id="mostrarRoles" class="btn btn-success ms-5 mb-4  {{ $rolesExistentes->isNotEmpty() ? '' : 'd-none' }}">
+        <i class="fa-solid fa-plus"></i>  Crear Nuevos Roles
         </button>
         @include('Admin.Comites.DefineRolesSection')
         <div id="editSection">
