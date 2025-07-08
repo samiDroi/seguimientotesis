@@ -15,4 +15,8 @@ class UsuariosComiteRol extends Model
         'id_rol',
         'rol_personalizado', // Si tienes otros campos, agrégales aquí también
     ];
+
+    public function roles(){
+        return $this->belongsTo(Rol::class,'id_rol','id_rol');
+    }
 }

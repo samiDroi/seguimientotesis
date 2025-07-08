@@ -10,8 +10,8 @@ class UsuariosComite extends Model
 {
     use HasFactory;
     protected $table = 'usuarios_comite';
-
-    protected $fillable = ['rol'];
+    protected $primaryKey = 'id_usuario_comite';
+    protected $fillable = ['rol','id_user','id_comite'];
     
     // Cast para convertir el valor de la base de datos en una instancia del Enum
     protected $casts = [

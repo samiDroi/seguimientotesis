@@ -148,7 +148,18 @@ function isDirector(){
     ->count();  // Contar los registros que coinciden con la condición
 
 }
+function isDirectorInComite($id_comite){
+    return DB::table('usuarios_comite as uc')
+    ->join('comite as c', 'uc.id_comite', '=', 'c.id_comite')
+    ->join('usuarios as u', 'u.id_user', '=', 'uc.id_user')
+    ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.id_usuario_comite')
+    ->join('roles as r','r.id_rol','=','ucr.id_rol')  // Relación usuarios - usuarios_comite
+    ->where('uc.id_user', Auth::user()->id_user)  // Filtrar por el id_user
+    ->where('r.nombre_rol', 'administrador')  // Verifica que el rol sea 'DIRECTOR'
+    ->where('c.id_comite',$id_comite)
+    ->count();  // Contar los registros que coinciden con la condición
 
+}
 
 function getUserRolesInComite($userId, $comiteId)
 {

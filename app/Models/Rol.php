@@ -21,4 +21,8 @@ class Rol extends Model
     {
         return $this->hasMany(UsuariosComite::class, 'id_rol');
     }
+
+    public function comiteRoles(){
+        return $this->hasMany(UsuariosComiteRol::class,'id_rol','id_rol');
+    }
 }

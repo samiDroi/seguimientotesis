@@ -11,6 +11,7 @@ use App\Models\ProgramaAcademico;
 use App\Models\Comite;
 use App\Models\ComiteRolUsusario;
 use App\Http\Controllers\Admin\RolController;
+use App\Models\ComiteTesisRequerimientos;
 use App\Models\UsuariosComite;
 use App\Models\UsuariosComiteRol;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,7 @@ class ComiteController extends Controller
             $comite = $id ? Comite::with('usuarios', 'tesis.usuarios')->find($id) : null;
             $programas = Auth::user()->programas;
             $tesis = getTesisByUserProgram();
+            // dd($tesis);
         // $alumnos = DB::table('usuarios as u')
         //     ->join('tesis_usuarios as tu','tu.id_user')
         $alumnos = Usuarios::whereDoesntHave('tesis')
@@ -42,6 +44,8 @@ class ComiteController extends Controller
                 $q->where('nombre_tipo', 'alumno');
             })
             ->get();
+
+        
         return view("Admin.Comites.index", compact('alumnos',"comites",'comite','programas','tesis'));
     }
    
@@ -70,10 +74,15 @@ class ComiteController extends Controller
             $comite->id_programa = $programa;
         }
         $comite->save();
-        TesisComite::create([
-            "id_tesis" => $request->get('tesis'),
+        $tesis = $request->get('tesis');
+        
+        foreach ($tesis as $tesisId) {
+            TesisComite::create([
+            "id_tesis" => $tesisId,
             "id_comite" => $comite->id_comite,
         ]);
+        }
+        
         return redirect()->route("comites.members",$comite->id_comite);
     }
 
@@ -97,31 +106,65 @@ class ComiteController extends Controller
         }
         return redirect()->route('roles.store',$comite);
     }
-
-    public function cloneComite($id)
+    public function cloneComite(Request $request,$id)
     {
+
+        // Obtener comité original con usuarios
         $originalComite = Comite::with('usuarios')->findOrFail($id);
 
+        // Clonar comité
         $clonedComite = $originalComite->replicate();
-        $clonedComite->nombre_comite = $originalComite->nombre_comite . '(Copia)';
+        $clonedComite->nombre_comite = $originalComite->nombre_comite . ' (Copia)';
         $clonedComite->save();
 
-        foreach ($originalComite->usuarios as $usuario) {
-            $idComiteRol = DB::table('usuarios_comite')
-                ->where('id_comite', $originalComite->id_comite)
-                ->where('id_user', $usuario->pivot->id_user)
-                ->value('id_comite_rol');
+        // Obtener todos los usuarios_comite originales del comité
+        $usuariosComiteOriginales = UsuariosComite::where('id_comite', $originalComite->id_comite)->get();
 
-            DB::table('usuarios_comite')->insert([
+        // Recorrer cada usuario del comité original
+        foreach ($originalComite->usuarios as $usuario) {
+        
+
+            // Clonar la relación usuario_comite
+            $nuevoUsuarioComite = UsuariosComite::create([
                 'id_comite' => $clonedComite->id_comite,
-                'id_user' => $usuario->pivot->id_user,
-                'id_comite_rol' => $idComiteRol,
+                'id_user' => $usuario->id_user,
+            ]);
+
+            // Buscar la relación original correspondiente a este usuario
+            $usuarioComiteOriginal = $usuariosComiteOriginales->firstWhere('id_user', $usuario->pivot->id_user);
+           
+            if ($usuarioComiteOriginal) {
+                // Obtener los roles de ese usuario en el comité original
+                $roles = UsuariosComiteRol::where('id_usuario_comite', 
+                $usuarioComiteOriginal->id_usuario_comite)->get();
+                //  dd($usuarioComiteOriginal);
+                // Clonar cada rol y asignarlo al nuevo usuario_comite
+                foreach ($roles as $rolOriginal) {
+                    // dd($nuevoUsuarioComite);
+                    $rolClonado = $rolOriginal->replicate();
+                    $rolClonado->id_usuario_comite = $nuevoUsuarioComite->id_usuario_comite;
+                    $rolClonado->save();
+                }
+            }
+        }
+        //se le asigna la tesis al comite recien clonado
+        TesisComite::create([
+            'id_comite' => $id,
+            'id_tesis'  => $request->get('tesis')
+        ]);
+        //se asignan los alumnos segun lo que seleccione el usuario
+        $alumnos = $request->input('alumnos');
+        foreach ($alumnos as $alumno) {
+            
+            TesisUsuarios::create([
+                'id_user' => $alumno,
+                'id_tesis' => $request->get('tesis')
             ]);
         }
-
-        return redirect()->route('comites.store', $clonedComite->id_comite)
-            ->with('success', 'Comité clonado con éxito. Puede hacer cambios si lo desea.');       
+        return redirect()->route('comites.index')
+            ->with('success', 'Comité clonado con éxito. Puede hacer cambios si lo desea.');
     }
+    
 
     public function edit($id)
     {
@@ -253,14 +296,40 @@ class ComiteController extends Controller
     }
     public function editButton(Request $request){
         $updateTesis = new TesisController;
-        $updateTesis->updateTesis($request);
-        $this->reasignarAlumno($request);
+        // dd($request);
+        // Tesis
+        if ($request->has('tesis')) {
+            $tesis = $request->input('tesis');
+
+            // Filtrar tesis donde el título NO sea null o vacío
+            $tesisValidas = array_filter($tesis, function ($titulo) {
+                return isset($titulo) && trim($titulo) !== '';
+            });
+
+            if (!empty($tesisValidas)) {
+                $updateTesis->updateTesis($tesisValidas);
+            }
+        }
+
+        // Alumnos
+        if ($request->has('alumno')) {
+            $alumnos = $request->input('alumno');
+
+            // Filtrar alumnos donde el id del alumno NO sea null o vacío
+            $alumnosValidos = array_filter($alumnos, function ($idAlumno) {
+                return isset($idAlumno) && trim($idAlumno) !== '';
+            });
+
+            if (!empty($alumnosValidos)) {
+                $this->reasignarAlumno($alumnosValidos);
+            }
+        }
+
+        
         Alert::success('Éxito', 'Los datos de tesis y alumno se han actualizado correctamente');
         return redirect()->route('comites.index');
     }
-    public function reasignarAlumno($request){
-        $alumnoData = $request->input('alumno');
-        
+    public function reasignarAlumno($alumnoData){
         foreach ($alumnoData as $id_tesis => $id_alumno) {
             TesisUsuarios::where('id_tesis', $id_tesis)
                 ->update(['id_user' => $id_alumno]);

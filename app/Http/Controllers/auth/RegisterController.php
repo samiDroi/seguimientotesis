@@ -35,7 +35,7 @@ use RealRashid\SweetAlert\Facades\Alert;
                 $MailController = new MailController;
     
                 $newPassword = $MailController->sendMailConfirmation($request);
-    
+                $user->matricula = $request->get('matricula');
                 $user->password = Hash::make($newPassword); 
                 $user->nombre = $request->get('nombre');
                 $user->apellidos = $request->get('apellidos');

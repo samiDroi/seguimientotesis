@@ -13,7 +13,7 @@
           <input type="hidden" name="id" value="{{ $comite?->id_comite }}">
            <label class="form-label fw-semibold" for="nombre_comite">Tesis</label>
           
-          <select name="tesis" id="tesis" class="form-select">
+          <select name="tesis[]" id="tesis" class="form-select" multiple>
             @foreach ($tesis as $tesisItem)
             <option value="{{ $tesisItem->id_tesis }}">{{ $tesisItem->nombre_tesis }}</option>
              @endforeach

@@ -78,54 +78,58 @@
                                     @endif
                                 @endif
                             </div>
-
+                             
                             @if ($tieneRequerimientos)
-                                @foreach ($comitesTesis as $tesisComite)
-                                    @foreach ($tesisComite->requerimientos as $requerimiento)
-                                        @include('admin.tesis.Modals.MotivoRechazoModal')
-                                        <li class="list-group-item px-0">
-                                            <strong>{{ $requerimiento->nombre_requerimiento }}</strong>
-                                            <br>
-                                            <span>Descripción:</span> {{ $requerimiento->descripcion }}
+                                <details>
+                                    <summary>Estructura</summary>
+                                    @foreach ($comitesTesis as $tesisComite)
+                                        @foreach ($tesisComite->requerimientos as $requerimiento)
+                                            @include('admin.tesis.Modals.MotivoRechazoModal')
+                                            <li class="list-group-item px-0">
+                                                <strong>{{ $requerimiento->nombre_requerimiento }}</strong>
+                                                <br>
+                                                <span>Descripción:</span> {{ $requerimiento->descripcion }}
 
-                                            @if (isset($requerimiento->estado))
-                                                <span class="badge 
-                                                    @if(strtolower($requerimiento->estado) == 'pendiente') bg-warning 
-                                                    @elseif(strtolower($requerimiento->estado) == 'aceptado') bg-success 
-                                                    @elseif(strtolower($requerimiento->estado) == 'rechazado') bg-danger
-                                                    @else bg-secondary 
-                                                    @endif">
-                                                    {{ ucfirst($requerimiento->estado) }}
-                                                </span>
-                                            @else
-                                                <span class="badge bg-secondary">Estado desconocido</span>
-                                            @endif
+                                                @if (isset($requerimiento->estado))
+                                                    <span class="badge 
+                                                        @if(strtolower($requerimiento->estado) == 'pendiente') bg-warning 
+                                                        @elseif(strtolower($requerimiento->estado) == 'aceptado') bg-success 
+                                                        @elseif(strtolower($requerimiento->estado) == 'rechazado') bg-danger
+                                                        @else bg-secondary 
+                                                        @endif">
+                                                        {{ ucfirst($requerimiento->estado) }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge bg-secondary">Estado desconocido</span>
+                                                @endif
 
-                                            <div class="d-flex gap-2 mt-2">
-                                                <form action="{{ route('tesis.review.update', $requerimiento->id_requerimiento) }}" method="POST">
-                                                    @csrf
-                                                    <input type="hidden" name="estado" value="ACEPTADO">
-                                                    <button type="submit" class="btn btn-sm btn-success">Aceptar</button>
-                                                </form>
+                                                <div class="d-flex gap-2 mt-2">
+                                                    <form action="{{ route('tesis.review.update', $requerimiento->id_requerimiento) }}" method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="estado" value="ACEPTADO">
+                                                        <button type="submit" class="btn btn-sm btn-success">Aceptar</button>
+                                                    </form>
 
-                                                <form action="{{ route('tesis.review.update', $requerimiento->id_requerimiento) }}" method="POST" class="rechazarForm">
-                                                    @csrf
-                                                    <input type="hidden" name="estado" value="RECHAZADO">
-                                                    <button type="button" class="btn btn-sm btn-danger btn-modal-rechazo" data-bs-toggle="modal" data-bs-target="#modalTextarea">Rechazar</button>
-                                                </form>
-                                            </div>
-                                        </li>
+                                                    <form action="{{ route('tesis.review.update', $requerimiento->id_requerimiento) }}" method="POST" class="rechazarForm">
+                                                        @csrf
+                                                        <input type="hidden" name="estado" value="RECHAZADO">
+                                                        <button type="button" class="btn btn-sm btn-danger btn-modal-rechazo" data-bs-toggle="modal" data-bs-target="#modalTextarea">Rechazar</button>
+                                                    </form>
+                                                </div>
+                                            </li>
+                                        @endforeach
                                     @endforeach
-                                @endforeach
+                                </details>
+                               
                             @else
-                                <p>No hay requerimientos para esta tesis.</p>
+                                <p>Esta tesis aun no tiene estructura.</p>
                             @endif
 
-                            @if ($tesisItem->comites->isNotEmpty() && !$tieneRequerimientos)
+                            {{-- @if ($tesisItem->comites->isNotEmpty() && !$tieneRequerimientos)
                                 <a href="{{ route('tesis.requerimientos', optional($comitesTesis->first())->id_tesis_comite) }}">
                                     Tiene permitido crear requerimientos para esta tesis
                                 </a>
-                            @endif
+                            @endif --}}
 
                         </div>
                     </div>

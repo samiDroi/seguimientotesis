@@ -301,9 +301,8 @@ class TesisController extends Controller
         return view('Admin.Tesis.VerAvance',compact('tesis'));
     }
     
-    public function updateTesis($request){
+    public function updateTesis($tesisData){
 
-        $tesisData = $request->input('tesis');
         // dd($tesisData);
         foreach ($tesisData as $id_tesis => $nombre_tesis) {
             $tesis = Tesis::findOrFail($id_tesis);

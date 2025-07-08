@@ -19,6 +19,7 @@
                 <th>Descripción de la actividad</th>
                 <th>Fecha de entrega esperada</th>
                 <th>Responsable</th>
+                <th>accion</th>
             </tr>
         </thead>
         <tbody>
@@ -39,22 +40,32 @@
                             @endforeach
                         </select>
                     </td>
-                    <td><button onclick="duplicarFila(this)" class="btn btn-success ms-5" type="button"> <i href="https://gifer.com/es/GtwU" class="fa-solid fa-plus"></i>  </button><button class="btn btn-danger ms-2 btnEliminar" type="button" onclick="eliminarFila(this)" style="display: none;"> <i class="fa-solid fa-minus"></i></button></td>
+                    <td>
+                        <button onclick="duplicarFila(this)" class="btn btn-success ms-5" type="button"> <i class="fa-solid fa-plus"></i>  </button>
+                        
+                        <button class="btn btn-danger ms-2 btnEliminar" type="button" onclick="eliminarFila(this)" style="display: none;"> <i class="fa-solid fa-minus"></i></button>
+                    </td>
                 </tr>
                 @endforeach
             @else
                 <tr>
-                    <td><input type="text" name="actividad[]"></td>
-                    <td><input type="text" name="descripcion[]"></td>
-                    <td><input type="date" name="fecha_entrega[]"></td>
+                    <td><input type="text" class="form-control" name="actividad[]"></td>
+                    <td><input type="text" class="form-control" name="descripcion[]"></td>
+                    <td><input type="date" class="form-control" name="fecha_entrega[]"></td>
                     <td>
-                        <select name="responsable[]">
+                        <select class="form-control" name="responsable[]">
                             @foreach ($comite->usuarios as $usuario)
                                 <option value="{{ $usuario->id_user }}">
                                     {{ $usuario->nombre . " " . $usuario->apellidos }}
                                 </option>
                             @endforeach
                         </select>
+                    </td>
+
+                    <td>
+                        <button onclick="duplicarFila(this)" class="btn btn-success ms-5" type="button"> <i class="fa-solid fa-plus"></i>  </button>
+                        
+                        <button class="btn btn-danger ms-2 btnEliminar" type="button" onclick="eliminarFila(this)" style="display: none;"> <i class="fa-solid fa-minus"></i></button>
                     </td>
                 </tr>
             @endif
@@ -130,7 +141,13 @@
                 </li>
             @endforeach
         @else
-            <li><input type="text" name="compromisos[]"></li>
+            <li class="mb-3">
+                    <div class="d-flex ">
+                        <input class="form-control" type="text" name="compromisos[]" >
+                        <button onclick="clonarElemento(this)" class="btn btn-success ms-5" type="button"> <i class="fa-solid fa-plus"></i></button>
+                        <button onclick="eliminarElemento(this)" class="btn btn-danger ms-2 btnEliminar" style="display: none;" type="button"><i class="fa-solid fa-minus"></i></button>
+                    </div>
+                </li>
         @endif
     </ol>
 

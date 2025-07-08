@@ -77,9 +77,9 @@
 
                 </div>
                 <div class="row mb-3" id="matricula" style="display: none">
-                 <label for="username" class="col-12 col-md-2 text-center mb-2 " >Matricula<span class="text-warning">*</span></label>
+                 <label for="matricula" class="col-12 col-md-2 text-center mb-2 " >Matricula<span class="text-warning">*</span></label>
                  <div class=" col-12 col-md-10">
-                     <input type="text" name="matricula"class="col-12 form-control" autocomplete="off" "> 
+                     <input type="text" name="matricula" class="col-12 form-control" autocomplete="off" "> 
                     </div>
 
                 </div>

@@ -16,6 +16,7 @@
             <thead class="table-primary" >
                 <tr>
                     <th>Clave</th>
+                    <th>Matricula</th>
                     <th>Nombre</th>
                     <th>Apellidos</th>
                     <th>Correo_electronico</th>
@@ -26,7 +27,8 @@
             <tbody>
                 @foreach ($usuarios as $usuario)
                     <tr>
-                        <td>{{ $usuario->username }}</td>
+                        <td>{{ $usuario->username ?? 'NA'}}</td>
+                         <td>{{ $usuario->matricula ?? 'NA' }}</td>
                         <td>{{ $usuario->nombre }}</td>
                         <td>{{ $usuario->apellidos }}</td>
                         <td>{{ $usuario->correo_electronico }}</td>
@@ -39,6 +41,7 @@
                         @endforeach  
                             {{-- @dd($usuario->latest()->first())    --}}
                         </td> 
+                       
                         <td>
                             <button class="btn btn-sm "style="background-color:var(--color-amarillo)">
                                 <a class="text-light text-decoration-none" href="{{ route("users.edit",$usuario->id_user) }}">Editar</a>

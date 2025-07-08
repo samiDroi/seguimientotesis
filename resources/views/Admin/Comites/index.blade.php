@@ -42,18 +42,25 @@
         </thead>
         <tbody class="">
             @forEach($comites as $comite) 
+            
+            {{-- @dd($tesis) --}}
             <tr>
                 <td>
     @foreach ($comite->tesis->pluck('usuarios')->flatten()->unique('id_user') as $usuario)
-        <p>{{ $usuario->nombre }}</p>
+        <p>{{ $usuario->nombre.' '. $usuario->apellidos }}</p>
     @endforeach
                 <td>
                     <ol>
                         
-                          @foreach ($comite->tesis as $tesis)
-                            <a href="{{ Route('tesis.historial',$tesis->id_tesis) }}">
-                                 {{ $tesis->nombre_tesis }}
-                            </a>
+                          @foreach ($comite->tesis as $tesisc)
+                           
+                                <li>
+                                     <a href="{{ Route('tesis.historial',$tesisc->id_tesis) }}">
+                                    {{ $tesisc->nombre_tesis }}
+                                    </a>
+                                </li>
+                            
+                           
                             {{-- <li>
                                
                             </li> --}}
@@ -88,10 +95,10 @@
                 
               <td>    
     <ol>
-        @foreach ($comite->tesis as $tesis)
+        @foreach ($comite->tesis as $tesisc)
             <li>
                 @php
-                    switch (strtolower($tesis->estado)) {
+                    switch (strtolower($tesisc->estado)) {
                         case 'en definición':
                         case 'en definicion': // por si falta tilde
                         $badgeClass = 'text-secondary';
@@ -114,7 +121,7 @@
                             break;
                     }
                 @endphp
-                <span class="fw-bold {{ $badgeClass }}">{{ $tesis->estado }}</span>
+                <span class="fw-bold {{ $badgeClass }}">{{ $tesisc->estado }}</span>
             </li>
         @endforeach
     </ol>
@@ -126,39 +133,60 @@
                       {{-- <a href="{{ Route('tesis.avance.admin',$tesis->id_tesis) }}" class="btn mb-2 btn-sm text-light" style="background-color: #9FA6B2">
                             <i class="fa-regular fa-eye"></i> Ver
                         </a> --}}
-                            @foreach ($comite->tesis as $tesis)
-                                <a href="{{ route('tesis.avance.admin', $tesis->id_tesis) }}" class="btn mb-2 btn-sm text-light" style="background-color: #9FA6B2">
+                            {{-- @foreach ($comite->tesis as $tesisc)
+                                <a href="{{ route('tesis.avance.admin', $tesisc->id_tesis) }}" class="btn mb-2 btn-sm text-light" style="background-color: #9FA6B2">
                                     <i class="fa-regular fa-eye"></i> Ver {{ $loop->iteration }}
                                 </a>
-                            @endforeach
+                                 
+                            @endforeach --}}
+                            <!-- Botón para abrir el modal -->
+<button type="button"
+    class="btn mb-2 btn-sm text-white"
+    style="background-color:#9FA6B2"
+    data-bs-toggle="modal"
+    data-bs-target="#verTesisModal-{{ $comite->id_comite }}">
+    <i class="fa-regular fa-eye"></i> Ver Tesis 
+</button>
+@include('Admin.Comites.Modals.AvanceTesisModal')
                         <a href="{{ route('plan.historial',$comite->id_comite) }}" class="btn mb-2 btn-sm text-light" style="background-color:var(--color-azul-principal)">
                             <i class="fa-solid fa-briefcase"></i> Plan de trabajo
                         </a>
+                    
                         <a href="{{ Route("comites.edit",$comite->id_comite) }}" class="btn mb-2 btn-sm text-light" style="background-color: #355C7D">
                             <i class="fa-solid fa-pencil"></i> Modificar comité
                         </a>
+                        
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#clone-modal">
+                            Clonar comite
+                        </button>
+                        @include('Admin.Comites.Modals.CloneModal')
+
+                        
                         <!-- Botón -->
                         {{-- <button type="button" class="btn mb-2 btn-sm text-white" style="background-color:#d2ca37" data-bs-toggle="modal" data-bs-target="#miModal">
                             <i class="fa-solid fa-pencil"></i> Editar
                         </button> --}}
-                        @foreach ($comite->tesis as $tesis)
+    
+
     <button type="button"
         class="btn mb-2 btn-sm text-white btn-editar"
         style="background-color:#d2ca37"
         data-bs-toggle="modal"
-        data-bs-target="#miModal"
-        data-idtesis="{{ $tesis->id_tesis }}"
-        data-titulotesis="{{ $tesis->nombre_tesis }}"
-        data-idalumno="{{ $tesis->usuarios->first()->id_user ?? '' }}"
+        data-bs-target="#edit-modal-{{ $comite->id_comite }}"
+        data-idtesis="{{ $tesisc->id_tesis }}"
+        data-titulotesis="{{ $tesisc->nombre_tesis }}"
+        data-idalumno="{{ $tesisc->usuarios->first()->id_user ?? '' }}"
     >
-        <i class="fa-solid fa-pencil"></i> Editar {{ $loop->iteration }}
+        <i class="fa-solid fa-pencil"></i> Editar 
     </button>
-@endforeach
 
 
-                        @include('Admin.Comites.Modals.EditModal')
+    @include('Admin.Comites.Modals.EditModal')
+
+                       
             </td>
             </tr>
+           
              @endforeach
         </tbody>
     </table>
@@ -224,7 +252,7 @@
     $('#miTabla').DataTable();
   });
 </script>
-<script>
+{{-- <script>
 $(document).ready(function () {
     $('.btn-editar').on('click', function () {
         let idTesis = $(this).data('idtesis');
@@ -237,5 +265,5 @@ $(document).ready(function () {
     });
 });
 
-</script>
+</script> --}}
 @endsection

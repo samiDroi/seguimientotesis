@@ -15,7 +15,7 @@
    
     <form  action="{{ Route("avance.create",$requerimiento->id_requerimiento) }}" method="POST">
         @csrf
-            @if (!(comprobarIsInComite($comiteTesis->id_comite)))
+            @if (!(comprobarIsInComite($comiteTesis->id_comite)) && Auth::user()->esDirector === 0)
                 <textarea id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea>
                 
                 <a class=" mt-2 align-center" href="{{ Route("home") }}">Regresar y cancelar</a>
@@ -32,7 +32,7 @@
     </form>
    
     
-    @if (userHasPermisos('tesis.create',$comiteTesis->id_comite) && Auth::user()->isCoordinador == 1)
+    @if (isDirectorInComite($comiteTesis->id_comite) > 0 && Auth::user()->esCoordinador === 0)
                             <!-- Mostrar los botones solo si es DIRECTOR -->
                             {{-- @dd($avanceTesis->id_avance_tesis) --}}
                             <div class="mt-2">

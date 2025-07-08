@@ -2,7 +2,8 @@
 namespace App\Http\Controllers\Admin;
     use App\Http\Controllers\Controller;
     use App\Models\Usuarios;
-    use RealRashid\SweetAlert\Facades\Alert;
+use App\Models\UsuarioTipoUsuario;
+use RealRashid\SweetAlert\Facades\Alert;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Validator;
     use Illuminate\Validation\Rule;
@@ -58,9 +59,12 @@ namespace App\Http\Controllers\Admin;
         }
 
         public function delete($id){
-            $usuario = Usuarios::findOrFail($id);
-            $usuario->delete();
-            return redirect("/admin/users");
+           
+            $usuariosTipos = UsuarioTipoUsuario::where('id_usuario',$id)
+            ->delete();
+        
+            $usuario = Usuarios::where('id_user',$id)->delete();
+            return redirect()->route('users.index');
         }
 
         public function validateEditUser(Request $request,$id){

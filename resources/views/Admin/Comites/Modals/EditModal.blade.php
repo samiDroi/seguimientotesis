@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div class="modal fade" id="miModal" tabindex="-1" aria-labelledby="miModalLabel" aria-hidden="true">
+<div class="modal fade" id="edit-modal-{{ $comite->id_comite }}" tabindex="-1" aria-labelledby="miModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       
@@ -13,34 +13,41 @@
       <div class="modal-body">
         <form action="{{ Route('comites.edit.button') }}" method="POST">
            @csrf
-            @if ($tesis->count() > 1)
-              @foreach ($tesis as $tesisItem)
-                  <details>
-                      <summary>{{ $tesisItem->nombre_tesis }}</summary>
-                      <label for="titulo_tesis_{{ $tesisItem->id_tesis }}">Cambiar título de tesis</label>
-                      <input type="text" name="tesis[{{ $tesisItem->id_tesis }}]" id="titulo_tesis_{{ $tesisItem->id_tesis }}">
+            @if (count($comite->tesis) === 1)
+              @foreach ($comite->tesis as $tesis)
+                <h2>{{ $tesis->nombre_tesis }}</h2>
+                <label for="titulo_tesis">Cambiar titulo de tesis</label>
+              <input type="text" name='tesis[{{ $comite->tesis->first()->id_tesis }}]' id="titulo_tesis">
+
+              <label for="alumno">Reasignar alumno</label>
+              <select name="alumno[{{ $comite->tesis->first()->id_tesis }}]" id="alumno">
+                  <option value="" selected> Selecciona un alumno </option>  
+  
+                @foreach ($alumnos as $alumno)
+                      <option value="{{ $alumno->id_user }}">{{ $alumno->nombre.' '.$alumno->apellidos }}</option>
+                  @endforeach
+              </select>    
+              @endforeach
+              
+            @else
+              @foreach ($comite->tesis as $tesis)
+                     <details>
+                      <summary>{{ $tesis->nombre_tesis }}</summary>
+                      <label for="titulo_tesis_{{ $tesis->id_tesis }}">Cambiar título de tesis</label>
+                      <input type="text" name="tesis[{{ $tesis->id_tesis }}]" id="titulo_tesis_{{ $tesis->id_tesis }}">
                   
                       <label for="alumno">Reasignar alumno</label>
-                        <select name="alumno[{{ $tesisItem->id_tesis }}]" id="alumno">
-                            @foreach ($alumnos as $alumno)
+                        <select name="alumno[{{ $tesis->id_tesis }}]" id="alumno">
+                          <option value="" selected> Selecciona un alumno </option>  
+                          @foreach ($alumnos as $alumno)
                                 <option value="{{ $alumno->id_user }}">{{ $alumno->nombre.' '.$alumno->apellidos }}</option>
                             @endforeach
                         </select>
                   </details>
+                
+                 
               @endforeach   
-            @else
-              <label for="titulo_tesis">Cambiar titulo de tesis</label>
-              <input type="text" name='tesis[{{ $tesis->id_tesis }}]' id="titulo_tesis">
-
-              <label for="alumno">Reasignar alumno</label>
-              <select name="alumno[{{ $tesis->id_tesis }}]" id="alumno">
-                  @foreach ($alumnos as $alumno)
-                      <option value="{{ $alumno->id_user }}">{{ $alumno->nombre.' '.$alumno->apellidos }}</option>
-                  @endforeach
-              </select>
             @endif
-            
-        
       </div>
 
       <!-- Pie del modal -->
