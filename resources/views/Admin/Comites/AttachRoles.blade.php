@@ -33,7 +33,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($comite->usuarios as $usuario)
+                @foreach($usuarios as $usuario)
                     <tr>
                         <td class="fs-3 fw-semibold"><span style="margin-left: 70px">{{ $usuario->nombre." ".$usuario->apellidos }}</span></td>
                         <td>

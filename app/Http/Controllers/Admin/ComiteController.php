@@ -94,17 +94,17 @@ class ComiteController extends Controller
     }
 
     public function registerMembers(Request $request){
-        $comite = $request->get('id_comite');
-        foreach ($request->docentes as $username) {
-            $usuario = Usuarios::where('username', $username)->first(); // Obtener el docente por el username
-            if ($usuario) {
-                    DB::table('usuarios_comite')->insert([
-                        'id_user' => $usuario->id_user,
-                        'id_comite' => $comite,
-                        ]);
-            }
-        }
-        return redirect()->route('roles.store',$comite);
+        // $comite = $request->get('id_comite');
+        // foreach ($request->docentes as $username) {
+        //     $usuario = Usuarios::where('username', $username)->first(); // Obtener el docente por el username
+        //     if ($usuario) {
+        //             DB::table('usuarios_comite')->insert([
+        //                 'id_user' => $usuario->id_user,
+        //                 'id_comite' => $comite,
+        //                 ]);
+        //     }
+        // }
+        return redirect()->route('roles.store',["id" => $request->id_comite, "docentes" => json_encode($request->docentes)]);
     }
     public function cloneComite(Request $request,$id)
     {

@@ -53,7 +53,7 @@ class RolController extends Controller
         return redirect()->route('roles.index');
     }
 
-    public function storeRoles($id_comite){
+    public function storeRoles($id_comite, $docentes){
         $comite = Comite::where('id_comite',$id_comite)->first();
         $rolesPersonalizados = DB::table('usuarios_comite_roles')
             ->where('id_user_creador', Auth::user()->id_user)
@@ -62,22 +62,30 @@ class RolController extends Controller
         $roles = DB::table('usuarios_comite_roles')
              ->where('id_user_creador', Auth::user()->id_user)
             ->get();
-            $rolesExistentes = DB::table('usuarios_comite_roles')
-            ->where('id_user_creador', Auth::id())
-            ->select('id_rol', 'rol_personalizado as nombre_rol')
-            ->get()
-            ->unique('nombre_rol') // <-- aquí se filtran los duplicados
-            ->values();
+        $rolesExistentes = DB::table('usuarios_comite_roles')
+        ->where('id_user_creador', Auth::id())
+        ->select('id_rol', 'rol_personalizado as nombre_rol')
+        ->get()
+        ->unique('nombre_rol') // <-- aquí se filtran los duplicados
+        ->values();
+        $usuarios = Usuarios::whereIn('username', json_decode($docentes))->get();
         
-        return view('Admin.Comites.AttachRoles',compact('rolesPersonalizados','rolesBase','roles','comite','rolesExistentes'));
+        return view('Admin.Comites.AttachRoles',compact('rolesPersonalizados','rolesBase','roles','comite','rolesExistentes', 'usuarios'));
     }
 
     public function definirRolUsuarios(Request $request,$id_comite){
+
         foreach ($request->roles_json as $id_user => $jsonData) {
-            $usuarioComite = UsuariosComite::where('id_user', $id_user)
-                    ->where('id_comite', $id_comite)
-                    ->first();
-            if (!$usuarioComite) continue;
+            $usuarioComite = UsuariosComite::firstOrNew([
+                'id_user' => $id_user,
+                'id_comite' => $id_comite,
+                'rol' => 'ASESOR'
+            ]); 
+            $usuarioComite->id_user = $id_user;
+            $usuarioComite->id_comite = $id_comite;
+            $usuarioComite->rol = 'ASESOR';
+            $usuarioComite->save();
+
             // Eliminar roles anteriores
             UsuariosComiteRol::where('id_usuario_comite', $usuarioComite->id_usuario_comite)->delete();
 

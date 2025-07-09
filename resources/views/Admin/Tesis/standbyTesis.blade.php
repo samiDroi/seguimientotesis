@@ -8,7 +8,10 @@
     </button>
     @include('Admin.Tesis.Modals.TesisModal')
 
-    <h1>Todas las Tesis y sus Requerimientos</h1>
+    <x-titulo titulo="Evaluar tesis" />
+    <x-boton-aceptar texto="Aceptar y enviar" />
+    <x-boton-aceptar texto="Editar" />
+    <x-boton-aceptar texto="Eliminar" />
 
     <ul class="nav nav-tabs fs-5" id="filterNav">
         <li class="nav-item"><a class="nav-link active" data-filter="Todos">Todos</a></li>

@@ -116,7 +116,7 @@ Route::middleware(['auth'])->group(function(){
     //Ruta temporal que quiza se use para personalizar roles
     Route::controller(RolController::class)->group(function(){
         Route::get("admin/roles","index")->name("roles.index");
-        Route::get('admin/roles/store/{id}','storeRoles')->name('roles.store');
+        Route::get('admin/roles/store/{id}/{docentes}','storeRoles')->name('roles.store');
         Route::post('admin/roles/create','createRol')->name('roles.create');
         Route::post("/admin/roles/define-roles/{id}","definirRolUsuarios")->name('comites.saveRoles');
         Route::post("/admin/roles/update-roles","updateRoles")->name('roles.update');
