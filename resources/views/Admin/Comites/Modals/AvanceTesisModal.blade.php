@@ -18,6 +18,7 @@
             <p>No hay tesis asociadas a este comité.</p>
         @endforelse
       </div>
+      
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>

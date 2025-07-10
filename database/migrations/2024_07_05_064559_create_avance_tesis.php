@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('id_requerimiento')->constrained('comite_tesis_requerimientos','id_requerimiento');
             $table->text('contenido');
             $table->string('estado',40);
+                        $table->softDeletes();
+
             $table->timestamps();
         });
     }

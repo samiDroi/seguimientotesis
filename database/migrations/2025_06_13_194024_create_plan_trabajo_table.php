@@ -24,6 +24,8 @@ return new class extends Migration
                 ->references('id_tesis_comite')
                 ->on('tesis_comite')
                 ->onDelete('cascade');
+                            $table->softDeletes();
+
             $table->timestamps();
             });
     }

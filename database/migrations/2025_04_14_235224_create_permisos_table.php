@@ -15,6 +15,8 @@ return new class extends Migration
             $table->bigIncrements('id_permisos');
             $table->string('clave');
             $table->string('descripcion');
+                        $table->softDeletes();
+
             $table->timestamps();
         });
     }

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->bigIncrements('id_rol');
             $table->string('nombre_rol');
             $table->text('descripcion');
+                        $table->softDeletes();
+
             $table->timestamps();
         });
     }

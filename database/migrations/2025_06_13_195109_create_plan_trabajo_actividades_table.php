@@ -22,6 +22,8 @@ return new class extends Migration
                 ->references('id_plan')
                 ->on('plan_trabajo')
                 ->onDelete('cascade');
+                            $table->softDeletes();
+
             $table->timestamps();
         });
     }

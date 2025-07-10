@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('nombre',60);
             $table->string('apellidos',40);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

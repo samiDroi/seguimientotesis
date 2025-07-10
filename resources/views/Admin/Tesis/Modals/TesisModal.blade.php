@@ -27,11 +27,11 @@
                     
                   </select>
                 </div>
-                <label for="comite">Continuar con la creacion del comite</label>
-                <input type="checkbox" name="comite" id="comite">
+                {{-- <label for="comite">Continuar con la creacion del comite</label>
+                <input type="checkbox" name="comite" id="comite"> --}}
 
 
-                <div id="programa_comite" class="mt-2" style="display: none">
+                <div id="programa_comite" class="mt-2">
                    <label for="programa">Asignacion de Programa academico</label>
                   <select class="form-select" name="programa" id="programa">
                     @foreach (Auth::user()->programas as $programa)

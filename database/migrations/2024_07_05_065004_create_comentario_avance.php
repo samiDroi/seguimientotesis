@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('comentario_avance', function (Blueprint $table) {
             $table->foreignId('id_avance_tesis')->constrained('avance_tesis','id_avance_tesis');
             $table->foreignId('id_user')->constrained('usuarios','id_user');
+                        $table->softDeletes();
+
             $table->timestamps();
         });
     }

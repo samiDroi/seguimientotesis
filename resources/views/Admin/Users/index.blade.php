@@ -21,6 +21,8 @@
                     <th>Apellidos</th>
                     <th>Correo_electronico</th>
                     <th>Tipo de usuario</th>
+                    <th>Programas Academicos</th>
+                    
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -38,6 +40,15 @@
 
 
                             {{ $tipo->nombre_tipo }}@if(!$loop->last), @endif
+                        @endforeach  
+                            {{-- @dd($usuario->latest()->first())    --}}
+                        </td> 
+                            <td>
+
+                         @foreach ($usuario->programas as $programa)
+
+
+                            {{ $programa->nombre_programa }}@if(!$loop->last), @endif
                         @endforeach  
                             {{-- @dd($usuario->latest()->first())    --}}
                         </td> 

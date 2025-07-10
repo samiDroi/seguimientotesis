@@ -122,8 +122,6 @@ class ComiteController extends Controller
 
         // Recorrer cada usuario del comité original
         foreach ($originalComite->usuarios as $usuario) {
-        
-
             // Clonar la relación usuario_comite
             $nuevoUsuarioComite = UsuariosComite::create([
                 'id_comite' => $clonedComite->id_comite,

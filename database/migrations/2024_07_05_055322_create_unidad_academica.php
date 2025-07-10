@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('unidad_academica', function (Blueprint $table) {
             $table->bigIncrements('id_unidad');
             $table->string('nombre_unidad',70);
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

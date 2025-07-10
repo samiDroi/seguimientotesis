@@ -125,7 +125,7 @@ class TesisController extends Controller
             ]);
         }
         
-        if ($request->boolean('comite')) {
+        // if ($request->boolean('comite')) {
             $comite = Comite::create([
             'id_programa'   => $request->get('programa'),
             ]);
@@ -134,8 +134,8 @@ class TesisController extends Controller
                 'id_comite' => $comite->id_comite
             ]);
             return redirect()->route('comites.members',$comite->id_comite);
-        }
-        return redirect()->route('tesis.index');
+        // }
+        // return redirect()->route('tesis.index');
 
     }
     
@@ -218,7 +218,7 @@ class TesisController extends Controller
         // Retornar la vista con los datos
         $tesisComites= TesisComite::with(["tesis","comite","requerimientos"])->get();
         $requerimientos = ComiteTesisRequerimientos::with('tesisComite')->get();
-         $tesis = getTesisByUserProgram();
+        $tesis = getTesisByUserProgram();
         //  dd($tesis);   
        
        $alumnos = filterAlumnosPrograma();

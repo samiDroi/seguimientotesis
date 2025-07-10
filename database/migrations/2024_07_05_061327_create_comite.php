@@ -15,6 +15,8 @@ return new class extends Migration
             $table->bigIncrements('id_comite');
             $table->foreignId('id_programa')->constrained('programa_academico','id_programa');
             $table->string('nombre_comite',70);
+                        $table->softDeletes();
+
             $table->timestamps();
         });
     }

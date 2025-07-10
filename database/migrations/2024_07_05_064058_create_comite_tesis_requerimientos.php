@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('nombre_requerimiento');
             $table->text('descripcion');
             $table->text('motivo_rechazo')->nullable();
+                        $table->softDeletes();
+
             $table->timestamps();
         });
     }

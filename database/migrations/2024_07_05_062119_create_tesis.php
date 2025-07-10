@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('tesis', function (Blueprint $table) {
             $table->bigIncrements('id_tesis');
             $table->string('nombre_tesis');
+                        $table->softDeletes();
+
             $table->timestamps();
         });
     }

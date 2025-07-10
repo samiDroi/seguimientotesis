@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('usuarios_comite', function (Blueprint $table) {
-                $table->foreignId('id_comite_rol')->constrained('comite_rol_usuario','id_comite_rol');
+        Schema::table('usuarios', function (Blueprint $table) {
+            $table->string('matricula')->nullable();
         });
     }
 
@@ -21,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropColumnIfExists('id_comite_rol');
+        Schema::table('usuarios', function (Blueprint $table) {
+            //
+        });
     }
 };
