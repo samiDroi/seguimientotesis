@@ -3,11 +3,10 @@
 {{-- @dd($usuarios) --}}
 <div class="container">
     <br>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tesisModal">
-        Crear Título de la Tesis
-    </button>
+    <x-boton-modal class="btn-primary" texto="Crear titulo de la tesis" target="tesisModal" />
+    
     @include('Admin.Tesis.Modals.TesisModal')
-
+    <a href="{{ route('tesis.admin') }}">Aceeder a mis tesis asignadas</a>
     <x-titulo titulo="Evaluar tesis" />
     <x-boton-aceptar texto="Aceptar y enviar" />
     <x-boton-aceptar texto="Editar" />
@@ -19,10 +18,10 @@
         <li class="nav-item"><a class="nav-link" data-filter="EN CURSO">En curso</a></li>
         <li class="nav-item"><a class="nav-link" data-filter="POR EVALUAR">Por evaluar</a></li>
     </ul>
-
+    
     <div class="container mt-4">
         @if ($tesis->isNotEmpty())
-
+            
             @php
             $estados = ['EN DEFINICION', 'EN CURSO', 'POR EVALUAR', 'RECHAZADA', 'ACEPTADA'];
             @endphp

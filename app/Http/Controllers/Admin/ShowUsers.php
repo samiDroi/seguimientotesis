@@ -60,10 +60,11 @@ use RealRashid\SweetAlert\Facades\Alert;
 
         public function delete($id){
            
-            $usuariosTipos = UsuarioTipoUsuario::where('id_usuario',$id)
-            ->delete();
+            // $usuariosTipos = UsuarioTipoUsuario::where('id_usuario',$id)
+            // ->delete();
         
-            $usuario = Usuarios::where('id_user',$id)->delete();
+            Usuarios::where('id_user',$id)->delete();
+            Alert::success('Usuario eliminado','El usuario ha sido eliminado satisfactoriamente');
             return redirect()->route('users.index');
         }
 

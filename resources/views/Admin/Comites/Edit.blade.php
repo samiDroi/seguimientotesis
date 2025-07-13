@@ -18,33 +18,24 @@
 
 @section('content')
 <div class="container">
-    <h1 class="text-center mt-4 ">{{ $comite ? 'Editar' : 'Crear' }} Comité</h1>
+    <h1 class="text-center mt-4">Editar Comité</h1>
     
-    <form action="{{ $comite ? route('comites.update', $comite->id_comite) : route('comites.create') }}" id="edit-form" method="POST">
+    <form action="{{ route('comites.update', $comite->id_comite) }}" id="edit-form" method="POST">
         @csrf
-        @if($comite) @method('PUT') @endif 
+        @method('PUT')
 
-        <input type="hidden" name="id" value="{{ $comite?->id_comite }}">
-        <button class="btn mb-4 " style="background-color:var(--color-amarillo)"><a class="text-decoration-none text-light" href="{{ Route("roles.index") }}"> <i class="fa-solid fa-pencil"></i> Editar roles</a></button>
+        <input type="hidden" name="id" value="{{ $comite->id_comite }}">
         
-        <button  type="button" id="mostrarRoles" class="btn btn-success ms-5 mb-4  {{ $rolesExistentes->isNotEmpty() ? '' : 'd-none' }}">
-        <i class="fa-solid fa-plus"></i>  Crear Nuevos Roles
-        </button>
+        <button class="btn mb-4 " style="background-color:var(--color-amarillo)"><a class="text-decoration-none text-light" href="{{ Route("roles.index") }}"> <i class="fa-solid fa-pencil"></i> Editar roles</a></button>
         @include('Admin.Comites.DefineRolesSection')
         <div id="editSection">
-            <div class="mb-3">
-                <label class="form-label fs-5 fw-semibold">Nombre del comité</label>
-                <input class="form-control" type="text" name="nombre_comite" required 
-                       value="{{ old('nombre_comite', $comite?->nombre_comite) }}">
-            </div>
-            
             <div class="mb-3">
                 <label class="form-label fs-5 fw-semibold">Programa académico</label>
                 <select class="form-select" name="ProgramaAcademico" required>
                     <option value="">Seleccione un programa</option>
                     @foreach ($programas as $programa)
                         <option value="{{ $programa->id_programa }}" 
-                            {{ ($comite?->id_programa == $programa->id_programa) ? 'selected' : '' }}>
+                            {{ ($comite->id_programa == $programa->id_programa) ? 'selected' : '' }}>
                             {{ $programa->nombre_programa }}
                         </option>
                     @endforeach
@@ -72,7 +63,7 @@
                                                class="checkbox-docente" 
                                                value="{{ $docente->id_user }}"
                                                data-username="{{ $docente->username }}"
-                                               {{ $comite && $comite->usuarios->contains($docente->id_user) ? 'checked' : '' }}>
+                                               {{ $comite->usuarios->contains($docente->id_user) ? 'checked' : '' }}>
                                     </td>
                                     <td>{{ $docente->username }}</td>
                                     <td>{{ $docente->nombre }}</td>
@@ -87,39 +78,37 @@
                 <div class="col-md-5">
                     <h4>Miembros y roles del comité</h4>
                     <div id="confirmarComite">
-                        @if($comite)
-                            @foreach($comite->usuarios as $miembro)
-                                <div class="card selected-user-card mb-3" data-user-id="{{ $miembro->id_user }}">
-                                    <div class="card-body">
-                                        <h5>{{ $miembro->nombre }} {{ $miembro->apellidos }}</h5>
-                                        <input type="hidden" name="docentes[]" value="{{ $miembro->id_user }}">
-                                        
-                                        <label class="form-label">Roles asignados</label>
-                                        <select class="form-select role-select" id="select-roles" data-user="{{ $miembro->id_user }}" name="roles[{{ $miembro->id_user }}][]" multiple>
-                                            @foreach($roles as $rol)
-                                                @php
-                                                    $selected = DB::table('usuarios_comite_roles')
-                                                        ->join('usuarios_comite', 'usuarios_comite_roles.id_usuario_comite', '=', 'usuarios_comite.id_usuario_comite')
-                                                        ->where('usuarios_comite.id_user', $miembro->id_user)
-                                                        ->where('usuarios_comite.id_comite', $comite->id_comite)
-                                                        ->where('usuarios_comite_roles.id_rol', $rol->id_rol)
-                                                        ->exists();
-                                                @endphp
-                                                <option value="{{ $rol->id_rol }}" {{ $selected ? 'selected' : '' }}>
-                                                    {{ $rol->rol_personalizado }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                        @foreach($comite->usuarios as $miembro)
+                            <div class=" users-roles card selected-user-card mb-3" id="" data-user-id="{{ $miembro->id_user }}">
+                                <div class="card-body">
+                                    <h5>{{ $miembro->nombre }} {{ $miembro->apellidos }}</h5>
+                                    <input type="hidden" name="docentes[]" value="{{ $miembro->id_user }}">
+                                    
+                                    <label class="form-label">Roles asignados</label>
+                                    <select class="form-select role-select user-role-select" id="select-roles" data-user="{{ $miembro->id_user }}" name="roles[{{ $miembro->id_user }}][]" multiple>
+                                        @foreach($roles as $rol)
+                                            @php
+                                                $selected = DB::table('usuarios_comite_roles')
+                                                    ->join('usuarios_comite', 'usuarios_comite_roles.id_usuario_comite', '=', 'usuarios_comite.id_usuario_comite')
+                                                    ->where('usuarios_comite.id_user', $miembro->id_user)
+                                                    ->where('usuarios_comite.id_comite', $comite->id_comite)
+                                                    ->where('usuarios_comite_roles.id_rol', $rol->id_rol)
+                                                    ->exists();
+                                            @endphp
+                                            <option value="{{ $rol->id_rol }}" {{ $selected ? 'selected' : '' }}>
+                                                {{ $rol->rol_personalizado }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                            @endforeach
-                        @endif
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
     
             <button type="submit" class="btn btn-primary btn-lg w-100 mt-4 py-3">
-                {{ $comite ? 'Guardar cambios' : 'Registrar comité' }}
+                Guardar cambios
             </button>
         </div>
     </form>
@@ -133,47 +122,72 @@
 <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
-
+{{-- Todo este script es la section de decidir docentes y que aparezcan a la derecha --}}
 <script>
+    const rolesDefinidos = [];
 $(document).ready(function() {
-    var rolesDefinidos = [];
     
-    // Inicializar DataTable
     new DataTable('#docentes', { responsive: true });
-  
-    // Función para agregar roles a los selects
-    
-    // Actualizar sección de confirmación
+
     function actualizarConfirmacion() {
         let confirmarComiteHtml = '';
 
         $('.checkbox-docente:checked').each(function() {
             const userId = $(this).val();
-            const username = $(this).data('username');
             const row = $(this).closest('tr');
             const nombre = row.find('td:nth-child(3)').text();
             const apellidos = row.find('td:nth-child(4)').text();
+            let bandera = false;
 
             if ($(`.selected-user-card[data-user-id="${userId}"]`).length === 0) {
-                confirmarComiteHtml += `
-                    <div class="card selected-user-card mb-3" data-user-id="${userId}">
-                        <div class="card-body">
-                            <h5>${nombre} ${apellidos}</h5>
-                            <input type="hidden" name="docentes[]" value="${userId}">
-                            
-                            <label class="form-label">Roles asignados</label>
-                            <select class="form-select role-select" data-user="${userId}" name="roles[${userId}][]" multiple>
-                                @foreach($roles as $rol)
-                                    <option value="{{ $rol->id_rol }}">{{ $rol->rol_personalizado }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                `; 
+                console.log(userId);
+                confirmarComiteHtml = $(".selected-user-card:first").clone()
+                confirmarComiteHtml.attr('data-user-id', userId);
+                confirmarComiteHtml.find('h5').text(`${nombre} ${apellidos}`);
+                confirmarComiteHtml.find('[name="docentes[]"]').val(userId);
+                confirmarComiteHtml.find('.user-role-select').attr('data-user', userId);
+                confirmarComiteHtml.find('.user-role-select').attr('name', `roles[${userId}][]`);
+                
+                // confirmarComiteHtml += `
+                //     <div class="card selected-user-card mb-3" data-user-id="${userId}">
+                //         <div class="card-body">
+                //             <h5>${nombre} ${apellidos}</h5>
+                //             <input type="hidden" name="docentes[]" value="${userId}">
+                //             <label class="form-label">Roles asignados</label>
+                //             <select class="form-select role-select users-role-select dinamic" data-user="${userId}" name="roles[${userId}][]" multiple>
+                //                 @foreach($roles as $rol)
+                //                     <option value="{{ $rol->id_rol }}">{{ $rol->rol_personalizado }}</option>
+                //                 @endforeach
+                //             </select>
+                //         </div>
+                //     </div>
+                // `; 
             }
-        });
+            // const nuevoSelect = document.querySelector(`.user-role-select[data-user="${userId}"]`);
+            // rolesDefinidos.forEach(role => {
+            //     const option = document.createElement('option');
+            //     option.value = role.id;
+            //     option.textContent = role.nombre;
+            //     nuevoSelect.appendChild(option);
+            //  });
+            $('.user-role-select dinamic').each(function() {
+        const select = this;
+        const userId = select.dataset.user;
 
-        // Eliminar usuarios deseleccionados
+        // Evitar duplicar opciones si ya hay
+        if (select.options.length <= @json($roles->count())) {
+            rolesDefinidos.forEach(role => {
+                const option = document.createElement('option');
+                option.value = role.id;
+                option.textContent = role.nombre;
+                select.appendChild(option);
+            });
+        }
+    });
+        });
+        // Agregar roles definidos al nuevo select
+        
+
         $('.selected-user-card').each(function() {
             const userId = $(this).data('user-id');
             if ($(`.checkbox-docente[value="${userId}"]:checked`).length === 0) {
@@ -181,258 +195,157 @@ $(document).ready(function() {
             }
         });
 
-        // Agregar nuevos si hay
         if (confirmarComiteHtml) {
+            console.log('pegando');
+            
             $('#confirmarComite').append(confirmarComiteHtml);
-            agregarRolesATodosSelects();
-            asignarEventosSelect();
+
+            
+    // Después de haber insertado el HTML al DOM:
+   
         }
     }
-   
-    function agregarRolesATodosSelects() {
-    $('.role-select').each(function() {
-        const select = $(this);
-        
-        // Luego agregar todos los roles definidos
-        console.log(rolesDefinidos);
-        select.find('option[data-dynamic="true"]').remove();
 
-        rolesDefinidos.forEach(rol => {
-            
-                select.append(`<option value="${rol.id}" data-dynamic="true">${rol.nombre}</option>`);
+    $(document).on('change', '.checkbox-docente', actualizarConfirmacion);
+    actualizarConfirmacion();
+});
+
+// Esta parte busca solucionar todo los de los roles
+$(document).on('change', '.user-role-select', function(e) {
+    const $select = $(this);
+    const userId = $select.data('user'); 
+
+    const rolesData = $select.find('option:selected').map(function() {
+        return {
+            id_tipo: $(this).val(),
+            nombre_rol: $(this).text().trim()
+        };
+    }).get();
+
+    // Eliminar input anterior si existe
+    // $select.siblings(`input[name^="roles_json[${userId}]"]`).remove();
+
+    // Crear nuevo input hidden con los datos en JSON
+     // Verifica si ya existe un input hidden justo después de este select
+    let $existingInput = $select.next('input[type="hidden"][name^="roles_json"]');
+
+    // Si existe, lo actualizamos, si no, lo creamos
+        // Quitar solo el input justo después del select (si existe y coincide con el usuario)
+    $select.nextAll(`input[name^="roles_json[${userId}]"]`).first().remove();
+    
+        const $hiddenInput = $('<input>', {
+            type: 'hidden',
+            name: `roles_json[${userId}][]`, // ARRAY para cada input
+            value: JSON.stringify(rolesData)
         });
+    
+    // const $hiddenInput = $('<input>', {
+    //     type: 'hidden',
+    //     name: `roles_json[${userId}][]`,
+    //     value: JSON.stringify(rolesData)
+    // });
+
+    $select.after($hiddenInput);
+});
+
+    
+
+// document.querySelectorAll('.users-roles').addEventListener('change', function(e) {
+//         if (e.target && e.target.classList.contains('user-role-select')) {
+//     const userId = e.target.name.match(/\d+/)[0];
+
+//     const selectedOptions = Array.from(e.target.selectedOptions);
+//     const rolesData = selectedOptions.map(option => ({
+//         id_tipo: option.value,
+//         nombre_rol: option.textContent.trim()
+//     }));
+
+//     // Eliminar input anterior si existe
+//     const existing = e.target.closest('div').querySelector(`input[name="roles_json[${userId}]"]`);
+//     if (existing) existing.remove();
+
+//     // Crear nuevo input con el JSON serializado
+//     const hiddenInput = document.createElement('input');
+//     hiddenInput.type = 'hidden';
+//     hiddenInput.name = `roles_json[${userId}]`;
+//     hiddenInput.value = JSON.stringify(rolesData);
+//     e.target.closest('div').appendChild(hiddenInput);
+// }
+// });
+
+document.getElementById('agregarRol').addEventListener('click', function () {
+        //roles-container es el contenedor de todos los cuadros de creacion de tesis
+        const container = document.getElementById('roles-container');
+        const options = @json($rolesBase->map(fn($r) => ['id' => $r->id_rol, 'nombre' => $r->nombre_rol]));
+       
+        let optionsHtml = '<option value="" selected disabled>Seleccione un tipo de rol</option>';
+        options.forEach(opt => {
+            optionsHtml += `<option value="${opt.id}" data-descripcion="${opt.descripcion}">${opt.nombre}</option>`;
+        });
+
+       
+        let clonar = document.querySelector('.rol-item').cloneNode(true);
+        clonar.querySelector("input").value = "";
+        clonar.querySelector("textarea").value = "";
+        // .appendChild(clonar)
+   
+
+        container.appendChild(clonar);
     });
-}
+    //funcion que sucede al crear los roles en el boton de crear roles
+    document.getElementById('definirRoles').addEventListener('click', function () {
+        let alMenosUnRolValido = false;
 
-    // Función para asignar eventos a los selects
-    function asignarEventosSelect() {
-    $('.role-select').off('change').on('change', function () {
-        const select = $(this);
-        const userId = select.data('user');
-        const selectedOptions = select.find('option:selected');
+        document.querySelectorAll('.rol-item').forEach((item, index) => {
+            const nombre = item.querySelector('input[name="nombre_rol[]"]').value.trim();
+            let tipo = item.querySelector('select[name="tipo_rol_base[]"]').value;
+            // const descripcion = item.querySelector('textarea[name="descripcion_rol[]"]').value;
 
-        // Eliminar todos los inputs anteriores de este usuario (opcional pero recomendable)
-        $(`input[name^="userRoles[${userId}]"]`).remove();
+            if (nombre && tipo) {
+                alMenosUnRolValido = true;
 
-        selectedOptions.each(function () {
-            const option = $(this);
-            const tipoRol = option.val();
-            const nombreRol = option.text();
+                rolesDefinidos.push({ id: tipo, nombre: nombre });
+                // Desactivar inputs
+                item.querySelectorAll('input, select, textarea').forEach(el => {
+                    el.setAttribute('hidden', true);
+                    el.classList.add('bg-light');
+                });
 
-            const hiddenInput = $(`input[name="userRoles[${userId}][${tipoRol}]"]`);
-
-            // Si el input no existe, creamos uno nuevo
-            if (!hiddenInput.length) {
-                $('<input>').attr({
-                    type: 'hidden',
-                    name: `userRoles[${userId}][${tipoRol}]`,
-                    value: nombreRol
-                }).appendTo('#edit-form'); // O donde necesites agregarlos
-            } else {
-                // Si ya existe, actualizamos el valor
-                hiddenInput.val(nombreRol);
+               
+                document.querySelectorAll('.user-role-select').forEach(select => {
+                    
+                    const option = document.createElement('option');
+                    //const existingRoles = Array.from(select.options).map(option => option.value); // Extraemos los valores de los roles existentes
+                    option.value = tipo;
+                    option.textContent = nombre;
+                    option.classList.add('fs-4');
+                    select.appendChild(option);
+                });
+           
             }
         });
-    });
-}
-    // function asignarEventosSelect() {
-    //     $('.role-select').off('change').on('change', function() {
-    //         // Crear nuevos inputs ocultos para las opciones seleccionadas
-    //         const select = $(this);
-    //         const userId = select.data('user');
-    //         const selectedOptions = select.find('option:selected');
-            
-    //         let hidden = $(`input[name="userRoles[${userId}][${tipoRol}]"]`);
 
-    //         // Eliminar inputs ocultos anteriores para este usuario
-           
-    //             selectedOptions.each(function() {
-    //                 const option = $(this);
-    //                 const tipoRol = option.val();
-    //                 const nombreRol = option.text();
-                    
-    //                 if (!hidden) {
-    //                     $('<input>').attr({
-    //                         type: 'hidden',
-    //                         name: `userRoles[${userId}][${tipoRol}]`,
-    //                         value: nombreRol
-    //                     }).appendTo(select.closest('.card-body'));
-    //                  }else{
-    //                      hidden.val(nombreRol);
-    //                 }
-    //             });
-           
-           
-            
-            
-           
-    //     });
-    // }
+        if (alMenosUnRolValido) {
+            document.getElementById('roles-container').style.display = 'none';
+            document.querySelector('.roles-buttons').style.display = 'none';
+            document.getElementById('users-roles').classList.remove('d-none');
 
-    // Eventos
-    $(document).on('change', '.checkbox-docente', actualizarConfirmacion);
-
-    // Inicializar al cargar si es edición
-    @if($comite)
-        actualizarConfirmacion();
-        asignarEventosSelect();
-    @endif
-
-
-
-//seccion crear roles
-    document.getElementById('mostrarRoles')?.addEventListener('click',function(){
-        document.getElementById('editSection').classList.add('d-none');
-
-        document.getElementById('roles-container').classList.remove('d-none');
-
-        this.classList.add('d-none');
-
-        document.querySelector('.roles-buttons').classList.remove('d-none');
-
-    });
-
-   document.getElementById('agregarRol').addEventListener('click', function () {
-    const container = document.getElementById('roles-container');
-    const newRol = document.createElement('div');
-    newRol.classList.add('rol-item', 'row', 'g-3', 'align-items-start', 'mb-4', 'p-3', 'border', 'rounded', 'shadow-sm', 'bg-white');
-
-    // Cambié la forma de enviar las opciones de roles base
-    const options = @json($rolesBase->map(fn($r) => ['id' => $r->id_rol, 'nombre' => $r->nombre_rol, 'descripcion' => $r->descripcion]));
-
-    let optionsHtml = '<option value="" selected disabled>Seleccione un tipo de rol</option>';
-    options.forEach(opt => {
-        optionsHtml += `<option value="${opt.id}" data-descripcion="${opt.descripcion}">${opt.nombre}</option>`;
-    });
-
-    newRol.innerHTML = `
-        <div class="col-md-6">
-            <label class="form-label">Nombre del Rol Personalizado</label>
-            <input class="form-control" type="text" name="nombre_rol[]" autocomplete="off" required>
-        </div>
-        <div class="col-md-6">
-            <label class="form-label">Tipo de Rol Base</label>
-            <select class="form-select mb-2 rol-base-select" name="tipo_rol_base[]">
-                ${optionsHtml} <!-- Aquí insertamos las opciones dinámicas -->
-            </select>
-            <label class="form-label">Descripción del Rol</label>
-            <textarea class="form-control descripcion-rol" name="descripcion_rol[]" rows="2" readonly></textarea>
-        </div>
-    `;
-
-    container.appendChild(newRol);
-});
-
-// Lógica para manejar la definición de roles
-document.getElementById('definirRoles').addEventListener('click', function () {
-    let alMenosUnRolValido = false;
-    //const nuevosRoles = [];
-    document.querySelectorAll('.rol-item').forEach((item, index) => {
-        const nombre = item.querySelector('input[name="nombre_rol[]"]').value.trim();
-        let tipo = item.querySelector('select[name="tipo_rol_base[]"]').value;
-        const descripcion = item.querySelector('textarea[name="descripcion_rol[]"]').value;
-
-        if (nombre && tipo) {
-            alMenosUnRolValido = true;
-            //añadir roles al arreglo para la generacion de listbox
-            rolesDefinidos.push({
-                id: tipo,
-                nombre: nombre
-            });
-
-            //agregarRolesATodosSelects();
-
-            // Desactivar inputs
-            item.querySelectorAll('input, select, textarea').forEach(el => {
-                el.setAttribute('hidden', true);
-                el.classList.add('bg-light');
-            });
-
-            document.querySelectorAll('#select-roles').forEach(select => {
-                // const option = document.createElement('option');
-                // //const userId = e.target.name.match(/\d+/)[0];
-
-                // option.value = tipo;
-                // option.textContent = nombre;
-                // select.appendChild(option);
-                select.addEventListener('change', function () {
-                    const selectedOption = this.options[this.selectedIndex];
-        
-                        // Obtener el nombre del rol y el id_tipo desde la opción seleccionada
-                    const nombreRol = selectedOption.textContent.trim();  // El nombre del rol
-                    const tipoRol = selectedOption.value;  // El id_tipo de la opción seleccionada
-                    const userId = this.getAttribute('data-user');  // Obtener el id del usuario desde el atributo `data-user`
-                        
-                        // Verificar si ya existe el input oculto para este rol
-                    let hiddenInput = document.querySelector(`input[name="userRoles[${userId}][${tipoRol}]"]`);
-                        
-                        // Si el input ya existe, lo actualizamos
-                    if (!hiddenInput) {
-                        // Crear un nuevo input oculto si no existe
-                        hiddenInput = document.createElement('input');
-                        hiddenInput.type = 'hidden';
-                        hiddenInput.name = `userRoles[${userId}][${tipoRol}]`; // Nombre con el userId y tipoRol
-                        hiddenInput.value = nombreRol; // Asignamos el nombre del rol al input
-                        document.querySelector('#edit-form').appendChild(hiddenInput); // Adjuntamos el input oculto a la columna correspondiente
-                    } else {
-                            // Si ya existe, solo actualizamos el valor
-                        hiddenInput.value = nombreRol;
-                     }
-                });
-                
-
-                // Manejo de la selección de roles en cada usuario
-                // select.addEventListener('change', function (e) {
-                //     const userId = e.target.name.match(/\d+/)[0];
-
-                //     const previousHiddenInput = select.closest('td').querySelector('input[type="hidden"]');
-                //     if (previousHiddenInput) {
-                //         previousHiddenInput.remove();
-                //     }
-
-                //     const selectedOptions = Array.from(e.target.selectedOptions);
-                //     selectedOptions.forEach(option => {
-                //         const nombreRol = option.textContent.trim();
-                //         const tipoRol = option.value;
-
-                //         const hiddenInput = document.createElement('input');
-                //         hiddenInput.type = 'hidden';
-                //         hiddenInput.name = `newRoles[${userId}][${tipoRol}]`;
-                //         hiddenInput.value = nombreRol;
-
-                //         select.closest('td').appendChild(hiddenInput);
-                //     });
-                // });
-            });
+            this.disabled = true;
+            this.innerText = "Roles definidos ✓";
+        } else {
+            alert("Debes llenar al menos un rol correctamente antes de continuar.");
         }
     });
 
-    if (alMenosUnRolValido) {
-        // nuevosRoles.forEach(nuevoRol => {
-        //     if (!rolesDefinidos.some(r => r.id === nuevoRol.id && r.nombre === nuevoRol.nombre)) {
-        //         rolesDefinidos.push(nuevoRol);
-        //     }
-        //     console.log(nuevosRoles);
+    // Actualizar descripción cuando cambia el tipo de rol base
+    document.addEventListener('change', function(e) {
+        if (e.target && e.target.classList.contains('rol-base-select')) {
+            const selectedOption = e.target.options[e.target.selectedIndex];
+            const descripcion = selectedOption.getAttribute('data-descripcion');
+            const descripcionField = e.target.closest('.rol-item').querySelector('.descripcion-rol');
             
-        // });
-        
-        $('#roles-container').addClass('d-none');
-        $('.roles-buttons').addClass('d-none');
-        $('#editSection').removeClass('d-none');
-        $('#mostrarRoles').removeClass('d-none');
-        
-        // Actualizar TODOS los selects
-        agregarRolesATodosSelects();
-        // document.getElementById('roles-container').style.display = 'none';
-        // document.querySelector('.roles-buttons').style.display = 'none';
-        // document.getElementById('editSection').classList.remove('d-none');
-        // document.getElementById('mostrarRoles').classList.remove('d-none');
-        this.disabled = true;
-        this.innerText = "Roles definidos ✓";
-    } else {
-        alert("Debes llenar al menos un rol correctamente antes de continuar.");
-    }
-});
-});
+            descripcionField.value = descripcion || '';
+        }
+    });
 </script>
 @endsection

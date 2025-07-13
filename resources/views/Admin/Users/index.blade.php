@@ -60,7 +60,7 @@
                             <form action='{{ route("users.delete",$usuario->id_user) }}' method="POST" style="display:inline;">
                                 @csrf
                                 @method("DELETE")
-                                <button class="btn btn-sm btn-danger" type="submit">
+                                <button class="btn btn-sm btn-danger deleteConfirm" type="button">
                                  <i class="fa-solid fa-trash"></i> Eliminar
                                 </button>
                             </form>
@@ -90,6 +90,29 @@
         <script>
            new DataTable('#users', {
                 responsive: true
+            });
+
+            document.querySelectorAll('.deleteConfirm').forEach(function(btn){
+                btn.addEventListener('click',function(e){
+                    e.preventDefault();
+
+                    const form = this.closest('form');
+                     
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: 'Esta acción no se puede deshacer.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
             });
         </script>
 @endsection

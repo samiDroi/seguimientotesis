@@ -9,12 +9,13 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Usuarios extends Authenticatable
 {
+
     use HasApiTokens, HasFactory, Notifiable;
+    use SoftDeletes;
     protected $primaryKey = 'id_user';
     /**
      * The attributes that are mass assignable.

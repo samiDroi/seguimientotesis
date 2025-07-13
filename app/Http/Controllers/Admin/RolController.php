@@ -74,7 +74,7 @@ class RolController extends Controller
     }
 
     public function definirRolUsuarios(Request $request,$id_comite){
-
+        $request->all();
         foreach ($request->roles_json as $id_user => $jsonData) {
             $usuarioComite = UsuariosComite::firstOrNew([
                 'id_user' => $id_user,

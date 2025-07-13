@@ -202,18 +202,16 @@ function getAlumnosPorPrograma(){
 }
 
 function filterAlumnosPrograma(){
-     return Usuarios::whereIn('usuarios.id_user', function ($query) {
-            $query->select('usuarios_programa_academico.id_user') // Especifica la tabla en la subconsulta
-                ->from('usuarios_programa_academico')
-                ->whereIn('usuarios_programa_academico.id_programa', Auth::user()->programas->pluck('id_programa'));
-        })->get();
-    // $programas = Auth::user()->programas->pluck('id_programa');
-    // return DB::table('usuarios as u')
-    //     ->join('usuarios_programa_academico as upa','upa.id_user','=','u.id_user')
-    //     ->join('programa_academico as pa','pa.id_programa','=','upa.id_programa')
-    //     ->whereIn('pa.id_programa',$programas)
-    //     ->select('u.*')
-    //     ->get();
+    $programaIds = Auth::user()->programas->pluck('id_programa');
+
+     return Usuarios::whereHas('tipos', function ($q) {
+        $q->where('nombre_tipo', 'alumno');
+    })
+    ->whereHas('programas', function ($q) use ($programaIds) {
+        $q->whereIn('programa_academico.id_programa', $programaIds);
+    })
+    ->get();
+    
 }
 
 function filterComiteProgramasAuth(){

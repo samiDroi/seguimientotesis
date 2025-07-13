@@ -13,6 +13,7 @@ use App\Models\Tesis;
 use App\Models\TesisComite;
 use App\Models\TesisProgramaAcademico;
 use App\Models\TesisUsuarios;
+use App\Services\LogService;
 use Hamcrest\Arrays\IsArray;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -221,7 +222,7 @@ class TesisController extends Controller
         $tesis = getTesisByUserProgram();
         //  dd($tesis);   
        
-       $alumnos = filterAlumnosPrograma();
+        $alumnos = filterAlumnosPrograma();
             
         // Obtener los comités relacionados con los programas del usuario
         $comites = filterComiteProgramasAuth();
@@ -306,8 +307,7 @@ class TesisController extends Controller
         // dd($tesisData);
         foreach ($tesisData as $id_tesis => $nombre_tesis) {
             $tesis = Tesis::findOrFail($id_tesis);
-            $log = new LoggerController;
-            $log->logRegister(
+            LogService::logRegister(
                 $tesis->id_tesis,
                 'tesis',
                 'tesis.update',
@@ -320,7 +320,6 @@ class TesisController extends Controller
         }  
     }
     public function historialTesis($id_tesis){
-        
         $logs = Logs::where('clave','tesis.update')
                 ->where('model_id',$id_tesis)
                 ->orderBy('created_at', 'desc')

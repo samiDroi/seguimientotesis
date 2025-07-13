@@ -207,6 +207,7 @@ class ComiteController extends Controller
 
     public function update(Request $request,$id){
         // dd($request);
+        return $request->all();
         $comite = Comite::where('id_comite',$id)->first();
         $comite->nombre_comite = $request->get('nombre_comite');
         $comite->id_programa = $request->get('ProgramaAcademico');
@@ -249,6 +250,7 @@ class ComiteController extends Controller
         }
         // 3. Gestión simple de roles (nueva funcionalidad)
         if ($request->has('roles')) {
+          
             $defRoles = new RolController;
             $defRoles->definirRolUsuarios($request,$id);
         
