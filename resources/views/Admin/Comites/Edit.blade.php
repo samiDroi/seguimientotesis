@@ -27,6 +27,7 @@
         <input type="hidden" name="id" value="{{ $comite->id_comite }}">
         
         <button class="btn mb-4 " style="background-color:var(--color-amarillo)"><a class="text-decoration-none text-light" href="{{ Route("roles.index") }}"> <i class="fa-solid fa-pencil"></i> Editar roles</a></button>
+        <button type="button" id="create-roles">Crear roles</button>
         @include('Admin.Comites.DefineRolesSection')
         <div id="editSection">
             <div class="mb-3">
@@ -129,6 +130,50 @@ $(document).ready(function() {
     
     new DataTable('#docentes', { responsive: true });
 
+    // //Boton que oculta y aparece la seccion de crear roles dinamicamente
+    // $('#create-roles').on('click',function(){
+    //     $(this).addClass('d-none');
+    //     $('#roles-container').removeClass('d-none');
+    //     $('.roles-buttons').removeClass('d-none');
+    // });
+    // //boton para cancelar la creacion de roles y volver a la pantalla principal
+    // $('#cancelRoles').on('click',function(){
+    //     $('#roles-container input').val('');
+    //     $('#roles-container select').val('');
+    //     $('#roles-container textarea').val('');
+
+    //     $('#roles-container').addClass('d-none');
+    //     $('#create-roles').removeClass('d-none');
+    // });
+
+    // $('#definirRoles').on('click',function(){
+    //     $('#create-roles').removeClass('d-none');
+    //     $('#roles-container').addClass('d-none');
+    //     $('.roles-buttons').addClass('d-none'); // <-- esta línea hace que aparezca otra vez
+       
+    // });
+    $('#create-roles').on('click', function() {
+    $(this).addClass('d-none');
+    $('#roles-container').removeClass('d-none');
+    $('.roles-buttons').removeClass('d-none');
+});
+
+$('#cancelRoles').on('click', function() {
+    $('#roles-container input').val('');
+    $('#roles-container select').val('');
+    $('#roles-container textarea').val('');
+    
+    $('#roles-container').addClass('d-none');
+    $('.roles-buttons').addClass('d-none');
+    $('#create-roles').removeClass('d-none');
+});
+
+$('#definirRoles').on('click', function() {
+    $('#roles-container').addClass('d-none');
+    $('.roles-buttons').addClass('d-none');
+    $('#create-roles').removeClass('d-none');
+});
+
     function actualizarConfirmacion() {
         let confirmarComiteHtml = '';
 
@@ -163,13 +208,7 @@ $(document).ready(function() {
                 //     </div>
                 // `; 
             }
-            // const nuevoSelect = document.querySelector(`.user-role-select[data-user="${userId}"]`);
-            // rolesDefinidos.forEach(role => {
-            //     const option = document.createElement('option');
-            //     option.value = role.id;
-            //     option.textContent = role.nombre;
-            //     nuevoSelect.appendChild(option);
-            //  });
+            
             $('.user-role-select dinamic').each(function() {
         const select = this;
         const userId = select.dataset.user;
@@ -222,15 +261,14 @@ $(document).on('change', '.user-role-select', function(e) {
         };
     }).get();
 
-    // Eliminar input anterior si existe
-    // $select.siblings(`input[name^="roles_json[${userId}]"]`).remove();
+    
 
     // Crear nuevo input hidden con los datos en JSON
      // Verifica si ya existe un input hidden justo después de este select
     let $existingInput = $select.next('input[type="hidden"][name^="roles_json"]');
 
-    // Si existe, lo actualizamos, si no, lo creamos
-        // Quitar solo el input justo después del select (si existe y coincide con el usuario)
+   
+    // Quitar solo el input justo después del select (si existe y coincide con el usuario)
     $select.nextAll(`input[name^="roles_json[${userId}]"]`).first().remove();
     
         const $hiddenInput = $('<input>', {
@@ -239,40 +277,12 @@ $(document).on('change', '.user-role-select', function(e) {
             value: JSON.stringify(rolesData)
         });
     
-    // const $hiddenInput = $('<input>', {
-    //     type: 'hidden',
-    //     name: `roles_json[${userId}][]`,
-    //     value: JSON.stringify(rolesData)
-    // });
+    
 
     $select.after($hiddenInput);
 });
 
     
-
-// document.querySelectorAll('.users-roles').addEventListener('change', function(e) {
-//         if (e.target && e.target.classList.contains('user-role-select')) {
-//     const userId = e.target.name.match(/\d+/)[0];
-
-//     const selectedOptions = Array.from(e.target.selectedOptions);
-//     const rolesData = selectedOptions.map(option => ({
-//         id_tipo: option.value,
-//         nombre_rol: option.textContent.trim()
-//     }));
-
-//     // Eliminar input anterior si existe
-//     const existing = e.target.closest('div').querySelector(`input[name="roles_json[${userId}]"]`);
-//     if (existing) existing.remove();
-
-//     // Crear nuevo input con el JSON serializado
-//     const hiddenInput = document.createElement('input');
-//     hiddenInput.type = 'hidden';
-//     hiddenInput.name = `roles_json[${userId}]`;
-//     hiddenInput.value = JSON.stringify(rolesData);
-//     e.target.closest('div').appendChild(hiddenInput);
-// }
-// });
-
 document.getElementById('agregarRol').addEventListener('click', function () {
         //roles-container es el contenedor de todos los cuadros de creacion de tesis
         const container = document.getElementById('roles-container');
@@ -328,7 +338,7 @@ document.getElementById('agregarRol').addEventListener('click', function () {
         if (alMenosUnRolValido) {
             document.getElementById('roles-container').style.display = 'none';
             document.querySelector('.roles-buttons').style.display = 'none';
-            document.getElementById('users-roles').classList.remove('d-none');
+            //document.getElementById('users-roles').classList.remove('d-none');
 
             this.disabled = true;
             this.innerText = "Roles definidos ✓";
