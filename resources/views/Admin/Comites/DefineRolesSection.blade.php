@@ -2,6 +2,7 @@
 <div id="roles-container" class="{{ $rolesExistentes->isEmpty() ? '' : 'd-none' }}">
     <h2 class="text-2xl font-bold mt-10 mb-4">Definir Nuevos Roles Personalizados</h2>
     <div class="rol-item row g-3 align-items-start mb-4 p-3 border rounded shadow-sm bg-white">
+        <button type="button" class="d-none delete-rol"> - </button>
         <div class="col-md-6">
             <label class="form-label">Nombre del Rol Personalizado</label>
             <input class="form-control" type="text" name="nombre_rol[]" autocomplete="off" >

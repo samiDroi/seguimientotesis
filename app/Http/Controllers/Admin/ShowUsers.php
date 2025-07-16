@@ -1,7 +1,8 @@
 <?php
 namespace App\Http\Controllers\Admin;
     use App\Http\Controllers\Controller;
-    use App\Models\Usuarios;
+use App\Models\TipoUsuario;
+use App\Models\Usuarios;
 use App\Models\UsuarioTipoUsuario;
 use RealRashid\SweetAlert\Facades\Alert;
     use Illuminate\Http\Request;
@@ -21,14 +22,20 @@ use RealRashid\SweetAlert\Facades\Alert;
 
         public function edit($id_user){
             $usuario = Usuarios::find($id_user);
+            $tiposTotal = TipoUsuario::all();
             $tiposUsuario = DB::table('usuario_tipo_usuario')
             ->join('tipo_usuario', 'usuario_tipo_usuario.id_tipo', '=', 'tipo_usuario.id_tipo')
             ->where('usuario_tipo_usuario.id_usuario', $id_user)
             ->select('tipo_usuario.id_tipo')  // Aquí especificamos de qué tabla viene `id_tipo`
             ->pluck('tipo_usuario.id_tipo')   // Recoge los `id_tipo` de `tipo_usuario`
             ->toArray(); // Recupera los tipos de usuario seleccionados
-        
-            return view("Admin.Users.Edit",compact("usuario","tiposUsuario"));
+            // $tiposUsuario = Usuarios
+            $isInComite = DB::table('usuarios as u')
+                ->join('usuarios_comite as uc','uc.id_user','=','u.id_user')
+                ->join('comite as c','c.id_comite','=','uc.id_comite')
+                ->where('u.id_user',$id_user)
+                ->count();
+            return view("Admin.Users.Edit",compact("usuario","tiposUsuario",'tiposTotal','isInComite'));
         }
 
         public function update(Request $request,$id){
@@ -52,7 +59,9 @@ use RealRashid\SweetAlert\Facades\Alert;
             
                 // Sincronizar los tipos de usuario en la tabla pivote `usuario_tipo_usuario`
                 $usuario->tipos()->sync($request->nombre_tipo);
-                return redirect("/admin/users");
+                alert::success('Exito','Informacion del usuario actualizada con exito');
+                return redirect()->route('users.index');
+
             }
             
         

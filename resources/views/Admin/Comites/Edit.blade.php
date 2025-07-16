@@ -27,7 +27,7 @@
         <input type="hidden" name="id" value="{{ $comite->id_comite }}">
         
         <button class="btn mb-4 " style="background-color:var(--color-amarillo)"><a class="text-decoration-none text-light" href="{{ Route("roles.index") }}"> <i class="fa-solid fa-pencil"></i> Editar roles</a></button>
-        <button type="button" id="create-roles">Crear roles</button>
+        <button type="button" id="create-roles" class="{{ $rolesExistentes->isNotEmpty() ? '' : 'd-none' }}">Crear roles</button>
         @include('Admin.Comites.DefineRolesSection')
         <div id="editSection">
             <div class="mb-3">
@@ -129,55 +129,72 @@
 $(document).ready(function() {
     
     new DataTable('#docentes', { responsive: true });
-
-    // //Boton que oculta y aparece la seccion de crear roles dinamicamente
-    // $('#create-roles').on('click',function(){
-    //     $(this).addClass('d-none');
-    //     $('#roles-container').removeClass('d-none');
-    //     $('.roles-buttons').removeClass('d-none');
-    // });
-    // //boton para cancelar la creacion de roles y volver a la pantalla principal
-    // $('#cancelRoles').on('click',function(){
-    //     $('#roles-container input').val('');
-    //     $('#roles-container select').val('');
-    //     $('#roles-container textarea').val('');
-
-    //     $('#roles-container').addClass('d-none');
-    //     $('#create-roles').removeClass('d-none');
-    // });
-
-    // $('#definirRoles').on('click',function(){
-    //     $('#create-roles').removeClass('d-none');
-    //     $('#roles-container').addClass('d-none');
-    //     $('.roles-buttons').addClass('d-none'); // <-- esta línea hace que aparezca otra vez
-       
-    // });
-    $('#create-roles').on('click', function() {
-    $(this).addClass('d-none');
-    $('#roles-container').removeClass('d-none');
-    $('.roles-buttons').removeClass('d-none');
-});
-
-$('#cancelRoles').on('click', function() {
-    $('#roles-container input').val('');
-    $('#roles-container select').val('');
-    $('#roles-container textarea').val('');
     
-    $('#roles-container').addClass('d-none');
-    $('.roles-buttons').addClass('d-none');
-    $('#create-roles').removeClass('d-none');
-});
+        
+    //Boton que oculta y aparece la seccion de crear roles dinamicamente
+    $('#create-roles').on('click', function() {
+        let isSecond = false;
+        let containersData = [];
+        let emptyItems = [];
+       
+        //evalua si es la segunda vez que se clickea el elemento
+        $('#roles-container .rol-item').each(function(){
+                let rolInput = $(this).find('input').val().trim();
+                //console.log(rolInput)
+                if(rolInput !== ''){
+                    containersData.push($(this));
+                    isSecond = true;
+                }
 
-$('#definirRoles').on('click', function() {
-    $('#roles-container').addClass('d-none');
-    $('.roles-buttons').addClass('d-none');
-    $('#create-roles').removeClass('d-none');
-});
+                if(rolInput === '' && $('#roles-container .rol-item').length > 1){
+                    $(this).remove();
+                }
+                
+                
+        });
+       
+        //console.log(isSecond)
+        //si es la segunda vez que se clickea, se remueven los roles ya escritos y aparece uno nuevo y vacio
+        if(isSecond){
+            console.log(containersData);
+            let cleanContainer = containersData[0].clone();
+            cleanContainer.find('input,select,textarea').val('');
+            cleanContainer.removeClass('d-none');
+            $('#roles-container').append(cleanContainer);
+
+            containersData.forEach(function(item){
+                $(item).remove();
+                //$(item).find('input,select,textarea').val('').addClass('d-none');
+            })
+            isSecond = false;
+        }
+
+        $(this).addClass('d-none');
+        $('#roles-container').removeClass('d-none');
+        $('.roles-buttons').removeClass('d-none');
+     
+        
+    });
+    //boton para cancelar la creacion de roles y volver a la pantalla principal
+    $('#cancelRoles').on('click', function() {
+        $('#roles-container input').val('');
+        $('#roles-container select').val('');
+        $('#roles-container textarea').val('');
+        
+        $('#roles-container').addClass('d-none');
+        $('.roles-buttons').addClass('d-none');
+        $('#create-roles').removeClass('d-none');
+    });
+    //boton para eliminar el rol
+    $('#roles-container').on('click','.delete-rol',function(){
+        $(this).closest('.rol-item').remove();
+    });  
 
     function actualizarConfirmacion() {
         let confirmarComiteHtml = '';
 
         $('.checkbox-docente:checked').each(function() {
+
             const userId = $(this).val();
             const row = $(this).closest('tr');
             const nombre = row.find('td:nth-child(3)').text();
@@ -193,20 +210,6 @@ $('#definirRoles').on('click', function() {
                 confirmarComiteHtml.find('.user-role-select').attr('data-user', userId);
                 confirmarComiteHtml.find('.user-role-select').attr('name', `roles[${userId}][]`);
                 
-                // confirmarComiteHtml += `
-                //     <div class="card selected-user-card mb-3" data-user-id="${userId}">
-                //         <div class="card-body">
-                //             <h5>${nombre} ${apellidos}</h5>
-                //             <input type="hidden" name="docentes[]" value="${userId}">
-                //             <label class="form-label">Roles asignados</label>
-                //             <select class="form-select role-select users-role-select dinamic" data-user="${userId}" name="roles[${userId}][]" multiple>
-                //                 @foreach($roles as $rol)
-                //                     <option value="{{ $rol->id_rol }}">{{ $rol->rol_personalizado }}</option>
-                //                 @endforeach
-                //             </select>
-                //         </div>
-                //     </div>
-                // `; 
             }
             
             $('.user-role-select dinamic').each(function() {
@@ -245,7 +248,20 @@ $('#definirRoles').on('click', function() {
         }
     }
 
-    $(document).on('change', '.checkbox-docente', actualizarConfirmacion);
+    $(document).on('change', '.checkbox-docente',function(){
+        //al deseleccionar cada checkbox, se revisa si ya no hay seleccionado ningun docente
+        if(!this.checked){
+            totalSelected = $('.checkbox-docente:checked').length;
+            if(totalSelected === 0){
+                //si no hay ninguno seleccionado, se alerta y se vuelve a seleccionar el ultimo que se deselecciono
+                alert('debes seleccionar al menos un docente');
+                this.checked = true;
+                return;
+            }
+        }
+
+        actualizarConfirmacion();
+    } );
     actualizarConfirmacion();
 });
 
@@ -273,7 +289,7 @@ $(document).on('change', '.user-role-select', function(e) {
     
         const $hiddenInput = $('<input>', {
             type: 'hidden',
-            name: `roles_json[${userId}][]`, // ARRAY para cada input
+            name: `roles_json[${userId}]`, // ARRAY para cada input
             value: JSON.stringify(rolesData)
         });
     
@@ -297,12 +313,15 @@ document.getElementById('agregarRol').addEventListener('click', function () {
         let clonar = document.querySelector('.rol-item').cloneNode(true);
         clonar.querySelector("input").value = "";
         clonar.querySelector("textarea").value = "";
+        clonar.querySelector(".delete-rol").classList.remove('d-none');
+        $(clonar).removeClass('d-none');
         // .appendChild(clonar)
    
 
         container.appendChild(clonar);
     });
     //funcion que sucede al crear los roles en el boton de crear roles
+    //para definir roles, se cierra la pestaña de creacion de roles y regresa el boton de crear roles
     document.getElementById('definirRoles').addEventListener('click', function () {
         let alMenosUnRolValido = false;
 
@@ -317,8 +336,8 @@ document.getElementById('agregarRol').addEventListener('click', function () {
                 rolesDefinidos.push({ id: tipo, nombre: nombre });
                 // Desactivar inputs
                 item.querySelectorAll('input, select, textarea').forEach(el => {
-                    el.setAttribute('hidden', true);
-                    el.classList.add('bg-light');
+                    // el.setAttribute('hidden', true);
+                    //el.classList.add('bg-light');
                 });
 
                
@@ -336,11 +355,15 @@ document.getElementById('agregarRol').addEventListener('click', function () {
         });
 
         if (alMenosUnRolValido) {
-            document.getElementById('roles-container').style.display = 'none';
-            document.querySelector('.roles-buttons').style.display = 'none';
+            // document.getElementById('roles-container').style.display = 'none';
+            // document.querySelector('.roles-buttons').style.display = 'none';
             //document.getElementById('users-roles').classList.remove('d-none');
-
-            this.disabled = true;
+            // $('#definirRoles').on('click', function() {
+            $('#roles-container').addClass('d-none');
+            $('.roles-buttons').addClass('d-none');
+            $('#create-roles').removeClass('d-none');
+            // });
+            // this.disabled = true;
             this.innerText = "Roles definidos ✓";
         } else {
             alert("Debes llenar al menos un rol correctamente antes de continuar.");
