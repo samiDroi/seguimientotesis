@@ -74,7 +74,7 @@ class RolController extends Controller
     }
 
     public function definirRolUsuarios(Request $request,$id_comite){
-        $request->all();
+        // $request->all();
         foreach ($request->roles_json as $id_user => $jsonData) {
             $usuarioComite = UsuariosComite::firstOrNew([
                 'id_user' => $id_user,
@@ -88,7 +88,7 @@ class RolController extends Controller
 
             // Eliminar roles anteriores
             UsuariosComiteRol::where('id_usuario_comite', $usuarioComite->id_usuario_comite)->delete();
-
+           // dd($jsonData);
             $roles = json_decode($jsonData,true);
 
             foreach ($roles as $rol) {

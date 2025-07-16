@@ -207,13 +207,12 @@ class ComiteController extends Controller
 
     public function update(Request $request,$id){
         // dd($request);
-        return $request->all();
+        //return $request->all();
         $comite = Comite::where('id_comite',$id)->first();
         $comite->nombre_comite = $request->get('nombre_comite');
         $comite->id_programa = $request->get('ProgramaAcademico');
         $comite->save();
 
-        $docentes = $request->input('docentes');
         DB::table('usuarios_comite_roles as ucr')
         ->join('usuarios_comite as uc','uc.id_usuario_comite','=','ucr.id_usuario_comite')
         ->where('uc.id_comite',$id)
@@ -223,39 +222,31 @@ class ComiteController extends Controller
         ->where('id_comite', $comite->id_comite)
         ->delete();
 
-        foreach ($docentes as $username) {
-            $usuario = Usuarios::where('username', $username)->first(); // Obtener el docente por el username
-            if ($usuario) {
-                    DB::table('usuarios_comite')->updateOrInsert([
-                        'id_user' => $usuario->id_user,
-                        'id_comite' => $comite->id_comite,
-                        ]);
-            }
-        }
-
-        foreach ($request->userRoles as $idUser => $idTipos) {
-            $usuarioComite = UsuariosComite::where('id_comite',$id)
-                        ->where('id_user',$idUser)->first();
+        // foreach ($docentes as $usuario) {
+        //      // Obtener el docente por el username
             
-            if ($usuarioComite) {
-                foreach ($idTipos as $idTipo => $nombreRol) {
-                    UsuariosComiteRol::create([
-                        'id_usuario_comite' => $usuarioComite->id_usuario_comite,
-                        'id_rol' => $idTipo,
-                        'rol_personalizado' => $nombreRol,
-                        'id_user_creador' => Auth::user()->id_user
-                        ]);
-                }
-            }
-        }
+        //             DB::table('usuarios_comite')->updateOrInsert([
+        //                 'id_user' => $usuario->id_user,
+        //                 'id_comite' => $comite->id_comite,
+        //                 ]);
+            
+        // }
+        // foreach ($docentes as $id_user) {
+        //     if (Usuarios::where('id_user', $id_user)->exists()) {
+        //         DB::table('usuarios_comite')->updateOrInsert([
+        //             'id_user' => $id_user,
+        //             'id_comite' => $comite->id_comite,
+        //         ]);
+        //     }
+        // }
         // 3. Gestión simple de roles (nueva funcionalidad)
-        if ($request->has('roles')) {
+        if ($request->has('roles_json')) {
           
             $defRoles = new RolController;
             $defRoles->definirRolUsuarios($request,$id);
         
         }
-        alert::success('Que bieeen','Si se pudo editar');
+        alert::success('Completado','El comite se ha actualizado satisfactoriamente');
         return redirect()->route('comites.index');
 
     }

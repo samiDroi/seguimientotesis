@@ -29,7 +29,8 @@
               <label for="nombre_tipo" class=" text-center mb-3" >Seleccione los Tipos de Usuario:</label>
                 @foreach ($tiposUsuario as $tipo)
                 <div class="col-12 col-md-4 ">
-                    <input class="form-check-input" type="checkbox"  name="nombre_tipo[]" value="{{ $tipo->id_tipo }}">
+                    <input class="form-check-input" type="checkbox"  name="nombre_tipo[]" value="{{ $tipo->id_tipo }}"
+                    >
                     <label  for="coordinador">{{ Str::ucfirst($tipo->nombre_tipo) }}</label>
                  </div>
                 @endforeach
