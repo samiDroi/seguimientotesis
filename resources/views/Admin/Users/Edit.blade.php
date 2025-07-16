@@ -39,18 +39,18 @@
 
     <div class="px-5 mt-3" id="generacion" style="display: none">
     <label for="apellidos">Generacion</label>
-    <input class="form-control" id='apellidos' type="text" name="generacion" required value="{{ $usuario->generacion }}">
+    <input class="form-control" id='apellidos' type="text" name="generacion" value="{{ $usuario->generacion }}">
     </div>
 
     <div class="px-5 mt-3" id="matricula" style="display: none">
     <label for="username">Matricula</label>
-    <input class="form-control" type="text" name="matricula" required value="{{ $usuario->matricula }}"> 
+    <input class="form-control" type="text" name="matricula" value="{{ $usuario->matricula }}"> 
     </div>
 
   
     <div class="px-5 mt-3" id="claveT" style="display: none">
     <label for="username">Clave de trabajador</label>
-    <input class="form-control" type="text" name="username" required value="{{ $usuario->username }}"> 
+    <input class="form-control" type="text" name="username" value="{{ $usuario->username }}"> 
     </div>
 
     

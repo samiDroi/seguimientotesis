@@ -52,12 +52,13 @@ function getInfoComentarioAvance($id_requerimiento){
     ->join('comite as c','c.id_comite', '=', 'uc.id_comite')
     ->join('tesis_comite as tc', 'c.id_comite', '=', 'tc.id_comite')
     ->join('comite_tesis_requerimientos as ctr', 'tc.id_tesis_comite', '=', 'ctr.id_tesis_comite')
+    ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.id_usuario_comite')
     ->where('ctr.id_requerimiento',$id_requerimiento)
     ->select(
         'ca.*',
         'u.nombre as usuario_nombre',
         'u.apellidos as usuario_apellidos',
-        'uc.rol as usuario_rol',
+        'ucr.rol_personalizado as usuario_rol',
         'ca.comentario as contenido',
         'ctr.*'
     )

@@ -1,7 +1,93 @@
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  
+  border-radius: 1rem;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: sans-serif;
+  border-radius: rem;
+  overflow: hidden;
+}
+
+.custom-table thead {
+  background-color: var(--color-azul-obscuro);
+  color: white;
+}
+
+.custom-table tbody {
+   border: 1px solid white;
+}
+
+.custom-table td{
+   border:1px solid black;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 1rem;
+ 
+  text-align: center;
+}
+
+.custom-table th:first-child {
+  border-top-left-radius: 1rem;
+}
+
+.custom-table th:last-child {
+  border-top-right-radius: 1rem;
+}
+
+.custom-table tr:last-child td:first-child {
+  border-bottom-left-radius: 1rem;
+}
+
+.custom-table tr:last-child td:last-child {
+  border-bottom-right-radius: 1rem;
+}
 
 
 
 
+
+.icono-trash {
+  color: red;
+  transition: all 0.3s ease;
+  padding: 0.5rem;
+  border-radius: 20%;
+}
+
+
+
+.icono-trash:hover {
+ color: white;
+  background-color: red;
+  cursor: pointer;
+}
+.edit-icon{
+ color: var(--color-amarillo); 
+ transition: all 0.3s ease;
+  padding: 0.5rem;
+  border-radius: 20%;
+}
+
+.edit-icon:hover{
+  color: white;
+  background-color: var(--color-amarillo);
+  cursor: pointer;
+}
+
+
+
+   #Layot-form:hover{
+   
+      cursor:pointer;
+   }
 
    .purplecolor:hover{
     background-color:#e7c3ff ;

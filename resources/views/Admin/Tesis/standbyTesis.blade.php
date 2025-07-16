@@ -7,10 +7,8 @@
     
     @include('Admin.Tesis.Modals.TesisModal')
     <a href="{{ route('tesis.admin') }}">Aceeder a mis tesis asignadas</a>
-    <x-titulo titulo="Evaluar tesis" />
-    <x-boton-aceptar texto="Aceptar y enviar" />
-    <x-boton-aceptar texto="Editar" />
-    <x-boton-aceptar texto="Eliminar" />
+    <x-titulo titulo="Evaluar tesis"/>
+    <x-button-create clases="btn btn-primary" texto="Holiwis" icon='<i class="fa-solid  fa-skull-crossbones"></i>' target="tesisModal"/>
 
     <ul class="nav nav-tabs fs-5" id="filterNav">
         <li class="nav-item"><a class="nav-link active" data-filter="Todos">Todos</a></li>

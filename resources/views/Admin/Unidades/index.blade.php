@@ -11,9 +11,9 @@
 
     <div class="container bg-light py-3 shadow-lg">
         <div class="row ms-2  mt-3">
-            <div> 
-                <table id="unidades" class="table mt-4 table-bordered text-center table-striped ">
-                <thead class="table-primary  ">
+            <div class="table-wrapper"> 
+                <table id="unidades" class=" custom-table table-responsive my-3">
+                <thead class=" ">
                     <tr>
                         <th class="col-6 text-center">Nombre de la Unidad</th>
                         <th class="col-4 text-center">Programas Academicos</th>
@@ -36,7 +36,7 @@
                                 <form action="{{ route('unidades.destroy', $unidad->id_unidad) }}" method="POST" style="display:inline;" class="delete">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger btn-sm" type="submit"> <i class="fa-solid fa-trash"></i> Eliminar</button>
+                                    <button class="btn btn-danger btn-sm btn-delete" type="submit"> <i class="fa-solid fa-trash"></i> Eliminar</button>
                                 </form>
                             </td>
                            

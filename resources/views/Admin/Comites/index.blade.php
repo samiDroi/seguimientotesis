@@ -5,15 +5,13 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
 @endsection 
 @section('content')
+<h1 class="text-center mt-4 text-end">Lista de Comités</h1>
 
 
-<h1 class="text-center mt-4">Lista de Comités</h1>
+<div class="container mt-2 ">
 
 
-<div class="container  py-5">
-
-
-    <div class="text-start mb-5 "><button class="btn text-light" style="background-color: var(--color-azul-principal)" data-bs-toggle="modal" data-bs-target="#crearComiteModal">
+    <div class="text-start  mb-5 "><button class="btn text-light" style="background-color: var(--color-azul-principal)" data-bs-toggle="modal" data-bs-target="#crearComiteModal">
       <i class="fa-solid fa-users"></i>   Crear Comité
     </button></div>
 

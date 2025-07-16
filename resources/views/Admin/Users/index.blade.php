@@ -7,71 +7,61 @@
 @endsection
 
 @section('content')
+<div class="container">
+<div class="text-end mt-5 mb-4"><button class="btn " style="background-color: var(--color-azul-principal)"><a href="{{ route("register.index") }}" class="text-decoration-none text-light"><i class="fa-solid fa-user-plus"></i> Añadir usuario</a></button></div>
+</div>
 
-<div class="text-end me-5 mt-5 mb-4"><button class="btn " style="background-color: var(--color-azul-principal)"><a href="{{ route("register.index") }}" class="text-decoration-none text-light">Añadir nuevo usuario</a></button></div>
-
-<div class="container  py-3 mb-5" ">
+<div class="container  py-3 mb-5  my-5" >
     <div class="row row mx-2 mt-3">
-    <table id="users" class="table rounded mt-4 table-bordered text-center ">
-            <thead class="table-primary" >
-                <tr>
-                    <th>Clave</th>
-                    <th>Matricula</th>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Correo_electronico</th>
-                    <th>Tipo de usuario</th>
-                    <th>Programas Academicos</th>
-                    
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($usuarios as $usuario)
-                    <tr>
-                        <td>{{ $usuario->username ?? 'NA'}}</td>
-                         <td>{{ $usuario->matricula ?? 'NA' }}</td>
-                        <td>{{ $usuario->nombre }}</td>
-                        <td>{{ $usuario->apellidos }}</td>
-                        <td>{{ $usuario->correo_electronico }}</td>
-                        <td>
-
-                         @foreach ($usuario->tipos as $tipo)
-
-
-                            {{ $tipo->nombre_tipo }}@if(!$loop->last), @endif
-                        @endforeach  
-                            {{-- @dd($usuario->latest()->first())    --}}
-                        </td> 
-                            <td>
-
-                         @foreach ($usuario->programas as $programa)
-
-
-                            {{ $programa->nombre_programa }}@if(!$loop->last), @endif
-                        @endforeach  
-                            {{-- @dd($usuario->latest()->first())    --}}
-                        </td> 
-                       
-                        <td>
-                            <button class="btn btn-sm "style="background-color:var(--color-amarillo)">
-                                <a class="text-light text-decoration-none" href="{{ route("users.edit",$usuario->id_user) }}"><i class="fa-solid fa-pen-to-square text-light"></i>   Editar</a>
-                            </button>
-                            <form action='{{ route("users.delete",$usuario->id_user) }}' method="POST" style="display:inline;">
-                                @csrf
-                                @method("DELETE")
-                                <button class="btn btn-sm btn-danger deleteConfirm" type="button">
-                                 <i class="fa-solid fa-trash"></i> Eliminar
-                                </button>
-                            </form>
-
-                        </td>   
-                    </tr>    
-                @endforeach
-            </tbody>
-        </table>
-
-    </div>
+    <div class="table-wrapper ">
+  <table class="custom-table table-responsive my-3" id="users">
+    <thead>
+      <tr>
+        <th>Clave</th>
+        <th>Matricula</th>
+        <th>Nombre</th>
+        <th>Apellidos</th>
+        <th>Correo electrónico</th>
+        <th>Tipo de usuario</th>
+        <th>Programas Académicos</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody class="fw-semibold">
+      @foreach ($usuarios as $usuario)
+        <tr>
+          <td>{{ $usuario->username ?? 'NA' }}</td>
+          <td>{{ $usuario->matricula ?? 'NA' }}</td>
+          <td>{{ $usuario->nombre }}</td>
+          <td>{{ $usuario->apellidos }}</td>
+          <td>{{ $usuario->correo_electronico }}</td>
+          <td>
+            @foreach ($usuario->tipos as $tipo)
+              {{ $tipo->nombre_tipo }}@if(!$loop->last), @endif
+            @endforeach
+          </td>
+          <td>
+            @foreach ($usuario->programas as $programa)
+              {{ $programa->nombre_programa }}@if(!$loop->last), @endif
+            @endforeach
+          </td>
+          <td> 
+            <a href="{{ route('users.edit', $usuario->id_user)}}" style="all: unset;">
+              <i class="fa-solid fa-pen-to-square edit-icon" ></i> 
+            </a>
+            <form action="{{ route('users.delete', $usuario->id_user) }}" method="POST" style="display:inline;">
+              @csrf
+              @method("DELETE")
+              <button type="submit" style="background: none; border: none; padding: 0; margin-left: 0.5rem;">
+                <i class="fa-solid fa-trash icono-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+      @endforeach
+    </tbody>
+  </table>
+</div>
 </div>
    
 @endsection  

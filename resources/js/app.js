@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import "./usuarios/registros.js"
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
+import '../css/componentes.css';
 
 
 

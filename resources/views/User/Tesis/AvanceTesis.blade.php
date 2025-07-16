@@ -15,7 +15,7 @@
    
     <form  action="{{ Route("avance.create",$requerimiento->id_requerimiento) }}" method="POST">
         @csrf
-            @if (!(comprobarIsInComite($comiteTesis->id_comite)) && Auth::user()->esDirector === 0)
+            @if (!(comprobarIsInComite($comiteTesis->id_comite)))
                 <textarea id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea>
                 
                 <a class=" mt-2 align-center" href="{{ Route("home") }}">Regresar y cancelar</a>
@@ -31,7 +31,7 @@
         
     </form>
    
-    
+    <h1>{{ $avanceTesis?->estado }}</h1>
     @if (isDirectorInComite($comiteTesis->id_comite) > 0 && Auth::user()->esCoordinador === 0)
                             <!-- Mostrar los botones solo si es DIRECTOR -->
                             {{-- @dd($avanceTesis->id_avance_tesis) --}}
@@ -49,7 +49,7 @@
                                         @csrf
                                         {{-- @method('POST')  --}}
                                         <input type="hidden" name="estado" value="RECHAZADO"> <!-- Estado a Rechazado -->
-                                        <input type="hidden" name="id_avance" value="{{ $avanceTesis?->id_avance }}">
+                                        <input type="hidden" name="id_avance" value="{{ $avanceTesis?->id_avance_tesis }}">
                                         <button type="submit" class="btn btn-sm btn-danger">Rechazar</button>
                                     </form>
                                 </div>

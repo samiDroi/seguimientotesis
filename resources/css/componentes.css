@@ -1,0 +1,31 @@
+.boton-crear{
+        background-color: #355C7D;
+        color: white;
+        border: 0px;
+        width: 120px;
+        height: 40px;
+        border-radius: 10px;
+        
+        &:hover{
+            background-color:#4b85b7;
+            transform:scale(1.1)
+        }
+        &:active{
+            transform: scale(0.9)
+        }
+    }
+
+     .sdfdsfsd{
+        background-color: rgb(36, 36, 129);
+        color: #fff;
+        padding-inline: 40px;
+        transition: scale 120ms ease-in-out;
+        &:hover{
+            color: #fff;
+            scale: 1.1;
+            background-color: rgb(11, 11, 105);
+        }
+    }
+    .sdfdsfsd:active{
+        transform: scale(1.12);
+    }
