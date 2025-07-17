@@ -78,8 +78,8 @@
                     </div>
                     @if (isDirector() > 0)
                         <div class="option my-1 py-3 mb-5">
-                            <img src="{{ asset('images/archive.svg') }}" style="height: 20px;">
-                            <a href="{{ Route('tesis.index') }}" class="text-decoration-none text-dark fw-semibold diva">Mis tesis</a>
+                            <i class="fa-solid fa-file-word"></i>
+                            <a href="{{ Route('tesis.index') }}" class="text-decoration-none text-dark fw-semibold diva">Gestionar tesis</a>
                         </div>
                     @endif
                     <div class="option my-1 py-3 mb-5">

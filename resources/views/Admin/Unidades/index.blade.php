@@ -7,6 +7,11 @@
 @endsection
 
 @section('content')
+
+<div class="container">
+  <x-Titulos text="Lista de unidades"/>
+</div>
+
 <div class="text-end mt-5 me-5 mb-4"><button data-bs-toggle="modal" data-bs-target="#modalCrear" class="btn" style="background-color: var(--color-verde-Nephiris)"><a  class="text-decoration-none text-light"> <i class="fa-solid fa-plus"></i> Agregar nueva Unidad</a></button> </div>
 
     <div class="container bg-light py-3 shadow-lg">
@@ -31,13 +36,9 @@
                             </td>
 
 
-                            <td >
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#modalEditar" class="btn  btn-sm" style="background-color: var(--color-amarillo)"><i class="fa-solid fa-pen-to-square text-light"></i><span class="text-light"> Editar</span> </button>
-                                <form action="{{ route('unidades.destroy', $unidad->id_unidad) }}" method="POST" style="display:inline;" class="delete">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger btn-sm btn-delete" type="submit"> <i class="fa-solid fa-trash"></i> Eliminar</button>
-                                </form>
+                            <td>
+                                <x-editar-modal target=""/>
+                                <x-boton-eliminar ruta="{{ route('unidades.destroy', $unidad->id_unidad) }}"/>
                             </td>
                            
                            

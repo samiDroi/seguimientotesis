@@ -5,15 +5,18 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
 @endsection 
 @section('content')
-<h1 class="text-center mt-4 text-end">Lista de Comités</h1>
+
 
 
 <div class="container mt-2 ">
+    <x-Titulos text="Lista de comites"/>
 
 
-    <div class="text-start  mb-5 "><button class="btn text-light" style="background-color: var(--color-azul-principal)" data-bs-toggle="modal" data-bs-target="#crearComiteModal">
-      <i class="fa-solid fa-users"></i>   Crear Comité
-    </button></div>
+    <div class="text-end mt-4 mb-3 ">
+    <x-boton-modal target=crearComiteModal text="Crear comite" clases=btn-crear-comite icon=user-group/>
+</div>
+
+
 
 
 @include('Admin.Comites.Create')
@@ -26,8 +29,8 @@
           </span>
     </div>
 @else
-<div class="container">
-<table class="table table-bordered table align-middle display mt-4   " id="miTabla" >
+<div class="container  table-wrapper">
+<table class="custom-table table-responsive   mt-4   " id="miTabla" >
         <thead class="table-primary">
             <tr>
                 <th class="col-2 ">Alumno</th>
@@ -57,11 +60,6 @@
                                     {{ $tesisc->nombre_tesis }}
                                     </a>
                                 </li>
-                            
-                           
-                            {{-- <li>
-                               
-                            </li> --}}
                          @endforeach
                    
                     </ol>
@@ -127,6 +125,7 @@
                 
               
                <td class="d-flex flex-column align-items-center">
+                <x-boton-modal clases="boton-ver-tesis" target="verTesisModal-{{ $comite->id_comite }}" icon="eye" text="Ver tesis"/>
                    
                       {{-- <a href="{{ Route('tesis.avance.admin',$tesis->id_tesis) }}" class="btn mb-2 btn-sm text-light" style="background-color: #9FA6B2">
                             <i class="fa-regular fa-eye"></i> Ver
@@ -137,25 +136,22 @@
                                 </a>
                                  
                             @endforeach --}}
-                            <!-- Botón para abrir el modal -->
-<button type="button"
-    class="btn mb-2 btn-sm text-white"
-    style="background-color:#9FA6B2"
-    data-bs-toggle="modal"
-    data-bs-target="#verTesisModal-{{ $comite->id_comite }}">
-    <i class="fa-regular fa-eye"></i> Ver Tesis 
-</button>
+
+ 
 @include('Admin.Comites.Modals.AvanceTesisModal')
-                        <a href="{{ route('plan.historial',$comite->id_comite) }}" class="btn mb-2 btn-sm text-light" style="background-color:var(--color-azul-principal)">
-                            <i class="fa-solid fa-briefcase"></i> Plan de trabajo
-                        </a>
-                    
-                        <a href="{{ Route("comites.edit",$comite->id_comite) }}" class="btn mb-2 btn-sm text-light" style="background-color: #355C7D">
-                            <i class="fa-solid fa-pencil"></i> Modificar comité
+                       
+                        <a href="{{ route('plan.historial',$comite->id_comite) }}" class="a-personalizado mt-2 text-decoration-none">
+                            <i class="fa-solid fa-briefcase mt-2"></i> Plan de trabajo
                         </a>
                         
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#clone-modal">
-                            Clonar comite
+                        
+                    
+                        <a href="{{ Route("comites.edit",$comite->id_comite) }}" class="a-modificar text-decoration-none mt-2" >
+                            <i class="fa-solid fa-pencil mt-2"></i> Modificar comité
+                        </a>
+                        
+                        <button type="button" class="a-clonar mt-2" data-bs-toggle="modal" data-bs-target="#clone-modal">
+                         <i class="fa-solid fa-clone"></i> Clonar comite
                         </button>
                         @include('Admin.Comites.Modals.CloneModal')
 
@@ -167,8 +163,7 @@
     
 
     <button type="button"
-        class="btn mb-2 btn-sm text-white btn-editar"
-        style="background-color:#d2ca37"
+        class="boton-editar2 mt-2"
         data-bs-toggle="modal"
         data-bs-target="#edit-modal-{{ $comite->id_comite }}"
         data-idtesis="{{ $tesisc->id_tesis }}"

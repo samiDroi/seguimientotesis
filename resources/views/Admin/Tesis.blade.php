@@ -116,7 +116,12 @@
         </div>
     @endforeach
 </div> --}}
-<a href="{{ Route('tesis.review') }}">Panel de revision de tesis</a>
+
+<div class="container">
+    <x-Titulos text="Mis tesis asignadas"/>
+<div class="enlace-a-left mt-4">
+<a class="text-decoration-none" href="{{ Route('tesis.review') }}"> <i class="fa-solid fa-arrow-left-long"></i> Panel de revision de tesis</a>
+</div>
 <ul class="nav nav-tabs mb-4 mt-3" id="tesisTabs" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="mis-tesis-tab" data-bs-toggle="tab" data-bs-target="#mis-tesis" type="button" role="tab">Mis Tesis</button>
@@ -246,7 +251,7 @@
 
 </div>
 
-
+</div>
 
 
 @endsection

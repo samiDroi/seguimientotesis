@@ -3,13 +3,19 @@
 {{-- @dd($usuarios) --}}
 <div class="container">
     <br>
-    <x-boton-modal class="btn-primary" texto="Crear titulo de la tesis" target="tesisModal" />
+    
     
     @include('Admin.Tesis.Modals.TesisModal')
-    <a href="{{ route('tesis.admin') }}">Aceeder a mis tesis asignadas</a>
-    <x-titulo titulo="Evaluar tesis"/>
-    <x-button-create clases="btn btn-primary" texto="Holiwis" icon='<i class="fa-solid  fa-skull-crossbones"></i>' target="tesisModal"/>
-
+   
+    <x-Titulos text="Evaluar tesis"/>
+   <x-boton-modal clases="crear-tesis" text="Crear titulo de la tesis" target="tesisModal" icon=plus/>
+   
+   <div class="text-end mt-4 enlace-a">
+    <a class="text-decoration-none" href="{{ route('tesis.admin') }}">
+        Acceder a mis tesis asignadas <i class="fa-solid fa-arrow-right-long"></i>
+    </a>
+</div>
+ 
     <ul class="nav nav-tabs fs-5" id="filterNav">
         <li class="nav-item"><a class="nav-link active" data-filter="Todos">Todos</a></li>
         <li class="nav-item"><a class="nav-link" data-filter="EN DEFINICION">En definición</a></li>
@@ -18,6 +24,7 @@
     </ul>
     
     <div class="container mt-4">
+       
         @if ($tesis->isNotEmpty())
             
             @php

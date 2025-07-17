@@ -116,8 +116,36 @@
   .container-pers{
    background-color: #3a3EC8;
   }
-  
-  
+
+  #filterNav{
+    cursor: pointer;
+  }
+
+
+.nav-link.active-link {
+    border-bottom: 3px solid #ffffff;
+}
+
+.enlace-a a {
+    display: inline-block; /* necesario para que transform funcione correctamente */
+    transition: transform 150ms ease-in-out;
+    color: black;
+}
+
+.enlace-a a:hover {
+    transform: scale(1.1) translateX(50px); /* escala suave y leve movimiento a la derecha */
+   
+}
+
+.enlace-a-left a{
+   display: inline-block; /* necesario para que transform funcione correctamente */
+    transition: transform 150ms ease-in-out;
+    color: black;
+}
+
+.enlace-a-left a:hover {
+    transform: scale(1.1) translateX(-50px); /* escala suave y leve movimiento a la derecha */
+}
 
 
 
