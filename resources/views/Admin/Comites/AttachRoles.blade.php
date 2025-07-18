@@ -37,8 +37,8 @@
                     <tr>
                         <td class="fs-3 fw-semibold"><span style="margin-left: 70px">{{ $usuario->nombre." ".$usuario->apellidos }}</span></td>
                         <td>
-                            <select id="Select2" name="roles[{{ $usuario->id_user }}][]" multiple
-                                    class="form-select user-role-select">
+                            <select id="" name="roles[{{ $usuario->id_user }}][]" multiple
+                                    class="form-select user-role-select select2">
                                 @foreach($rolesExistentes->isEmpty() ? $roles : $rolesExistentes as $rol)
                                     <option class="fs-4" value="{{ $rol->id_rol }}" data-nombre_rol="{{ $rol->nombre_rol }}">
                                         {{ $rol->nombre_rol }}
@@ -69,6 +69,7 @@
 @endsection
 
 @section('js')
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script>  
     document.getElementById('users-roles').addEventListener('change', function(e) {
     if (e.target && e.target.classList.contains('user-role-select')) {
@@ -99,6 +100,59 @@
 
 </script>
 <script>
+    // document.querySelector('#roles-container').addEventListener('click',function(e){
+    //     this.parentNode('.role-itm')
+    // });
+     $('#roles-container').on('click','.delete-rol',function(){
+        $(this).closest('.rol-item').remove();
+    });  
+
+       const rolesDefinidos = [];
+$(document).ready(function() {  
+    //Boton que oculta y aparece la seccion de crear roles dinamicamente
+    $('#create-roles').on('click', function() {
+        let isSecond = false;
+        let containersData = [];
+        let emptyItems = [];
+       
+        //evalua si es la segunda vez que se clickea el elemento
+        $('#roles-container .rol-item').each(function(){
+                let rolInput = $(this).find('input').val().trim();
+                //console.log(rolInput)
+                if(rolInput !== ''){
+                    containersData.push($(this));
+                    isSecond = true;
+                }
+
+                if(rolInput === '' && $('#roles-container .rol-item').length > 1){
+                    $(this).remove();
+                }
+                
+                
+        });
+       
+        console.log(isSecond)
+        //si es la segunda vez que se clickea, se remueven los roles ya escritos y aparece uno nuevo y vacio
+        if(isSecond){
+            console.log(containersData);
+            let cleanContainer = containersData[0].clone();
+            cleanContainer.find('input,select,textarea').val('');
+            cleanContainer.removeClass('d-none');
+            $('#roles-container').append(cleanContainer);
+
+            containersData.forEach(function(item){
+                $(item).remove();
+                //$(item).find('input,select,textarea').val('').addClass('d-none');
+            })
+            isSecond = false;
+        }
+
+        $(this).addClass('d-none');
+        $('#roles-container').removeClass('d-none');
+        $('.roles-buttons').removeClass('d-none');
+     
+        
+    });
     const cancelButton = document.getElementById('cancelRoles');
     cancelButton.addEventListener('click',function(){
         //asignar roles aparece
@@ -128,7 +182,7 @@
 
         document.querySelector('.roles-buttons').classList.remove('d-none');
 });
-   
+});  
 </script>
 <script>
     //esto esta ligado a la seccion de creacion de roles
@@ -146,6 +200,7 @@
         let clonar = document.querySelector('.rol-item').cloneNode(true);
         clonar.querySelector("input").value = "";
         clonar.querySelector("textarea").value = "";
+        clonar.querySelector('.delete-rol').classList.remove('d-none');
         // .appendChild(clonar)
    
 
@@ -205,5 +260,6 @@
             descripcionField.value = descripcion || '';
         }
     });
+    
 </script>
 @endsection

@@ -1,6 +1,11 @@
 
+                <style>
+                  .select2-container--open{
+                    z-index: 99999 !important;
+                  }
+                </style>
          <!-- Modal -->
-     <div class="modal fade" id="tesisModal" tabindex="-1" aria-labelledby="tesisModalLabel" aria-hidden="true">
+     <div class="modal fade"  id="tesisModal" tabindex="-1" aria-labelledby="tesisModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-lg"> <!-- Esto hace que el modal sea más grande -->
           <div class="modal-content">
             <div class="modal-header">
@@ -18,8 +23,7 @@
                   <input type="text" name="nombre_tesis" id="nombre_tesis" class="form-control form-control-lg" required autocomplete="off" placeholder="Título de la tesis">
                   
                   <label for="alumno">Asignacion de tesis a alumno</label>
-                  <select class="form-select" name="alumno" id="alumno">
-                    
+                  <select class="form-select select2" name="alumno" id="alumno">
                       @foreach ($alumnos as $alumno)
                       <option value="{{ $alumno?->id_user }}">{{ $alumno?->nombre . " " . $alumno->apellidos}}</option>    
                       @endforeach
@@ -30,10 +34,9 @@
                 {{-- <label for="comite">Continuar con la creacion del comite</label>
                 <input type="checkbox" name="comite" id="comite"> --}}
 
-
                 <div id="programa_comite" class="mt-2">
                    <label for="programa">Asignacion de Programa academico</label>
-                  <select class="form-select" name="programa" id="programa">
+                  <select class="form-select select2" name="programa" id="programa">
                     @foreach (Auth::user()->programas as $programa)
                       <option value="{{ $programa->id_programa }}">{{ $programa->nombre_programa}}</option>    
                     @endforeach
@@ -52,7 +55,7 @@
       </div>
       
       
-      <script>
+      {{-- <script>
 
   const checkbox = document.getElementById('comite');
   const divPrograma = document.getElementById('programa_comite');
@@ -65,6 +68,6 @@
       divPrograma.style.display = 'none';
     }
   });
-     </script>
+     </script> --}}
  
    

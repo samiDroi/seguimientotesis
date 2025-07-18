@@ -44,26 +44,53 @@ function getPermisos($permisos,$id_comite){
         )
         ->get();
 }
+// function getInfoComentarioAvance($id_requerimiento){
+//     return DB::table('comentario_avance as ca')
+//     ->join('avance_tesis as at', 'ca.id_avance_tesis', '=', 'at.id_avance_tesis')
+//     ->join('usuarios as u', 'ca.id_user', '=', 'u.id_user')
+//     ->join('usuarios_comite as uc', 'u.id_user', '=', 'uc.id_user')
+//     ->join('comite as c','c.id_comite', '=', 'uc.id_comite')
+//     ->join('tesis_comite as tc', 'c.id_comite', '=', 'tc.id_comite')
+//     ->join('comite_tesis_requerimientos as ctr', 'tc.id_tesis_comite', '=', 'ctr.id_tesis_comite')
+//     ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.id_usuario_comite')
+//     ->where('ctr.id_requerimiento',$id_requerimiento)
+//     ->select(
+//         'ca.*',
+//         'u.nombre as usuario_nombre',
+//         'u.apellidos as usuario_apellidos',
+//         'ucr.rol_personalizado as usuario_rol',
+//         'ca.comentario as contenido',
+//         'ctr.*'
+//     )
+//     ->get();
+// }
 function getInfoComentarioAvance($id_requerimiento){
     return DB::table('comentario_avance as ca')
-    ->join('avance_tesis as at', 'ca.id_avance_tesis', '=', 'at.id_avance_tesis')
-    ->join('usuarios as u', 'ca.id_user', '=', 'u.id_user')
-    ->join('usuarios_comite as uc', 'u.id_user', '=', 'uc.id_user')
-    ->join('comite as c','c.id_comite', '=', 'uc.id_comite')
-    ->join('tesis_comite as tc', 'c.id_comite', '=', 'tc.id_comite')
-    ->join('comite_tesis_requerimientos as ctr', 'tc.id_tesis_comite', '=', 'ctr.id_tesis_comite')
-    ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.id_usuario_comite')
-    ->where('ctr.id_requerimiento',$id_requerimiento)
-    ->select(
-        'ca.*',
-        'u.nombre as usuario_nombre',
-        'u.apellidos as usuario_apellidos',
-        'ucr.rol_personalizado as usuario_rol',
-        'ca.comentario as contenido',
-        'ctr.*'
-    )
-    ->get();
+        ->join('avance_tesis as at', 'ca.id_avance_tesis', '=', 'at.id_avance_tesis')
+        ->join('usuarios as u', 'ca.id_user', '=', 'u.id_user')
+        ->join('usuarios_comite as uc', 'u.id_user', '=', 'uc.id_user')
+        ->join('comite as c','c.id_comite', '=', 'uc.id_comite')
+        ->join('tesis_comite as tc', 'c.id_comite', '=', 'tc.id_comite')
+        ->join('comite_tesis_requerimientos as ctr', 'tc.id_tesis_comite', '=', 'ctr.id_tesis_comite')
+        // Subquery de roles
+        ->leftJoin(DB::raw('(SELECT uc.id_usuario_comite, GROUP_CONCAT(DISTINCT ucr.rol_personalizado SEPARATOR ", ") as roles
+                            FROM usuarios_comite_roles ucr
+                            JOIN usuarios_comite uc ON ucr.id_usuario_comite = uc.id_usuario_comite
+                            GROUP BY uc.id_usuario_comite
+                        ) as roles_table'), 'uc.id_usuario_comite', '=', 'roles_table.id_usuario_comite')
+        ->where('ctr.id_requerimiento', $id_requerimiento)
+        ->select(
+            'ca.*',
+            'u.nombre as usuario_nombre',
+            'u.apellidos as usuario_apellidos',
+            'roles_table.roles as usuario_roles',
+            'ca.comentario as contenido',
+            'ctr.*'
+        )
+        // ->groupBy('ca.id_avance_tesis')  // Esto asegura que no se repitan
+        ->get();
 }
+
 
 function getAlumnoAvance($id_requerimiento){
     return DB::table('comite_tesis_requerimientos as ctr')

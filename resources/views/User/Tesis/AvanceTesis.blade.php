@@ -57,11 +57,22 @@
      @endif
     <h2 class="mb-1 mt-5"> <i class="fa-regular fa-comments"></i> Comentarios   </h2>
      {{-- cargar comentarios --}}
+     {{-- @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento)) --}}
     @foreach (getInfoComentarioAvance( $requerimiento->id_requerimiento) as $comentario)
+                            
      <div class="card comentario mt-2 mb-3 ps-3 py-4 shadow-sm">
-       <div class=" fs-5 fw-semibold pb-2 ">{{ $comentario->usuario_nombre }}  {{ $comentario->usuario_apellidos }} <span class="badge text-light  bg-secondary "> {{ $comentario->usuario_rol }}</span> </div> 
+        @if ($comentario)
+            <div class=" fs-5 fw-semibold pb-2 ">{{ $comentario->usuario_nombre }}  {{ $comentario->usuario_apellidos }}
+                 <span class="badge text-light  bg-secondary "> {{ $comentario->usuario_roles }}</span> 
+                </div> 
     
-        <div class=" "> {!! $comentario->contenido !!}</div> 
+            <div class=" "> {!! $comentario->contenido !!}</div> 
+        
+        @else
+            <span>No hay avance todavia</span>
+
+        @endif
+       
     </div> 
     @endforeach
 

@@ -212,20 +212,20 @@ $(document).ready(function() {
                 
             }
             
-            $('.user-role-select dinamic').each(function() {
-        const select = this;
-        const userId = select.dataset.user;
+        $('.user-role-select dinamic').each(function() {
+            const select = this;
+            const userId = select.dataset.user;
 
-        // Evitar duplicar opciones si ya hay
-        if (select.options.length <= @json($roles->count())) {
-            rolesDefinidos.forEach(role => {
-                const option = document.createElement('option');
-                option.value = role.id;
-                option.textContent = role.nombre;
-                select.appendChild(option);
-            });
-        }
-    });
+            // Evitar duplicar opciones si ya hay
+            if (select.options.length <= @json($roles->count())) {
+                rolesDefinidos.forEach(role => {
+                    const option = document.createElement('option');
+                    option.value = role.id;
+                    option.textContent = role.nombre;
+                    select.appendChild(option);
+                });
+            }
+        });
         });
         // Agregar roles definidos al nuevo select
         

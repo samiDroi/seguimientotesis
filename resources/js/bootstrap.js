@@ -41,3 +41,15 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
 // });
+
+import select2 from "select2"
+import 'select2/dist/css/select2.css'
+import 'select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css'
+select2($);
+
+$(".select2").each(function(){
+    $(this).select2({
+        theme: "bootstrap-5",
+        dropdownParent: $("#tesisModal")
+    });
+})

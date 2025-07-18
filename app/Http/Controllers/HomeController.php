@@ -33,7 +33,7 @@ class HomeController extends Controller
             ->select("t.*")
             ->get();
         //dd($tesisUsuario);
-        $tesisComites= TesisComite::with(["tesis","comite","requerimientos"])->get();
+        $tesisComites= TesisComite::with(["tesis","comite","requerimientos.avances"])->get();
 
         // $tesisDeComite = Tesis::whereIn('id_tesis', function($query) use ($comites) {
         //     $query->select('id_tesis')
@@ -54,7 +54,7 @@ class HomeController extends Controller
             $rol = getRolComite($comite->id_comite)->first();
             $rolesUsuarioActual[$comite->id_comite] = $rol ? $rol->rol_personalizado : 'Miembro';
         }
-
+         
        
         return view("home.index", compact("programas", "comites", "tesisUsuario", "tesisComites", "tesisDeComite",'rolesUsuarioActual'));
     }
