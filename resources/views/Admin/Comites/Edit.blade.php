@@ -27,7 +27,7 @@
         <input type="hidden" name="id" value="{{ $comite->id_comite }}">
         
         <button class="btn mb-4 " style="background-color:var(--color-amarillo)"><a class="text-decoration-none text-light" href="{{ Route("roles.index") }}"> <i class="fa-solid fa-pencil"></i> Editar roles</a></button>
-        <button type="button" id="create-roles" class="{{ $rolesExistentes->isNotEmpty() ? '' : 'd-none' }}">Crear roles</button>
+        <button type="button" id="create-roles" class="{{ $rolesExistentes->isNotEmpty() ? '' : 'd-none' }} btn mb-4 btn-success">Crear roles</button>
         @include('Admin.Comites.DefineRolesSection')
         <div id="editSection">
             <div class="mb-3">
@@ -243,7 +243,7 @@ $(document).ready(function() {
             $('#confirmarComite').append(confirmarComiteHtml);
 
             
-    // Después de haber insertado el HTML al DOM:
+    
    
         }
     }

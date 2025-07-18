@@ -108,7 +108,7 @@ class ComiteController extends Controller
     }
     public function cloneComite(Request $request,$id)
     {
-
+        // return $request->all();
         // Obtener comité original con usuarios
         $originalComite = Comite::with('usuarios')->findOrFail($id);
 
@@ -147,13 +147,12 @@ class ComiteController extends Controller
         }
         //se le asigna la tesis al comite recien clonado
         TesisComite::create([
-            'id_comite' => $id,
+            'id_comite' => $clonedComite->id_comite,
             'id_tesis'  => $request->get('tesis')
         ]);
         //se asignan los alumnos segun lo que seleccione el usuario
         $alumnos = $request->input('alumnos');
         foreach ($alumnos as $alumno) {
-            
             TesisUsuarios::create([
                 'id_user' => $alumno,
                 'id_tesis' => $request->get('tesis')

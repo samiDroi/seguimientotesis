@@ -18,8 +18,8 @@
             @if (!(comprobarIsInComite($comiteTesis->id_comite)))
                 <textarea id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea>
                 
-                <a class=" mt-2 align-center" href="{{ Route("home") }}">Regresar y cancelar</a>
-                <button class=" mt-3 btn btn-primary " type="submit">Guardar Cambios</button>
+                <a class=" mt-3 align-center btn btn-danger" href="{{ Route("home") }}"><i class="fa-solid fa-rectangle-xmark"></i> Regresar y cancelar</a>
+                <button class=" mt-3 btn btn-primary " type="submit"><i class="fa-solid fa-pen-to-square"></i>Guardar Cambios</button>
            
             @else
                 

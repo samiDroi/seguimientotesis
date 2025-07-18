@@ -47,9 +47,9 @@ import 'select2/dist/css/select2.css'
 import 'select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css'
 select2($);
 
-$(".select2").each(function(){
-    $(this).select2({
-        theme: "bootstrap-5",
-        dropdownParent: $("#tesisModal")
-    });
-})
+// $(".select2").each(function(){
+//     $(this).select2({
+//         theme: "bootstrap-5",
+//         dropdownParent: $("#tesisModal")
+//     });
+// })

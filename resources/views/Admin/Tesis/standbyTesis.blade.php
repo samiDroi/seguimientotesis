@@ -156,6 +156,13 @@
 
 <script>
     $(document).ready(function() {
+        $(".select2").each(function(){
+            $(this).select2({
+                theme: "bootstrap-5",
+                dropdownParent: $("#tesisModal")
+            });
+        });
+        
         let referencia;
         $('.btn-modal-rechazo').on('click', function () {
             referencia = $(this).closest('form');

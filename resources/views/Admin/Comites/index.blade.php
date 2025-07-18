@@ -150,7 +150,7 @@
                             <i class="fa-solid fa-pencil mt-2"></i> Modificar comité
                         </a>
                         
-                        <button type="button" class="a-clonar mt-2" data-bs-toggle="modal" data-bs-target="#clone-modal">
+                        <button type="button" class="a-clonar mt-2" data-bs-toggle="modal" data-bs-target="#clone-modal-{{ $comite->id_comite }}">
                          <i class="fa-solid fa-clone"></i> Clonar comite
                         </button>
                         @include('Admin.Comites.Modals.CloneModal')
@@ -196,8 +196,80 @@
 <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.js"></script>
     <script>
           $(document).ready(function() {
+           
+            // Inicialización para selects dentro de modales
+    $('[data-parent-modal]').each(function() {
+        const parentModalId = $(this).data('parent-modal');
+        const parentModal = $(`#${parentModalId}`);
+        
+        // Destruir si ya está inicializado
+        if ($(this).hasClass("select2-hidden-accessible")) {
+            $(this).select2('destroy');
+        }
+        
+        // Inicializar con el modal padre correcto
+        $(this).select2({
+            theme: "bootstrap-5",
+            dropdownParent: parentModal
+        });
+    });
+            // Inicialización para modales que ya existen en el DOM al cargar la página
+    // $('.select2-modal').select2({
+    //     theme: "bootstrap-5",
+    //     dropdownParent: $('.modal')
+    // });
+    
 
-             
+            
+                // // Inicialización para modales que ya existen en el DOM al cargar la página
+                // $('.select2-modal').select2({
+                //     theme: "bootstrap-5",
+                //     dropdownParent: $('.modal') // Esto asegura que el dropdown aparezca dentro del modal
+                // });
+                
+                // // Manejar modales que se abren dinámicamente
+                // $(document).on('shown.bs.modal', '.modal', function() {
+                //     $(this).find('.select2-modal').each(function() {
+                //         // Destruye Select2 si ya está inicializado
+                //         if ($(this).hasClass("select2-hidden-accessible")) {
+                //             $(this).select2('destroy');
+                //         }
+                //         // Inicializa Select2 con el modal actual como padre
+                //         $(this).select2({
+                //             theme: "bootstrap-5",
+                //             dropdownParent: $(this).closest('.modal')
+                //         });
+                //     });
+                // });
+            
+            // $(".select2-modal").each(function(){
+            //     $(this).select2({
+            //         theme: "bootstrap-5",
+            //         dropdownParent: $(this).closest("#clone-modal")
+            //     });
+            // });
+//             $('body').on('shown.bs.modal', '.modal', function () {
+//     $(this).find('.select2-modal').each(function(){
+//         $(this).select2({
+//             theme: "bootstrap-5",
+//             dropdownParent: $(this).closest('.modal')
+//         });
+//     });
+// });
+
+            //  $('body').on('shown.bs.modal', '.modal', function () {
+            //     $(this).find('.select2-modal').each(function() {
+            //         if ($.fn.select2 && $(this).hasClass("select2-hidden-accessible")) {
+            //             $(this).select2('destroy');
+            //         }
+            //         $(this).select2({
+            //             theme: "bootstrap-5",
+            //             dropdownParent: $(this).closest('.modal')
+            //         });
+            //     });
+            // });
+            // $('.select2-modal').each
+
               let boton=document.querySelector("#Btn_buscar")
               boton.addEventListener("click",()=>{
                 let input = document.querySelector("#inputBuscar")

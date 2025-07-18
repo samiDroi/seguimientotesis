@@ -27,5 +27,5 @@
     <button class="btn btn-primary" type="button" id="agregarRol">Agregar otro rol</button>
     <button class="btn btn-success" type="button" id="definirRoles">Definir Roles</button>
     
-    <button type="button" class="{{ $rolesExistentes->isEmpty() ? 'd-none' : '' }}" id="cancelRoles">Cancelar</button>
+    <button type="button" class="{{ $rolesExistentes->isEmpty() ? 'd-none' : '' }} btn btn-danger" id="cancelRoles">Cancelar</button>
 </div>
