@@ -1,44 +1,8 @@
-@extends('layouts.admin')
 
-@section('content')
-@vite(['resources/js/app.js'])
-
-
-  {{-- @dd($alumnosPrograma[1]) --}}
-
-<div class="d-flex justify-content-center container">
-  <div class="row">
-      <div class="text-center mt-5 col-sm-12 col-md-4"  >
-       <h2>Estados Tesis </h2>
-        <canvas id="miGrafico2" width="400" height="400"></canvas>
-      </div>
-
-      <div class="text-center mt-5 col-sm-12  col-md-4" >
-        <h2>Alumnos por programas</h2>
-        <canvas id="miGrafico" width="400" height="400"></canvas>
-      </div>
-
-      <div class="text-center mt-5 col-sm-12  col-md-4" >
-        <h2>Directores con mas tesis</h2>
-        <canvas id="miGrafico3" width="400" height="400"></canvas>
-      </div>
-  </div>
-</div>
-  
-
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-
-  <script>
-    const directores =@json($tesisDocentes);
-    const programas = @json($alumnosPrograma);
-     const estados = @json($estadosTesis);
-    console.log(programas)
-  const labels = programas.map(p => p.nombre_programa);
-  const labels2 = estados.map(p=>p.estado)
-  const labels3 = directores.map(p=>p.nombre);
+console.log(programas)
+const labels = programas.map(p => p.nombre_programa);
+const labels2 = estados.map(p=>p.estado)
+const labels3 = directores.map(p=>p.nombre);
 
   const data = programas.map(p => p.total_alumnos);
   const data2 = estados.map(p => p.total);
@@ -135,5 +99,3 @@
       }
       
     });
-  </script>
-@endsection

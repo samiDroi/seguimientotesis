@@ -1,9 +1,9 @@
 @extends('layouts.admin')
-@section('css')
+{{-- @section('css')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
-@endsection 
+@endsection  --}}
 @section('content')
 
 
@@ -13,7 +13,7 @@
 
 
     <div class="text-end mt-4 mb-3 ">
-    <x-boton-modal target=crearComiteModal text="Crear comite" clases=btn-crear-comite icon=user-group/>
+    {{-- <x-boton-modal target=crearComiteModal text="Crear comite" clases=btn-crear-comite icon=user-group/> --}}
 </div>
 
 
@@ -29,8 +29,8 @@
           </span>
     </div>
 @else
-<div class="container  table-wrapper">
-<table class="custom-table table-responsive   mt-4   " id="miTabla" >
+<div class="container table-wrapper">
+<table class="custom-table table-responsive mt-4" id="miTabla" >
         <thead class="table-primary">
             <tr>
                 <th class="col-2 ">Alumno</th>
@@ -190,145 +190,4 @@
 @endif
 
 
-@endsection
-@section('js')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/datatables.min.js"></script>
-    <script>
-          $(document).ready(function() {
-           
-            // Inicialización para selects dentro de modales
-    $('[data-parent-modal]').each(function() {
-        const parentModalId = $(this).data('parent-modal');
-        const parentModal = $(`#${parentModalId}`);
-        
-        // Destruir si ya está inicializado
-        if ($(this).hasClass("select2-hidden-accessible")) {
-            $(this).select2('destroy');
-        }
-        
-        // Inicializar con el modal padre correcto
-        $(this).select2({
-            theme: "bootstrap-5",
-            dropdownParent: parentModal
-        });
-    });
-            // Inicialización para modales que ya existen en el DOM al cargar la página
-    // $('.select2-modal').select2({
-    //     theme: "bootstrap-5",
-    //     dropdownParent: $('.modal')
-    // });
-    
-
-            
-                // // Inicialización para modales que ya existen en el DOM al cargar la página
-                // $('.select2-modal').select2({
-                //     theme: "bootstrap-5",
-                //     dropdownParent: $('.modal') // Esto asegura que el dropdown aparezca dentro del modal
-                // });
-                
-                // // Manejar modales que se abren dinámicamente
-                // $(document).on('shown.bs.modal', '.modal', function() {
-                //     $(this).find('.select2-modal').each(function() {
-                //         // Destruye Select2 si ya está inicializado
-                //         if ($(this).hasClass("select2-hidden-accessible")) {
-                //             $(this).select2('destroy');
-                //         }
-                //         // Inicializa Select2 con el modal actual como padre
-                //         $(this).select2({
-                //             theme: "bootstrap-5",
-                //             dropdownParent: $(this).closest('.modal')
-                //         });
-                //     });
-                // });
-            
-            // $(".select2-modal").each(function(){
-            //     $(this).select2({
-            //         theme: "bootstrap-5",
-            //         dropdownParent: $(this).closest("#clone-modal")
-            //     });
-            // });
-//             $('body').on('shown.bs.modal', '.modal', function () {
-//     $(this).find('.select2-modal').each(function(){
-//         $(this).select2({
-//             theme: "bootstrap-5",
-//             dropdownParent: $(this).closest('.modal')
-//         });
-//     });
-// });
-
-            //  $('body').on('shown.bs.modal', '.modal', function () {
-            //     $(this).find('.select2-modal').each(function() {
-            //         if ($.fn.select2 && $(this).hasClass("select2-hidden-accessible")) {
-            //             $(this).select2('destroy');
-            //         }
-            //         $(this).select2({
-            //             theme: "bootstrap-5",
-            //             dropdownParent: $(this).closest('.modal')
-            //         });
-            //     });
-            // });
-            // $('.select2-modal').each
-
-              let boton=document.querySelector("#Btn_buscar")
-              boton.addEventListener("click",()=>{
-                let input = document.querySelector("#inputBuscar")
-                let value = input.value.toLowerCase();
-                let cards = document.querySelectorAll(".card")
-                
-                
-                console.log(title)
-                cards.forEach(card=>{
-               
-                    
-                   
-                })
-                
-
-
-              })
-         });
-
-        $("body").on("click",".delete > button",function(){
-         
-            event.preventDefault();
-            console.log("boton clickeado");
-            
-            let formulario = $(this).closest("form");
-            Swal.fire({
-                title: "Eliminar Comite",
-                text: "Estas a punto de eliminar este comite, esto no puede ser reversible ¿Estas seguro?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Si, eliminar"
-            }).then((result) => {
-            if (result.isConfirmed) {
-                $(formulario).submit();
-               
-            }
-        });
-    });
-    
-    </script>
-    <script>
-  $(document).ready(function() {
-    $('#miTabla').DataTable();
-  });
-</script>
-{{-- <script>
-$(document).ready(function () {
-    $('.btn-editar').on('click', function () {
-        let idTesis = $(this).data('idtesis');
-        let tituloTesis = $(this).data('titulotesis');
-        let idAlumno = $(this).data('idalumno');
-
-        $('#id_tesis').val(idTesis);
-        $('#titulo_tesis').val(tituloTesis);
-        $('#alumno').val(idAlumno);
-    });
-});
-
-</script> --}}
 @endsection

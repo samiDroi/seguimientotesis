@@ -1,9 +1,9 @@
 @extends('layouts.admin')
 
 @section('css')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css"> --}}
 @endsection
 
 @section('content')
@@ -119,42 +119,6 @@
 </div>
 
 @endsection
-@section('js')
-        <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
-        <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
-        <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js
-            https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
-        <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
 
-        <script>
-           new DataTable('#unidades', {
-                responsive: true
-            });
-        
-            $("body").on("click",".delete > button",function(){
-            event.preventDefault();
-            console.log("boton clickeado");
-            
-            let formulario = $(this).closest("form");
-            Swal.fire({
-                title: "Eliminar Unidad",
-                text: "Estas a punto de eliminar esta unidad academica junto con sus programas academicos relacionados, esto no puede ser reversible, ¿Estas seguro?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Si, eliminar"
-            }).then((result) => {
-            if (result.isConfirmed) {
-                $(formulario).submit();
-               
-            }
-        });
-    });
-        </script>
-
-@endsection
    
 

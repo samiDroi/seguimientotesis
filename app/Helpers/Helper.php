@@ -78,7 +78,8 @@ function getInfoComentarioAvance($id_requerimiento){
                             JOIN usuarios_comite uc ON ucr.id_usuario_comite = uc.id_usuario_comite
                             GROUP BY uc.id_usuario_comite
                         ) as roles_table'), 'uc.id_usuario_comite', '=', 'roles_table.id_usuario_comite')
-        ->where('ctr.id_requerimiento', $id_requerimiento)
+        ->where('at.id_requerimiento', $id_requerimiento)
+        ->where('at.id_avance_tesis', 'ca.id_avance_tesis')
         ->select(
             'ca.*',
             'u.nombre as usuario_nombre',
@@ -87,8 +88,8 @@ function getInfoComentarioAvance($id_requerimiento){
             'ca.comentario as contenido',
             'ctr.*'
         )
-        // ->groupBy('ca.id_avance_tesis')  // Esto asegura que no se repitan
-        ->get();
+         ->orderBy('ca.created_at', 'desc')// ->groupBy('ca.id_avance_tesis')  // Esto asegura que no se repitan
+        ->first();
 }
 
 

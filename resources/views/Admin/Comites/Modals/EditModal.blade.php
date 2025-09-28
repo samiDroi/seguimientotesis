@@ -17,10 +17,10 @@
               @foreach ($comite->tesis as $tesis)
                 <h2>{{ $tesis->nombre_tesis }}</h2>
                 <label for="titulo_tesis">Cambiar titulo de tesis</label>
-              <input type="text" name='tesis[{{ $comite->tesis->first()->id_tesis }}]' id="titulo_tesis">
+              <input type="text" name='tesis[{{ $comite->tesis->first()->id_tesis }}]'class='form-control' id="titulo_tesis">
 
               <label for="alumno">Reasignar alumno</label>
-              <select name="alumno[{{ $comite->tesis->first()->id_tesis }}]" id="alumno">
+              <select name="alumno[{{ $comite->tesis->first()->id_tesis }}]" id="alumno" data-parent-modal="edit-modal-{{ $comite->id_comite }}" class="form-control select2-modal">
                   <option value="" selected> Selecciona un alumno </option>  
   
                 @foreach ($alumnos as $alumno)
@@ -37,7 +37,7 @@
                       <input type="text" name="tesis[{{ $tesis->id_tesis }}]" id="titulo_tesis_{{ $tesis->id_tesis }}">
                   
                       <label for="alumno">Reasignar alumno</label>
-                        <select name="alumno[{{ $tesis->id_tesis }}]" id="alumno">
+                        <select name="alumno[{{ $tesis->id_tesis }}]" id="alumno" data-parent-modal="edit-modal-{{ $comite->id_comite }}" class="form-control select2-modal" >
                           <option value="" selected> Selecciona un alumno </option>  
                           @foreach ($alumnos as $alumno)
                                 <option value="{{ $alumno->id_user }}">{{ $alumno->nombre.' '.$alumno->apellidos }}</option>

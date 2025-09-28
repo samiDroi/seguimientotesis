@@ -3,18 +3,40 @@
  * to our Laravel back-end. This library automatically handles sending the
  * CSRF token as a header based on the value of the "XSRF" token cookie.
 */
+import $ from "jquery";
+window.$ = $;
+window.jQuery = $;
 import 'bootstrap'
+import select2 from "select2"
+import 'select2/dist/css/select2.css'
+import 'select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css'
+select2($);
+
+$(function () {
+    $(".select2").select2({
+        theme: "bootstrap-5",
+        dropdownParent: $("#tesisModal")
+    });
+});
+
+
+// 📌 Importar DataTables con estilo Bootstrap 5
+import dt from 'datatables.net-bs5';
+import 'datatables.net-bs5/css/dataTables.bootstrap5.css';
+
+// 📌 Importar extensión Responsive (si la usas)
+import dtResponsive from 'datatables.net-responsive-bs5';
+import 'datatables.net-responsive-bs5/css/responsive.bootstrap5.css';
+
+// // Inicializar DataTables con jQuery
+// dt(window, $);
+// dtResponsive(window, $);
 
 import axios from 'axios';
 window.axios = axios;
 
 import * as Popper from '@popperjs/core'
 window.Popper = Popper
-
-
-import $ from 'jquery';
-window.$ = $;
-
 
 
 
@@ -42,14 +64,3 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     enabledTransports: ['ws', 'wss'],
 // });
 
-import select2 from "select2"
-import 'select2/dist/css/select2.css'
-import 'select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css'
-select2($);
-
-// $(".select2").each(function(){
-//     $(this).select2({
-//         theme: "bootstrap-5",
-//         dropdownParent: $("#tesisModal")
-//     });
-// })

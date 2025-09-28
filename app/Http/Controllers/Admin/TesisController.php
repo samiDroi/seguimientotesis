@@ -223,7 +223,10 @@ class TesisController extends Controller
         //  dd($tesis);   
        
         $alumnos = filterAlumnosPrograma();
-            
+        // $alumnos = $alumnos->filter(function ($alumno) {
+        //     DB
+        // });
+        
         // Obtener los comités relacionados con los programas del usuario
         $comites = filterComiteProgramasAuth();
 

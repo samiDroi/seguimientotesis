@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>Landing page</title>
     @yield("css")
-    @vite(['resources/css/app.css', 'resources/js/app.js','resources/css/root.css','resources/css/variables.css'])
+    {{-- @vite(['resources/css/app.scss', 'resources/js/app.js','resources/css/root.css','resources/css/variables.css']) --}}
     @vite(['resources/js/app.js', 'resources/css/app.scss'])
     
   <!-- TinyMCE CDN -->
@@ -129,6 +131,7 @@
     <script src="{{ asset("vendor/sweetalert/sweetalert.all.js") }}"></script>
     <script src="https://cdn.tiny.cloud/1/urwrxmsleu3b744kjom91xeido5jy6oujj95v82jp8ixig9s/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <script src="https://kit.fontawesome.com/eaefdedbbf.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     @yield('js')
     </body>
     </html>

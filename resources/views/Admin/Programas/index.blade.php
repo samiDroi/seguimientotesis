@@ -1,9 +1,9 @@
 @extends("layouts.admin")
 @section('content')
 @section('css')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css"> --}}
 @endsection
 
 
@@ -149,56 +149,5 @@
     </div>
   </div>
 </div>
-     
-   
-    @section('js')
-        <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
-        <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
-        <script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js
-            https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
-        <script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
-        <script>
-              $("body").on("click",".delete > button",function(){
-            event.preventDefault();
-            console.log("boton clickeado");
-            
-            let formulario = $(this).closest("form");
-            Swal.fire({
-                title: "Eliminar Programa academico",
-                text: "Estas a punto de eliminar este programa academico, junto con su informacion relacionada, esto no puede ser reversible ¿Estas seguro?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Si, eliminar"
-            }).then((result) => {
-            if (result.isConfirmed) {
-                $(formulario).submit();
-               
-            }
-        });
-    });
-        </script>
-
-
-
- <script>
-        document.getElementById('agregarPrograma').addEventListener('click', function() {
-            const container = document.getElementById('programas-container');
-            const newPrograma = document.createElement('div');
-            newPrograma.classList.add('programa-item');
-            newPrograma.innerHTML = `
-                <div class="programa-item text-center mt-5">
-            <div class="fs-3 fw-semibold mb-1"><label for="nombre_programa">Nombre del Programa</label></div>
-            <div class="mx-5"><input type="text" name="nombre_programa[]" class="form-control" autocomplete="off" required></div>
-                </div>
-            `;
-            container.appendChild(newPrograma);
-        });
-    </script>
-        
-    @endsection
 
 @endsection

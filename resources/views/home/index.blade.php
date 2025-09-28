@@ -26,7 +26,7 @@
                     <div class="col-12">
                         @if ($tesis->comites->isNotEmpty())
                             
-                            <span class="small ms-2">el pepe: <b>{{ $tesis->comites->first()->nombre_comite }}</b></span>
+                            <span class="small ms-2">Estructura: <b>{{ $tesis->comites->first()->nombre_comite }}</b></span>
                         @else
                             <span class="text-danger small ms-2">Pendiente de asignación de comité</span>
                             @if (Auth::user()->esCoordinador == 1)
@@ -70,7 +70,10 @@
                                             </ul>
                                         </details>
                                     @else
-                                        <p class="text-danger">No hay requerimientos para esta tesis.</p>
+                                        @if (!$tieneRequerimientos)
+                                            <p class="text-danger">No hay requerimientos para esta tesis.</p>
+ 
+                                        @endif
                                     @endif
                                 @endif
                             @endforeach
@@ -175,12 +178,13 @@
                                 @endif
                             @endif
                         </div>
-
+                        @php $tieneRequerimientos = false; @endphp
                         <div class="col-12 text-center">
                             @foreach ($tesisComites as $tesisComite)
                                 @if ($tesisComite->id_tesis == $tesis->id_tesis)
                                     @if ($tesisComite->requerimientos->isNotEmpty())
-                                        <details>
+                                    @php $tieneRequerimientos = true; @endphp    
+                                    <details>
                                             <summary class="h5 text-primary">Requerimientos</summary>
                                             <ul class="list-group list-group-flush text-start py-1">
                                                 @foreach ($tesisComite->requerimientos as $requerimiento)
@@ -207,7 +211,10 @@
                                             </ul>
                                         </details>
                                     @else
+                                        @if (!$tieneRequerimientos)
                                         <p class="text-danger">No hay requerimientos para esta tesis.</p>
+                                            
+                                        @endif
                                     @endif
                                 @endif
                             @endforeach
@@ -223,5 +230,3 @@
 </div>
 
 @endsection
-
-

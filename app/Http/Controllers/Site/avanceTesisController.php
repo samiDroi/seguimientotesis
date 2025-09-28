@@ -27,9 +27,9 @@ class avanceTesisController extends Controller{
 
         ->select("c.*")
         ->first();
-
-        //dd($avanceTesis);
-        return view('User.tesis.AvanceTesis',compact('requerimiento','avanceTesis','comiteTesis'));
+        $contentHTML = ComentarioAvance::where('id_avance_tesis', $avanceTesis->id_avance_tesis)->where('contenido_original',true)->latest()->first();
+        
+        return view('User.tesis.AvanceTesis',compact('requerimiento','avanceTesis','comiteTesis','contentHTML'));
     }
 
     public function createAvance($id,Request $request){
@@ -57,6 +57,7 @@ class avanceTesisController extends Controller{
             'comentario' => $request->get('contenido'),
             'id_avance_tesis' => $request->input('id_avance_tesis'),
             'id_user' => Auth::user()->id_user,
+            'contenido_original' => $request->get('contenido_original')
         ]);
 
         $requerimiento = ComiteTesisRequerimientos::join('avance_tesis', 'comite_tesis_requerimientos.id_requerimiento', '=', 'avance_tesis.id_requerimiento')

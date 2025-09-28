@@ -36,7 +36,7 @@
 
                 <div id="programa_comite" class="mt-2">
                    <label for="programa">Asignacion de Programa academico</label>
-                  <select class="form-select select2" name="programa" id="programa">
+                  <select class="form-select select2" name="programa" id="programas">
                     @foreach (Auth::user()->programas as $programa)
                       <option value="{{ $programa->id_programa }}">{{ $programa->nombre_programa}}</option>    
                     @endforeach

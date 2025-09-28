@@ -56,7 +56,7 @@ Route::middleware(['auth'])->group(function(){
     //Rutas para admin
     Route::prefix('/sys/admin')->middleware(['isAdmin'])->group(function(){
         Route::get('',[PanelController::class,'index'])->name('administrador');
-
+        
         Route::controller(TesisController::class)->group(function(){
             Route::get('/review-historial/{id}','historialTesis')->name('tesis.historial');
             Route::get('/review-tesis','standbyIndex')->name('tesis.review');

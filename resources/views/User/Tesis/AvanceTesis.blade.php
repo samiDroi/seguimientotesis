@@ -1,6 +1,38 @@
 @extends('layouts.base')
 @section('css')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.27.3/ui/trumbowyg.min.css" integrity="sha512-Fm8kRNVGCBZn0sPmwJbVXlqfJmPC13zRsMElZenX6v721g/H7OukJd8XzDEBRQ2FSATK8xNF9UYvzsCtUpfeJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+        #grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        #comentar {
+            position: fixed;
+            left: 2%;
+            bottom: 2%;
+            background-color: dodgerblue;
+            color: white;
+            border: 0;
+            outline: 0;
+            border-radius: 8px;
+            padding: 16px 32px;
+
+            &:hover {
+                cursor: pointer;
+                background-color: darkslateblue;
+            }
+        }
+
+        .mensaje{
+            border: 1px solid #3333;
+            padding: 10px;
+            &:hover{
+                background-color: yellow;
+            }
+        }
+    </style>
+
 @endsection
 @section('content') 
 <div class="container mt-5  ">
@@ -11,8 +43,9 @@
         <h4 class="  fw-semibold border-bottom border-primary p-2 mb-3">Alumno: <span style="color: var(--color-azul-principal)">{{ $alumno->usuario_nombre }}</span></h4>
     @endforeach
 
-    
-   
+    <div data-route="{{ Route("comentario.create") }}"></div>
+    <div data-avance-tesis= "{{ $avanceTesis?->id_avance_tesis }}"></div>
+ 
     <form  action="{{ Route("avance.create",$requerimiento->id_requerimiento) }}" method="POST">
         @csrf
             @if (!(comprobarIsInComite($comiteTesis->id_comite)))
@@ -22,10 +55,32 @@
                 <button class=" mt-3 btn btn-primary " type="submit"><i class="fa-solid fa-pen-to-square"></i>Guardar Cambios</button>
            
             @else
+                {{-- <button type="button" class="btn btn-primary" id="comentar" data-bs-toggle="modal" data-bs-target="#comentModal">
+                    Abrir modal
+                </button> --}}
+                @if (Auth::user()->comites->contains('id_comite', $comiteTesis->id_comite) && optional($avanceTesis)->contenido)
+                {{-- <button id="comentar" type="button">dale aqui</button> --}}
                 
-            <div class="fs-5 mb-5 py-4 px-4 " >
+                @endif
+                {{-- @dd($contentHTML?->contenido_original) --}}
+            <div class="fs-5 mb-5 py-4 px-4 " data-content-main = "{{ $contentHTML?->contenido_original }}">
                 <p class="fw-semibold fs-4"> <i class="fa-regular fa-file-lines"></i> Contenido:</p>
-                 {!! $avanceTesis?->contenido !!} 
+                {{-- @dd($contentHTML->contenido_original) --}}
+                @if($contentHTML?->contenido_original)
+                {{-- @dd($contentHTML->contenido_original) --}}
+                    {{!! $contentHTML->contenido_original !!}}   
+                @else
+                <main>
+                    {!! $avanceTesis?->contenido !!}
+                </main> 
+                @endif
+        <aside>
+            <button id="comentar" type="button">Agregar comentario</button>
+
+        </aside>
+                 
+                 
+
             </div>
             @endif
         
@@ -57,37 +112,34 @@
      @endif
     <h2 class="mb-1 mt-5"> <i class="fa-regular fa-comments"></i> Comentarios   </h2>
      {{-- cargar comentarios --}}
-     {{-- @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento)) --}}
-    @foreach (getInfoComentarioAvance( $requerimiento->id_requerimiento) as $comentario)
-                            
-     <div class="card comentario mt-2 mb-3 ps-3 py-4 shadow-sm">
-        @if ($comentario)
-            <div class=" fs-5 fw-semibold pb-2 ">{{ $comentario->usuario_nombre }}  {{ $comentario->usuario_apellidos }}
-                 <span class="badge text-light  bg-secondary "> {{ $comentario->usuario_roles }}</span> 
-                </div> 
-    
-            <div class=" "> {!! $comentario->contenido !!}</div> 
+     @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento))
+        {{-- @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento)) --}}
+@if(getInfoComentarioAvance($requerimiento->id_requerimiento)->isNotEmpty())
+    @foreach (getInfoComentarioAvance($requerimiento->id_requerimiento) as $comentario)
+    {{-- @dd($comentario) --}}
+    <div class="card comentario mt-2 mb-3 ps-3 py-4 shadow-sm">
+        @if (isEmpty($comentario))
+            <div class="fs-5 fw-semibold pb-2 ">
+                {{ $comentario->usuario_nombre }} {{ $comentario->usuario_apellidos }}
+                <span class="badge text-light bg-secondary">{{ $comentario->usuario_roles }}</span> 
+            </div> 
+            <div class="fs-6 text-secondary pb-2">
+                {{ $comentario->created_at->format('d/m/Y H:i') }}      
+                {{ $comentario->contenido }}
+            </div>
         
         @else
-            <span>No hay avance todavia</span>
-
+        
         @endif
-       
-    </div> 
+    </div>
     @endforeach
+@else
+{{-- <h1>AAAAAA</h1> --}}
+<div class="comentario-contenido" id="comentarios"></div>
 
-     @if (Auth::user()->comites->contains('id_comite', $comiteTesis->id_comite) && optional($avanceTesis)->contenido)
-        <form action="{{ Route("comentario.create") }}" method="post">
-           
-            @csrf
-            <input type="hidden" name="id_requerimiento" value="{{ $requerimiento->id_requerimiento }}">
-            <input type="hidden" name="id_avance_tesis" value="{{ $avanceTesis?->id_avance_tesis }}">
-            {{-- @dd( $avanceTesis?->id_avance_tesis ); --}}
-            <textarea id="comentario_avance" name="contenido"></textarea>
-            <button class="btn btn-primary mt-3" type="submit">Subir comentario</button>
-        </form>
-     @endif
-    
+@endif
+
+        {{-- @include('User.Tesis.Modals.ComentarioModal') --}}
 
     </div>
 @endsection
