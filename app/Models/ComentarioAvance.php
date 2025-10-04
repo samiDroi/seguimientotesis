@@ -13,6 +13,7 @@ class ComentarioAvance extends Model
     protected $fillable = [
         'comentario',
         'id_avance_tesis',
-        'id_user'
+        'id_user',
+        'contenido_original'
     ];
 }

@@ -63,14 +63,17 @@
                 
                 @endif
                 {{-- @dd($contentHTML?->contenido_original) --}}
-            <div class="fs-5 mb-5 py-4 px-4 " data-content-main = "{{ $contentHTML?->contenido_original }}">
+            <div class="fs-5 mb-5 py-4 px-4 " data-content-main = "{{ $contentHTML ? "procesado" : "no procesado" }}">
                 <p class="fw-semibold fs-4"> <i class="fa-regular fa-file-lines"></i> Contenido:</p>
-                {{-- @dd($contentHTML->contenido_original) --}}
+                {{-- @dd($contentHTML) --}}
                 @if($contentHTML?->contenido_original)
                 {{-- @dd($contentHTML->contenido_original) --}}
-                    {{!! $contentHTML->contenido_original !!}}   
+                    {{-- {!! $contentHTML->contenido_original !!}    --}}
+                {!! $contentHTML->contenido_original !!}
+                 
                 @else
                 <main>
+                    {{-- @dd($avanceTesis->contenido) --}}
                     {!! $avanceTesis?->contenido !!}
                 </main> 
                 @endif
@@ -112,32 +115,32 @@
      @endif
     <h2 class="mb-1 mt-5"> <i class="fa-regular fa-comments"></i> Comentarios   </h2>
      {{-- cargar comentarios --}}
-     @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento))
+     {{-- <div data-req = {{ $requerimiento->id_requerimiento }}></div> --}}
+     <input type="hidden" id="auth" value="{{ Auth::user()->id_user }}">
+     <div id="comentarios-route" data-routec = "{{ route('helper.fetch',['id_requerimiento' => $requerimiento->id_requerimiento,'userId' => ':userId']) }}"></div>
+     
+     {{-- @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento)) --}}
         {{-- @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento)) --}}
-@if(getInfoComentarioAvance($requerimiento->id_requerimiento)->isNotEmpty())
-    @foreach (getInfoComentarioAvance($requerimiento->id_requerimiento) as $comentario)
-    {{-- @dd($comentario) --}}
-    <div class="card comentario mt-2 mb-3 ps-3 py-4 shadow-sm">
-        @if (isEmpty($comentario))
-            <div class="fs-5 fw-semibold pb-2 ">
-                {{ $comentario->usuario_nombre }} {{ $comentario->usuario_apellidos }}
-                <span class="badge text-light bg-secondary">{{ $comentario->usuario_roles }}</span> 
-            </div> 
-            <div class="fs-6 text-secondary pb-2">
-                {{ $comentario->created_at->format('d/m/Y H:i') }}      
-                {{ $comentario->contenido }}
-            </div>
-        
-        @else
-        
-        @endif
-    </div>
-    @endforeach
+{{-- desde aqui esta todo lo de lo comentario auxilio porfavor --}}
+@if($contentHTML)
+    {!! $contentHTML->comentario !!}
 @else
-{{-- <h1>AAAAAA</h1> --}}
-<div class="comentario-contenido" id="comentarios"></div>
-
+    <div class="comentario-contenido" id="comentarios"></div>
 @endif
+    {{-- <div id="comentario-container">
+    @if($comentarios->isEmpty())
+        <div class="no-comentarios">
+            No hay comentarios todavía.
+        </div>
+    @else
+        @foreach($comentarios as $comentario)
+            <div class="mensaje" data-autor="{{ $comentario->id_user }}">
+                <!-- Aquí se llenará dinámicamente con JS -->
+            </div>
+        @endforeach
+    @endif
+</div> --}}
+
 
         {{-- @include('User.Tesis.Modals.ComentarioModal') --}}
 

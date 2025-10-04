@@ -1,8 +1,12 @@
+// const { get } = require("jquery");
+const ROUTE = document.querySelector('#comentarios-route').dataset.routec;
+renderComentarios();
 buscar(document.querySelectorAll('main *'))
     // let contentMain = document.querySelector('div[data-content-main]').dataset.contentMain
     // console.log(contentMain);
-    if(document.querySelector('div[data-content-main]').dataset.contentMain == ""){
-        console.log("no hay contenido");
+    var existMain = document.querySelector('div[data-content-main]').dataset.contentMain == "";
+    if(existMain){
+        
         const cont = document.querySelector('main')      
         cont.innerHTML = cont.innerHTML
         .replace(/&lt;inicio&gt;/g, '<span class="c">')
@@ -51,7 +55,7 @@ document.querySelector("#comentarios").addEventListener("click", function (e) {
                 if(el.childNodes.length > 1){
                     buscar(el.childNodes) 
                 }else{                    
-                    if(!isOnlyWhitespace(el.textContent) && !el.textContent.includes("<fin>")){
+                    if(!isOnlyWhitespace(el.textContent) && !el.textContent.includes("<fin>") && existMain){
                         const palabras = el.textContent.replaceAll("\n", "").split(" ").filter( (el) => el).length;
                         let texto = el.textContent.replaceAll("\n", "").split(" ").filter( (el) => el).join("<fin><inicio>");
                         el.textContent = `<inicio>${texto}<fin>`
@@ -124,7 +128,7 @@ document.querySelector("#comentarios").addEventListener("click", function (e) {
             etiquetaInicial(nodoInicial, nodoFinal, pasosInicial, pasosFinal, clave);
             etiquetaFinal(numeroInicial, numeroFinal, nodoFinal, pasosFinal, clave)
 
-
+            let idAutor = document.querySelector('#auth').value;
             const cont = document.querySelector('main')      
             cont.innerHTML = cont.innerHTML
             .replace(/&lt;comment/g, `<span class="comment" data-clave="${clave}"`)
@@ -132,7 +136,7 @@ document.querySelector("#comentarios").addEventListener("click", function (e) {
                 .replace(/&gt;/g, `>`)
 
             document.querySelector("#comentarios").insertAdjacentHTML('beforeend', `
-                <div class="mensaje" data-clave="${clave}">
+                <div class="mensaje" data-clave="${clave}" data-autor="${idAutor}">
                 ${comentario}
                 </div>
             `)
@@ -177,37 +181,80 @@ document.querySelector("#comentarios").addEventListener("click", function (e) {
         }
 
         function submitContent(){
-            let contentOriginal = document.querySelector('main').outerHTML;
+            let contenido_original = document.querySelector('main').outerHTML;
             let comentarios = document.querySelector('.comentario-contenido').outerHTML;
             let route = document.querySelector('div[data-route]').dataset.route;
             let avanceTesis = document.querySelector('div[data-avance-tesis]').dataset.avanceTesis;
             console.log("ruta: ",route);
-            console.log("html: ",contentOriginal);
+            console.log("html: ",contenido_original);
             console.log("comentarios",comentarios);
             console.log("avanceTesis",avanceTesis);
-            // $.ajaxSetup({
-            //     headers:{
-            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            //     }
-            // });
+            $.ajaxSetup({
+                headers:{
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
 
-            // $.ajax({
-            //     url: route,
-            //     type: "POST",
-            //     data: {
-            //         contenido_original: contentOriginal,
-            //         contenido: comentarios,
-            //         id_avance_tesis: avanceTesis
-            //     },
-            //     success: function(response){
-            //         if(response.success){
-            //             Swal.fire("Guardado", "El contenido se almacenó en la DB", "success");
-            //         }
-            //     },
-            //     error: function(xhr){
-            //         console.error('no salio pibe', xhr.responseText);
-            //     }
-            // })
+            $.ajax({
+                url: route,
+                type: "POST",
+                data: {
+                    contenido_original: contenido_original,
+                    contenido: comentarios,
+                    id_avance_tesis: avanceTesis
+                },
+                success: function(response){
+                    if(response.success){
+                        Swal.fire(
+                            "Guardado",
+                            `El contenido se almacenó en la DB`,
+                            "success"
+                        );
+                    }
+                },
+                error: function(xhr){
+                    console.error('no salio pibe', xhr.responseText);
+                }
+            })
             
         }
-  
+
+function renderComentarios() {
+
+    document.querySelectorAll('.mensaje').forEach(element => {
+        let userId = element.dataset.autor; // id del usuario
+        let url = ROUTE.replace(':userId', userId); // reemplazamos el placeholder
+        let comment = element.textContent;
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                
+                // Limpiar contenido anterior
+                element.innerHTML = '';
+
+                // Crear elementos con la info del helper
+                let h1 = document.createElement('h1');
+                h1.textContent = `${data.usuario_nombre} ${data.usuario_apellidos}`;
+                element.appendChild(h1);
+
+                let rolesSpan = document.createElement('span');
+                rolesSpan.classList.add('roles');
+                rolesSpan.textContent = data.usuario_roles;
+                element.appendChild(rolesSpan);
+
+                let p = document.createElement('p');
+                p.textContent = comment;
+                p.classList.add('mensaje');                  
+                
+                element.appendChild(p);
+                element.className ='comentario-cargado';
+                
+
+            })
+            .catch(err => console.error(err));
+    });
+}
+
+// Llamar la función
+

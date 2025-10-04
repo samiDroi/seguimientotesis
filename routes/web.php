@@ -139,6 +139,7 @@ Route::middleware(['auth'])->group(function(){
 
     Route::controller(avanceTesisController::class)->prefix("/requerimiento")->group(function(){
         Route::get("/{id}","showAvance")->name("avance.index");
+        Route::get("/req/data/{id_requerimiento}/{userId}","getInfoComentarioAvance")->name("helper.fetch");
         Route::post("/create/{id}","createAvance")->name("avance.create");
         Route::post("/comentario","comentarioAvance")->name("comentario.create");
         Route::post("/estado","updateEstadoAvance")->name("avance.estado.update");
