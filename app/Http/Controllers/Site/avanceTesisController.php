@@ -27,7 +27,7 @@ class avanceTesisController extends Controller{
 
         ->select("c.*")
         ->first();
-        $contentHTML = ComentarioAvance::where('id_avance_tesis', $avanceTesis->id_avance_tesis)->whereNotNull('contenido_original')->latest()->first();
+        $contentHTML = $avanceTesis?->id_avance_tesis ? ComentarioAvance::where('id_avance_tesis', $avanceTesis->id_avance_tesis)->whereNotNull('contenido_original')->latest()->first() : null;
         
         return view('User.tesis.AvanceTesis',compact('requerimiento','avanceTesis','comiteTesis','contentHTML'));
     }
@@ -50,23 +50,58 @@ class avanceTesisController extends Controller{
         return redirect()->route('home');
     }
 
-    public function comentarioAvance(Request $request){
-        // dd($request->all());
-        //dd($request->get('id_avance_tesis'));
-        //dd($request->get('contenido'));
-        ComentarioAvance::create([
-            'comentario' => $request->get('contenido'),
-            'id_avance_tesis' => $request->input('id_avance_tesis'),
-            'id_user' => Auth::user()->id_user,
-            'contenido_original' => $request->get('contenido_original')
-        ]);
+    // public function comentarioAvance(Request $request){
+    //     // dd($request->all());
+    //     //dd($request->get('id_avance_tesis'));
+    //     //dd($request->get('contenido'));
+    //     ComentarioAvance::create([
+    //         'comentario' => $request->get('contenido'),
+    //         'id_avance_tesis' => $request->input('id_avance_tesis'),
+    //         'id_user' => Auth::user()->id_user,
+    //         'contenido_original' => $request->get('contenido_original')
+    //     ]);
    
-        $requerimiento = ComiteTesisRequerimientos::join('avance_tesis', 'comite_tesis_requerimientos.id_requerimiento', '=', 'avance_tesis.id_requerimiento')
-        ->where('avance_tesis.id_avance_tesis', $request->input('id_avance_tesis'))
-        ->first(['comite_tesis_requerimientos.*']);
+    //     $requerimiento = ComiteTesisRequerimientos::join('avance_tesis', 'comite_tesis_requerimientos.id_requerimiento', '=', 'avance_tesis.id_requerimiento')
+    //     ->where('avance_tesis.id_avance_tesis', $request->input('id_avance_tesis'))
+    //     ->first(['comite_tesis_requerimientos.*']);
 
-        return redirect()->route("avance.index",$requerimiento->id_requerimiento);
-    }
+    //     return redirect()->route("avance.index",$requerimiento->id_requerimiento);
+    // }
+        public function comentarioAvance(Request $request)
+        {
+            // Buscar el primer registro asociado a ese avance_tesis
+            $comentario = ComentarioAvance::where('id_avance_tesis', $request->input('id_avance_tesis'))
+                ->first();
+            // dd($comentario);
+            if ($comentario) {
+                // Si existe, lo actualizamos
+                $comentario->update([
+                    'comentario' => $request->get('contenido'),
+                    'id_user' => Auth::user()->id_user,
+                    'contenido_original' => $request->get('contenido_original'),
+                ]);
+            } else {
+                // Si no existe, lo creamos (opcional, por si quieres garantizar que exista)
+                ComentarioAvance::create([
+                    'comentario' => $request->get('contenido'),
+                    'id_avance_tesis' => $request->input('id_avance_tesis'),
+                    'id_user' => Auth::user()->id_user,
+                    'contenido_original' => $request->get('contenido_original'),
+                ]);
+            }
+
+            // Relacionar con requerimiento
+            $requerimiento = ComiteTesisRequerimientos::join(
+                'avance_tesis', 
+                'comite_tesis_requerimientos.id_requerimiento', 
+                '=', 
+                'avance_tesis.id_requerimiento'
+            )
+            ->where('avance_tesis.id_avance_tesis', $request->input('id_avance_tesis'))
+            ->first(['comite_tesis_requerimientos.*']);
+
+            return redirect()->route("avance.index", $requerimiento->id_requerimiento);
+        }
 
     public function updateEstadoAvance(Request $request){
         $avance = AvanceTesis::findOrFail($request->get("id_avance"));
@@ -116,6 +151,13 @@ class avanceTesisController extends Controller{
         )
          ->orderBy('ca.created_at', 'desc')// ->groupBy('ca.id_avance_tesis')  // Esto asegura que no se repitan
         ->first();
+    }
+
+    function deleteComentarioAvance($id_comentario){
+        $comentario = ComentarioAvance::findOrFail($id_comentario);
+        $comentario->delete();
+        alert()->success("El comentario ha sido eliminado satisfactoriamente.")->persistent(true,false);
+        return redirect()->back();
     }
     
 }

@@ -31,11 +31,69 @@
                 background-color: yellow;
             }
         }
+       .comentario-cargado, .mensaje {
+    border: 1px solid #3333;
+    padding: 10px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.comentario-cargado:hover, .mensaje:hover {
+    transform: translateY(-5px); /* se mueve hacia arriba */
+    background-color: #f1f1f1;   /* resalta el comentario mismo */
+    cursor: pointer;
+}
+
+.comment {
+    transition: background-color 0.3s ease;
+}
+
+.highlighted {
+    background-color: yellow !important; /* el resaltado */
+}
+
+#visor-comentarios {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2/3 contenido, 1/3 comentarios */
+    gap: 2rem;
+    align-items: start;
+}
+
+/* #visor-comentarios main {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    overflow: auto;
+    max-height: 85vh;
+} */
+
+#visor-comentarios aside {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    max-height: 85vh;
+}
+
+#visor-comentarios aside::-webkit-scrollbar {
+    width: 8px;
+}
+#visor-comentarios aside::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 4px;
+}
+@media (max-width: 992px) {
+    #visor-comentarios {
+        grid-template-columns: 1fr; /* se apilan */
+    }
+}
+
     </style>
 
 @endsection
 @section('content') 
-<div class="container mt-5  ">
+<div  class="container mt-5  ">
     <h1 class=" fw-semibold" style="color: var(--color-azul-principal)">{{ $requerimiento->nombre_requerimiento }}</h1>
     <!-- Textarea que será reemplazada por TinyMCE -->
     
@@ -63,10 +121,12 @@
                 
                 @endif
                 {{-- @dd($contentHTML?->contenido_original) --}}
-            <div class="fs-5 mb-5 py-4 px-4 " data-content-main = "{{ $contentHTML ? "procesado" : "no procesado" }}">
+            <div class="fs-5 mb-5 py-4 px-4 " data-content-main = "{{ $contentHTML ? "procesado" : "" }}">
                 <p class="fw-semibold fs-4"> <i class="fa-regular fa-file-lines"></i> Contenido:</p>
                 {{-- @dd($contentHTML) --}}
-                @if($contentHTML?->contenido_original)
+                <button type="button" id="show-comment">Ocultar comentarios</button>
+                <div id="visor-comentarios" class="mt-4">
+                    @if($contentHTML?->contenido_original)
                 {{-- @dd($contentHTML->contenido_original) --}}
                     {{-- {!! $contentHTML->contenido_original !!}    --}}
                 {!! $contentHTML->contenido_original !!}
@@ -77,12 +137,30 @@
                     {!! $avanceTesis?->contenido !!}
                 </main> 
                 @endif
-        <aside>
-            <button id="comentar" type="button">Agregar comentario</button>
+                
+                    
+                
+                <aside class="section-comments">
+                    <button id="comentar" type="button">Agregar comentario</button>
 
-        </aside>
-                 
-                 
+                    <h2 class="mb-1 mt-5"> <i class="fa-regular fa-comments"></i> Comentarios   </h2>
+                    {{-- cargar comentarios --}}
+                    {{-- <div data-req = {{ $requerimiento->id_requerimiento }}></div> --}}
+                    <input type="hidden" id="auth" value="{{ Auth::user()->id_user }}">
+                    <div id="comentarios-route" data-routec = "{{ route('helper.fetch',['id_requerimiento' => $requerimiento->id_requerimiento,'userId' => ':userId']) }}"></div>
+                    
+                        {{-- @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento)) --}}
+                            {{-- @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento)) --}}
+                    {{-- desde aqui esta todo lo de lo comentario auxilio porfavor --}}
+                    @if($contentHTML)
+                        {!! $contentHTML->comentario !!}
+                    @else
+                        <div class="comentario-contenido" id="comentarios"></div>
+                    @endif
+                    
+
+                </aside>
+                </div>
 
             </div>
             @endif
@@ -113,34 +191,8 @@
                                 </div>
                             </div>
      @endif
-    <h2 class="mb-1 mt-5"> <i class="fa-regular fa-comments"></i> Comentarios   </h2>
-     {{-- cargar comentarios --}}
-     {{-- <div data-req = {{ $requerimiento->id_requerimiento }}></div> --}}
-     <input type="hidden" id="auth" value="{{ Auth::user()->id_user }}">
-     <div id="comentarios-route" data-routec = "{{ route('helper.fetch',['id_requerimiento' => $requerimiento->id_requerimiento,'userId' => ':userId']) }}"></div>
-     
-     {{-- @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento)) --}}
-        {{-- @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento)) --}}
-{{-- desde aqui esta todo lo de lo comentario auxilio porfavor --}}
-@if($contentHTML)
-    {!! $contentHTML->comentario !!}
-@else
-    <div class="comentario-contenido" id="comentarios"></div>
-@endif
-    {{-- <div id="comentario-container">
-    @if($comentarios->isEmpty())
-        <div class="no-comentarios">
-            No hay comentarios todavía.
-        </div>
-    @else
-        @foreach($comentarios as $comentario)
-            <div class="mensaje" data-autor="{{ $comentario->id_user }}">
-                <!-- Aquí se llenará dinámicamente con JS -->
-            </div>
-        @endforeach
-    @endif
-</div> --}}
-
+    
+    
 
         {{-- @include('User.Tesis.Modals.ComentarioModal') --}}
 

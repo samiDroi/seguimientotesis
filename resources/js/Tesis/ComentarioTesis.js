@@ -1,12 +1,14 @@
+
 // const { get } = require("jquery");
 const ROUTE = document.querySelector('#comentarios-route').dataset.routec;
 renderComentarios();
-buscar(document.querySelectorAll('main *'))
+var existMain = document.querySelector('div[data-content-main]').dataset.contentMain == "";
     // let contentMain = document.querySelector('div[data-content-main]').dataset.contentMain
     // console.log(contentMain);
-    var existMain = document.querySelector('div[data-content-main]').dataset.contentMain == "";
+    
     if(existMain){
-        
+        buscar(document.querySelectorAll('main *'))
+        console.log("existe main");
         const cont = document.querySelector('main')      
         cont.innerHTML = cont.innerHTML
         .replace(/&lt;inicio&gt;/g, '<span class="c">')
@@ -20,7 +22,7 @@ buscar(document.querySelectorAll('main *'))
         // Añadimos un event listener a la sección de comentarios
 document.querySelector("#comentarios").addEventListener("click", function (e) {
     // Nos aseguramos de que se hizo clic en un 'mensaje'
-    if (e.target.classList.contains("mensaje")) {
+    if (e.target.classList.contains("comentario-cargado") || e.target.classList.contains("mensaje")) {
         const claveComentario = e.target.dataset.clave;
         let textoCompleto = '';
 
@@ -37,25 +39,47 @@ document.querySelector("#comentarios").addEventListener("click", function (e) {
         contenedor.innerHTML = `<p><strong>Texto comentado:</strong> ${textoCompleto.trim()}</p>`;
     }
 });
-        document.querySelector('body').addEventListener('mouseover', function(e){
-            document.querySelectorAll(`.comment`).forEach(element => {                    
-                    element.style.background = "none"
-                })
-            if(e.target.classList.contains('mensaje')){
-                document.querySelectorAll(`.comment[data-clave="${e.target.dataset.clave}"]`).forEach(element => {                    
-                    element.style.background = "yellow"
-                })
-            }
-            document.querySelectorAll('.comment')
-        })
+        // document.querySelector('body').addEventListener('mouseover', function(e){
+        //     document.querySelectorAll(`.comment`).forEach(element => {                    
+        //             element.style.background = "none"
+        //         })
+        //     if(e.target.classList.contains('mensaje') || e.target.classList.contains('comentario-cargado')){
+        //         document.querySelectorAll(`.comment[data-clave="${e.target.dataset.clave}"]`).forEach(element => {                    
+        //             element.style.background = "yellow"
+        //         })
+        //     }
+        //     document.querySelectorAll('.comment')
+        // })
                 
+//         document.addEventListener('mouseover', function(e) {
+//     if (e.target.closest('.mensaje, .comentario-cargado')) {
+//         const comentario = e.target.closest('.mensaje, .comentario-cargado');
+//         const clave = comentario.dataset.clave;
+
+//         // quitar resaltado anterior
+//         document.querySelectorAll('.comment').forEach(el => el.classList.remove('highlighted'));
+
+//         // resaltar los relacionados
+//         document.querySelectorAll(`.comment[data-clave="${clave}"]`).forEach(el => {
+//             el.classList.add('highlighted');
+//         });
+//     }
+// });
+
+// document.addEventListener('mouseout', function(e) {
+//     if (e.target.closest('.mensaje, .comentario-cargado')) {
+//         document.querySelectorAll('.comment').forEach(el => el.classList.remove('highlighted'));
+//     }
+// });
+
+
 
         function buscar(nodos){
             for (const el of nodos) {
                 if(el.childNodes.length > 1){
                     buscar(el.childNodes) 
                 }else{                    
-                    if(!isOnlyWhitespace(el.textContent) && !el.textContent.includes("<fin>") && existMain){
+                    if(!isOnlyWhitespace(el.textContent) && !el.textContent.includes("<fin>")){
                         const palabras = el.textContent.replaceAll("\n", "").split(" ").filter( (el) => el).length;
                         let texto = el.textContent.replaceAll("\n", "").split(" ").filter( (el) => el).join("<fin><inicio>");
                         el.textContent = `<inicio>${texto}<fin>`
@@ -84,7 +108,7 @@ document.querySelector("#comentarios").addEventListener("click", function (e) {
                 const range = selection.getRangeAt(0);
                 const selectedContent = range.cloneContents(); // Clonamos el contenido para no afectar el DOM
                 
-                if (selectedContent.querySelector('.comment')) {
+                if (selectedContent.querySelector('.comment[data-clave]')) {
                     alert("Error: No puedes comentar sobre un texto que ya tiene un comentario asignado.");
                     window.getSelection().removeAllRanges(); // Limpia la selección actual
                     return; // Detiene la ejecución de la función
@@ -140,6 +164,7 @@ document.querySelector("#comentarios").addEventListener("click", function (e) {
                 ${comentario}
                 </div>
             `)
+            renderComentarios();
             submitContent();
         })
 
@@ -210,6 +235,7 @@ document.querySelector("#comentarios").addEventListener("click", function (e) {
                             `El contenido se almacenó en la DB`,
                             "success"
                         );
+                        
                     }
                 },
                 error: function(xhr){
@@ -245,9 +271,16 @@ function renderComentarios() {
 
                 let p = document.createElement('p');
                 p.textContent = comment;
-                p.classList.add('mensaje');                  
+                p.classList.add('mensaje-text');                  
+                
+                let deleteBtn = document.createElement('button');
+                deleteBtn.id = 'delete-comment';
+                deleteBtn.type = 'button';
+                deleteBtn.textContent = 'Eliminar comentario';
+                deleteBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'mt-2');
                 
                 element.appendChild(p);
+                element.appendChild(deleteBtn);
                 element.className ='comentario-cargado';
                 
 
@@ -255,6 +288,91 @@ function renderComentarios() {
             .catch(err => console.error(err));
     });
 }
+
+
+    document.addEventListener('click', function (e) {
+    // Solo actúa si se hizo clic en el botón con id "delete-comment"
+    if (e.target.matches('#delete-comment')) {
+        const containerComment = e.target.closest('.comentario-cargado'); // Aquí sí usamos closest en el elemento
+        const CLAVE = containerComment.dataset.clave;
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Se eliminará el comentario seleccionado permanentemente.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, continuar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Eliminar data-clave de elementos relacionados
+                document.querySelectorAll(`.comment[data-clave="${CLAVE}"]`).forEach(element => {
+                    element.removeAttribute('data-clave');
+                });
+
+                // Eliminar comentario del DOM
+                containerComment.remove();
+
+                // Ejecutar función de guardado
+                submitContent();
+
+                // Mensaje de éxito opcional
+                Swal.fire(
+                    '¡Hecho!',
+                    'El comentario ha sido eliminado satisfactoriamente.',
+                    'success'
+                );
+            }
+        });
+    }
+});
+
+document.querySelector("#comentarios").addEventListener("click", function(e) {
+    const comentario = e.target.closest(".comentario-cargado");
+    if (!comentario) return;
+
+    const clave = comentario.dataset.clave;
+    const destinos = document.querySelectorAll(`span[data-clave="${clave}"]`);
+    
+    destinos.forEach(destino => {
+        destino.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        destino.classList.add("highlighted");
+        setTimeout(() => destino.classList.remove("highlighted"), 2000);
+    });
+});
+
+document.querySelector('#show-comment').addEventListener('click', function() {
+    const comments = document.querySelector('.section-comments');
+    // const comments = document.querySelector('#comentarios');
+
+    comments.style.display = comments.style.display === 'none' ? 'block' : 'none';
+    this.textContent = comments.style.display === 'none' ? 'Mostrar comentarios' : 'Ocultar comentarios';
+});
+// document.addEventListener('DOMContentLoaded', function () {
+//     const comentarios = document.querySelectorAll('.comentario-cargado');
+    
+//     comentarios.forEach(comentario => {
+//         comentario.addEventListener('click', function() {
+//             const clave = this.dataset.clave;
+//             const destinos = document.querySelectorAll(`span[data-clave="${clave}"]`);
+//             destinos.forEach(destino => {
+//                 destino.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+//                 // agregar clase temporal de resaltado
+//                 destino.classList.add('highlighted');
+                
+//                 setTimeout(() => {
+//                     destino.classList.remove('highlighted');
+//                 }, 2000);
+//             });
+            
+//         });
+//     });
+// });
+
 
 // Llamar la función
 
