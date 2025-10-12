@@ -279,8 +279,15 @@ function renderComentarios() {
                 deleteBtn.textContent = 'Eliminar comentario';
                 deleteBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'mt-2');
                 
+                let editBtn = document.createElement('button');
+                // editBtn.classList.add = 'edit-comment';
+                editBtn.type = 'button';
+                editBtn.textContent = 'Editar comentario';
+                editBtn.classList.add('btn', 'btn-primary', 'btn-sm', 'mt-2', 'edit-comment', 'ms-2','edit-comment');
+                
                 element.appendChild(p);
                 element.appendChild(deleteBtn);
+                element.appendChild(editBtn);
                 element.className ='comentario-cargado';
                 
 
@@ -329,16 +336,45 @@ function renderComentarios() {
     }
 });
 
-document.querySelector("#comentarios").addEventListener("click", function(e) {
+// document.addEventListener("click", function(e) {
+//     //  e.stopPropagation()
+//     if(e.target.matches('.comentario-cargado')) {
+//         const comentario = e.target.closest(".comentario-cargado");
+//         if (!comentario) return;
+
+//         const clave = comentario.dataset.clave;
+//         const destinos = document.querySelectorAll(`span[data-clave="${clave}"]`);
+    
+//         destinos.forEach(destino => {
+//             destino.scrollIntoView({ behavior: "smooth", block: "center" });
+
+//             destino.classList.add("highlighted");
+//             setTimeout(() => destino.classList.remove("highlighted"), 2000);
+//         });
+//     }
+    
+// });
+document.addEventListener("click", function(e) {
     const comentario = e.target.closest(".comentario-cargado");
+
+    // si no hay un contenedor válido, salimos
     if (!comentario) return;
+
+    // evitamos que botones internos disparen esto
+    if (
+        e.target.matches(".edit-comment") ||
+        e.target.matches("#delete-comment") ||
+        e.target.closest(".edit-comment") ||
+        e.target.closest("#delete-comment")
+    ) {
+        return; // no hacemos scroll ni resaltado
+    }
 
     const clave = comentario.dataset.clave;
     const destinos = document.querySelectorAll(`span[data-clave="${clave}"]`);
-    
+
     destinos.forEach(destino => {
         destino.scrollIntoView({ behavior: "smooth", block: "center" });
-
         destino.classList.add("highlighted");
         setTimeout(() => destino.classList.remove("highlighted"), 2000);
     });
@@ -351,6 +387,48 @@ document.querySelector('#show-comment').addEventListener('click', function() {
     comments.style.display = comments.style.display === 'none' ? 'block' : 'none';
     this.textContent = comments.style.display === 'none' ? 'Mostrar comentarios' : 'Ocultar comentarios';
 });
+
+//funcion para editar comentario
+document.addEventListener('click', function(e) {
+    if(e.target.matches('.edit-comment')){
+        // e.stopImmediatePropagation();
+
+        const container = e.target.closest('.comentario-cargado');
+        const previousComment = container.querySelector('.mensaje-text');
+        
+        
+        let currentText = previousComment.textContent;
+        console.log(currentText);
+        
+        const textArea = document.createElement('textarea');
+        textArea.value = currentText;
+        textArea.classList.add('form-control', 'mb-2');
+        previousComment.replaceWith(textArea);
+
+        // Cuando el usuario presione Enter, guardar
+        textArea.addEventListener('keydown', function(ev) {
+            if (ev.key === 'Enter' && !ev.shiftKey) {
+                ev.preventDefault(); // evita salto de línea
+                guardarCambio(textArea);
+            }
+        });
+    }
+
+});
+
+function guardarCambio(textArea) {
+    const nuevoTexto = textArea.value.trim();
+
+    // Crear nuevo <p>
+    const nuevoP = document.createElement('p');
+    nuevoP.classList.add('mensaje-text');
+    nuevoP.textContent = nuevoTexto || 'Comentario vacío';
+    //
+    textArea.replaceWith(nuevoP);
+    submitContent();
+}
+
+
 // document.addEventListener('DOMContentLoaded', function () {
 //     const comentarios = document.querySelectorAll('.comentario-cargado');
     

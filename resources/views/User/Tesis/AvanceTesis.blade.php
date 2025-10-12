@@ -88,9 +88,7 @@
         grid-template-columns: 1fr; /* se apilan */
     }
 }
-
-    </style>
-
+</style>
 @endsection
 @section('content') 
 <div  class="container mt-5  ">
@@ -107,6 +105,9 @@
     <form  action="{{ Route("avance.create",$requerimiento->id_requerimiento) }}" method="POST">
         @csrf
             @if (!(comprobarIsInComite($comiteTesis->id_comite)))
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comentarios-mostrar">
+  Abrir Modal
+</button>
                 <textarea id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea>
                 
                 <a class=" mt-3 align-center btn btn-danger" href="{{ Route("home") }}"><i class="fa-solid fa-rectangle-xmark"></i> Regresar y cancelar</a>
@@ -140,7 +141,7 @@
                 
                     
                 
-                <aside class="section-comments">
+                <aside class="section-comments" style="position: sticky; top: 1rem;">
                     <button id="comentar" type="button">Agregar comentario</button>
 
                     <h2 class="mb-1 mt-5"> <i class="fa-regular fa-comments"></i> Comentarios   </h2>
@@ -194,7 +195,7 @@
     
     
 
-        {{-- @include('User.Tesis.Modals.ComentarioModal') --}}
+        @include('User.Tesis.Modals.ComentariosModal')
 
     </div>
 @endsection

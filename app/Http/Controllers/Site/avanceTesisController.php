@@ -31,7 +31,7 @@ class avanceTesisController extends Controller{
         
         return view('User.tesis.AvanceTesis',compact('requerimiento','avanceTesis','comiteTesis','contentHTML'));
     }
-
+    
     public function createAvance($id,Request $request){
        $avance = AvanceTesis::where('id_requerimiento', $id)->first();
        //si el avance ya existia, se actualiza el avance 

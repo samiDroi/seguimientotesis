@@ -346,5 +346,39 @@ function isEstudiante(){
     ->where('esCoordinador',0)
     ->count();
 }
-
+function getUsersComiteAudita(){
+    return DB::table('comite as c')
+        ->join('tesis_comite as tc', 'c.id_comite', '=', 'tc.id_comite') // Comités de tesis
+        ->join('tesis as t', 'tc.id_tesis', '=', 't.id_tesis') // Tesis
+        ->join('tesis_usuarios as tu', 't.id_tesis', '=', 'tu.id_tesis') // Usuarios de la tesis
+        ->join('usuarios_comite as uc', 'c.id_comite', '=', 'uc.id_comite') // Usuarios del comité
+        ->join('usuarios as u', 'uc.id_user', '=', 'u.id_user') // Datos del usuario
+        ->join('usuarios_comite_roles as ucr', 'ucr.id_usuario_comite', '=', 'uc.id_usuario_comite') // Rol personalizado
+        ->where('tu.id_user', Auth::user()->id_user) // Solo comités que auditan la tesis del usuario actual
+        ->where('uc.id_user', '!=', Auth::user()->id_user) // Excluir al usuario autenticado
+        ->select(
+            'c.id_comite',
+            'c.nombre_comite',
+            'u.id_user',
+            'u.nombre',
+            'u.apellidos',
+            'u.correo_electronico',
+            'ucr.rol_personalizado'
+        )
+        ->distinct()
+        ->get();
+            // return DB::table('comite as c')
+            // ->join('tesis_comite as tc', 'c.id_comite', '=', 'tc.id_comite')  // Relación comités - tesis
+            // ->join('tesis as t', 'tc.id_tesis', '=', 't.id_tesis')  // Relación tesis - comités
+            // ->join('tesis_usuarios as tu', 't.id_tesis', '=', 'tu.id_tesis')  // Relación tesis - usuarios
+            // ->join('usuarios_comite as uc', 'c.id_comite', '=', 'uc.id_comite')  // Relación comités - usuarios
+            // ->join('usuarios as u', 'uc.id_user', '=', 'u.id_user')
+            // ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.id_usuario_comite')
+            // ->where('tu.id_user', Auth::user()->id_user)  // Filtrar tesis del usuario autenticado
+            // ->where('uc.id_user', '!=', Auth::user()->id_user)  // Excluir al usuario autenticado del comité
+            // ->select('c.*','u.*','u.nombre as nombre','u.apellidos as apellidos','ucr.rol_personalizado')  // Obtener datos del comité
+            // ->distinct()
+            // ->get()
+            // ->groupBy('id_comite');
+}
 
