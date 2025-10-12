@@ -2,11 +2,11 @@
 // const { get } = require("jquery");
 const ROUTE = document.querySelector('#comentarios-route').dataset.routec;
 renderComentarios();
-var existMain = document.querySelector('div[data-content-main]').dataset.contentMain == "";
+var existMain = document.querySelector('div[data-content-main]')?.dataset.contentMain == "";
     // let contentMain = document.querySelector('div[data-content-main]').dataset.contentMain
     // console.log(contentMain);
     
-    if(existMain){
+    if(existMain && document.querySelector('main')){
         buscar(document.querySelectorAll('main *'))
         console.log("existe main");
         const cont = document.querySelector('main')      
@@ -20,7 +20,7 @@ var existMain = document.querySelector('div[data-content-main]').dataset.content
         }
     }
         // Añadimos un event listener a la sección de comentarios
-document.querySelector("#comentarios").addEventListener("click", function (e) {
+document.querySelector("#comentarios")?.addEventListener("click", function (e) {
     // Nos aseguramos de que se hizo clic en un 'mensaje'
     if (e.target.classList.contains("comentario-cargado") || e.target.classList.contains("mensaje")) {
         const claveComentario = e.target.dataset.clave;
@@ -92,7 +92,7 @@ document.querySelector("#comentarios").addEventListener("click", function (e) {
             return /^\s*$/.test(str);
         }
 
-        document.querySelector("#comentar").addEventListener("click", async function () {
+        document.querySelector("#comentar")?.addEventListener("click", async function () {
             const selection = window.getSelection();
 
                 // --- INICIO DE LA MODIFICACIÓN ---
@@ -164,7 +164,7 @@ document.querySelector("#comentarios").addEventListener("click", function (e) {
                 ${comentario}
                 </div>
             `)
-            renderComentarios();
+            await renderComentarios();
             submitContent();
         })
 
@@ -219,7 +219,8 @@ document.querySelector("#comentarios").addEventListener("click", function (e) {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-
+            console.log('se esta guardando:',comentarios);
+            
             $.ajax({
                 url: route,
                 type: "POST",
@@ -244,57 +245,102 @@ document.querySelector("#comentarios").addEventListener("click", function (e) {
             })
             
         }
+async function renderComentarios() {
+    const mensajes = document.querySelectorAll('.mensaje');
 
-function renderComentarios() {
+    for (const element of mensajes) {
+        const userId = element.dataset.autor;
+        const url = ROUTE.replace(':userId', userId);
+        const comment = element.textContent;
 
-    document.querySelectorAll('.mensaje').forEach(element => {
-        let userId = element.dataset.autor; // id del usuario
-        let url = ROUTE.replace(':userId', userId); // reemplazamos el placeholder
-        let comment = element.textContent;
-        fetch(url)
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                
-                // Limpiar contenido anterior
-                element.innerHTML = '';
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
 
-                // Crear elementos con la info del helper
-                let h1 = document.createElement('h1');
-                h1.textContent = `${data.usuario_nombre} ${data.usuario_apellidos}`;
-                element.appendChild(h1);
+            // Limpiar contenido anterior
+            element.innerHTML = '';
 
-                let rolesSpan = document.createElement('span');
-                rolesSpan.classList.add('roles');
-                rolesSpan.textContent = data.usuario_roles;
-                element.appendChild(rolesSpan);
+            // Crear estructura con formato
+            const h1 = document.createElement('h1');
+            h1.textContent = `${data.usuario_nombre} ${data.usuario_apellidos}`;
 
-                let p = document.createElement('p');
-                p.textContent = comment;
-                p.classList.add('mensaje-text');                  
-                
-                let deleteBtn = document.createElement('button');
-                deleteBtn.id = 'delete-comment';
-                deleteBtn.type = 'button';
-                deleteBtn.textContent = 'Eliminar comentario';
-                deleteBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'mt-2');
-                
-                let editBtn = document.createElement('button');
-                // editBtn.classList.add = 'edit-comment';
-                editBtn.type = 'button';
-                editBtn.textContent = 'Editar comentario';
-                editBtn.classList.add('btn', 'btn-primary', 'btn-sm', 'mt-2', 'edit-comment', 'ms-2','edit-comment');
-                
-                element.appendChild(p);
-                element.appendChild(deleteBtn);
-                element.appendChild(editBtn);
-                element.className ='comentario-cargado';
-                
+            const rolesSpan = document.createElement('span');
+            rolesSpan.classList.add('roles');
+            rolesSpan.textContent = data.usuario_roles;
 
-            })
-            .catch(err => console.error(err));
-    });
+            const p = document.createElement('p');
+            p.textContent = comment;
+            p.classList.add('mensaje-text');
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.id = 'delete-comment';
+            deleteBtn.type = 'button';
+            deleteBtn.textContent = 'Eliminar comentario';
+            deleteBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'mt-2');
+
+            const editBtn = document.createElement('button');
+            editBtn.type = 'button';
+            editBtn.textContent = 'Editar comentario';
+            editBtn.classList.add('btn', 'btn-primary', 'btn-sm', 'mt-2', 'ms-2', 'edit-comment');
+
+            element.append(h1, rolesSpan, p, deleteBtn, editBtn);
+            element.className = 'comentario-cargado';
+        } catch (err) {
+            console.error('Error al renderizar comentario:', err);
+        }
+    }
 }
+
+// function renderComentarios() {
+
+//     document.querySelectorAll('.mensaje').forEach(element => {
+//         let userId = element.dataset.autor; // id del usuario
+//         let url = ROUTE.replace(':userId', userId); // reemplazamos el placeholder
+//         let comment = element.textContent;
+//         fetch(url)
+//             .then(res => res.json())
+//             .then(data => {
+//                 console.log(data);
+                
+//                 // Limpiar contenido anterior
+//                 element.innerHTML = '';
+
+//                 // Crear elementos con la info del helper
+//                 let h1 = document.createElement('h1');
+//                 h1.textContent = `${data.usuario_nombre} ${data.usuario_apellidos}`;
+//                 element.appendChild(h1);
+
+//                 let rolesSpan = document.createElement('span');
+//                 rolesSpan.classList.add('roles');
+//                 rolesSpan.textContent = data.usuario_roles;
+//                 element.appendChild(rolesSpan);
+
+//                 let p = document.createElement('p');
+//                 p.textContent = comment;
+//                 p.classList.add('mensaje-text');                  
+                
+//                 let deleteBtn = document.createElement('button');
+//                 deleteBtn.id = 'delete-comment';
+//                 deleteBtn.type = 'button';
+//                 deleteBtn.textContent = 'Eliminar comentario';
+//                 deleteBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'mt-2');
+                
+//                 let editBtn = document.createElement('button');
+//                 // editBtn.classList.add = 'edit-comment';
+//                 editBtn.type = 'button';
+//                 editBtn.textContent = 'Editar comentario';
+//                 editBtn.classList.add('btn', 'btn-primary', 'btn-sm', 'mt-2', 'edit-comment', 'ms-2','edit-comment');
+                
+//                 element.appendChild(p);
+//                 element.appendChild(deleteBtn);
+//                 element.appendChild(editBtn);
+//                 element.className ='comentario-cargado';
+                
+
+//             })
+//             .catch(err => console.error(err));
+//     });
+// }
 
 
     document.addEventListener('click', function (e) {
@@ -380,7 +426,7 @@ document.addEventListener("click", function(e) {
     });
 });
 
-document.querySelector('#show-comment').addEventListener('click', function() {
+document.querySelector('#show-comment')?.addEventListener('click', function() {
     const comments = document.querySelector('.section-comments');
     // const comments = document.querySelector('#comentarios');
 

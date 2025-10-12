@@ -21,6 +21,7 @@ import "./Academico/Unidades.js";
 import "./Academico/Programas.js";
 
 import "./Tesis/ComentarioTesis.js";
+import "./Tesis/ShowComentariosTesis.js";
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 import '../css/componentes.css';

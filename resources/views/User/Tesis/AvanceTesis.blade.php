@@ -88,6 +88,63 @@
         grid-template-columns: 1fr; /* se apilan */
     }
 }
+
+.grid-comment {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* Izquierda 1 parte, derecha 2 partes */
+  gap: 20px; /* Espacio entre columnas */
+  align-items: start; /* Alinea arriba */
+}
+
+.user-auditor {
+  margin-bottom: 10px;
+}
+.user-auditor:hover {
+    background-color: #f1f1f1; /* Resalta al pasar el mouse */
+    cursor: pointer;
+}
+.user-auditor:focus {
+    outline: 2px solid #0d6efd; /* Resalta al enfocar con teclado */
+    background-color: #e7f1ff;
+}
+.comment-section {
+  border-left: 2px solid #dee2e6; /* Línea divisoria opcional */
+  padding-left: 15px;
+  min-height: 300px; /* Altura mínima para visualización */
+}
+
+/* Cada fila de comentario y main */
+.comentario-fila {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: flex-start; /* Alinea el contenido superior */
+}
+
+/* Columna del main */
+.main-col {
+    flex: 1;
+    font-weight: bold;
+}
+
+/* Columna de comentario */
+.coment-col {
+    flex: 1;
+}
+
+/* Opcional: bordes y fondo ligero para diferenciar */
+.comentario-fila {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.5rem;
+}
+
+/* Responsivo: en pantallas pequeñas, apilar columnas */
+@media (max-width: 768px) {
+    .comentario-fila {
+        flex-direction: column;
+    }
+}
+
 </style>
 @endsection
 @section('content') 
@@ -101,7 +158,12 @@
 
     <div data-route="{{ Route("comentario.create") }}"></div>
     <div data-avance-tesis= "{{ $avanceTesis?->id_avance_tesis }}"></div>
- 
+    <div id="comentarios-route" data-routec = "{{ route('helper.fetch',['id_requerimiento' => $requerimiento->id_requerimiento,'userId' => ':userId']) }}"></div>
+    {{-- <div data-fetch="{{ route('helper.fetch.html',['id_avance_tesis' =>  $avanceTesis?->id_avance_tesis])}}"></div> --}}
+    @if($avanceTesis)
+    <div data-fetch="{{ route('helper.fetch.html', ['id_avance_tesis' => $avanceTesis->id_avance_tesis]) }}"></div>
+@endif
+
     <form  action="{{ Route("avance.create",$requerimiento->id_requerimiento) }}" method="POST">
         @csrf
             @if (!(comprobarIsInComite($comiteTesis->id_comite)))
@@ -122,7 +184,7 @@
                 
                 @endif
                 {{-- @dd($contentHTML?->contenido_original) --}}
-            <div class="fs-5 mb-5 py-4 px-4 " data-content-main = "{{ $contentHTML ? "procesado" : "" }}">
+                <div class="fs-5 mb-5 py-4 px-4 " data-content-main = "{{ $contentHTML ? "procesado" : "" }}">
                 <p class="fw-semibold fs-4"> <i class="fa-regular fa-file-lines"></i> Contenido:</p>
                 {{-- @dd($contentHTML) --}}
                 <button type="button" id="show-comment">Ocultar comentarios</button>
@@ -148,7 +210,6 @@
                     {{-- cargar comentarios --}}
                     {{-- <div data-req = {{ $requerimiento->id_requerimiento }}></div> --}}
                     <input type="hidden" id="auth" value="{{ Auth::user()->id_user }}">
-                    <div id="comentarios-route" data-routec = "{{ route('helper.fetch',['id_requerimiento' => $requerimiento->id_requerimiento,'userId' => ':userId']) }}"></div>
                     
                         {{-- @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento)) --}}
                             {{-- @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento)) --}}
