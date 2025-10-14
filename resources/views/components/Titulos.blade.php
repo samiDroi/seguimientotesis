@@ -1,2 +1,6 @@
-<h1 class="fw-bold display-4 mt-4">{{ $text }}</h1>
-<hr>
+<div class="titulo-contenedor">
+  <div class="barra"></div>
+  <h1 class="titulo-componente">{{ $text }}</h1>
+</div>
+
+

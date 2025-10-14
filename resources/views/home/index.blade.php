@@ -19,7 +19,7 @@
         @foreach ($tesisUsuario as $tesis)
             <div class="card border-1 border-primary  rounded-5 ps-3 mb-4 mt-5 mx-5 shadow">
                 <div class="card-body row  border-secondary border-2 rounded-4">
-                    <div class="col-12 d-flex justify-content-between align-items-center text-light  p-4" >
+                    <div class="col-12 targ-tesis " >
                         <h2 class="card-title h4 font-weight-bold text-dark flex-grow-1 titulotesis">{{ $tesis->nombre_tesis }}</h2>
                     </div>
 

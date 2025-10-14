@@ -6,10 +6,46 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     @vite(['resources/js/app.js', 'resources/css/app.scss'])
-    @vite(['resources/js/app.js', 'resources/css/app.scss', 'resources/js/ejemplo/script.js','resources/css/root.css','resources/css/variables.css'])
+    @vite(['resources/js/app.js', 'resources/css/app.scss', 'resources/js/ejemplo/script.js','resources/css/root.css','resources/css/variables.css','resources/css/login.css'])
 </head>
 <body>
-    <!-- Contenedor principal -->
+   
+    <div class="container principal-login ">
+        <div class="text-center mt-5 pt-5">
+
+            <i class="fa-solid fa-user fa-4x text-light"  ></i>
+            <h3 class="text-light mt-3">INICIO DE SESION</h3>
+
+            <form action="{{ Route("login.post") }}" method="POST">
+                @csrf
+           <div class="input-group ">
+            <input required="" class="inputlogin" id="username" name="username" required autocomplete="off">
+            <label class="user-label">
+                <i class="fa-solid fa-envelope"></i> Matricula o Numero de usuario
+            </label>
+           </div>
+
+            <div class="input-group mt-3">
+            <input required="" class="inputlogin" type="password" id="password" name="password"  required autocomplete="current-password">
+            <label class="user-label">
+               <i class="fa-solid fa-lock"></i> Contraseña
+            </label>
+            
+            
+           </div>
+
+         
+        <button class="mb-3 button-login" type="submit"><i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesion</button>
+           <br>
+
+         <a class="text-light"  href="{{ route('forgotPassword')}}" >¿Olvidaste tu contraseña? </a>
+        </div>
+
+     </form>
+        
+    </div>
+    </div>
+    {{-- <!-- Contenedor principal -->
         <div class="container text-center pe-5" id style="margin-top: 150px; ">
         <div class="row" >
 
@@ -46,7 +82,9 @@
         </div>
        
 
-        </div>
+        </div> --}}
+
+        
         @include('sweetalert::alert')
     <script src="{{ asset("vendor/sweetalert/sweetalert.all.js") }}"></script>
     <script src="https://kit.fontawesome.com/eaefdedbbf.js" crossorigin="anonymous"></script>

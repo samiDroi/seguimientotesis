@@ -47,7 +47,7 @@
                     <li class="nav-item">
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
-                            <button type="submit" class="btn text-light "   style="background-color: var(--color-delete)">Cerrar sesión</button>
+                            <button type="submit" class="btn text-light "   style="background-color: var(--color-delete)">Cerrar sesión <i class="fa-solid fa-right-from-bracket"></i> </button>
                         </form>
                     </li>
                 </ul>
