@@ -20,7 +20,9 @@
 <div class="container">
     <h1 class="text-center mt-4">Editar Comité</h1>
     <div data-roles="@json($roles->count())"></div>
-    <div data-rolesBase="@json($rolesBase->map(fn($r) => ['id' => $r->id_rol, 'nombre' => $r->nombre_rol]))"></div>
+    <div data-rolesBase='@json($rolesBase->map(fn($r) => ["id" => $r->id_rol, "nombre" => $r->nombre_rol]))'></div>
+
+    {{-- <div data-rolesBase="@json($rolesBase->map(fn($r) => ['id' => $r->id_rol, 'nombre' => $r->nombre_rol]))"></div> --}}
     <form action="{{ route('comites.update', $comite->id_comite) }}" id="edit-form" method="POST">
         @csrf
         @method('PUT')
@@ -47,7 +49,7 @@
             <div class="row mt-4">
                 <div class="col-md-7">
                     <h4>Docentes disponibles</h4>
-                    <table class="table" id="docentes">
+                    <table class="table" id="">
                         <thead class="table-primary">
                             <tr>
                                 <th>Seleccionar</th>
@@ -81,12 +83,13 @@
                     <h4>Miembros y roles del comité</h4>
                     <div id="confirmarComite">
                         @foreach($comite->usuarios as $miembro)
-                            <div class=" users-roles card selected-user-card mb-3" id="" data-user-id="{{ $miembro->id_user }}">
+                            <div class="users-roles card selected-user-card mb-3" id="" data-user-id="{{ $miembro->id_user }}">
                                 <div class="card-body">
                                     <h5>{{ $miembro->nombre }} {{ $miembro->apellidos }}</h5>
                                     <input type="hidden" name="docentes[]" value="{{ $miembro->id_user }}">
                                     
                                     <label class="form-label">Roles asignados</label>
+                                    {{-- @dd($roles) --}}
                                     <select class="form-select role-select user-role-select" id="select-roles" data-user="{{ $miembro->id_user }}" name="roles[{{ $miembro->id_user }}][]" multiple>
                                         @foreach($roles as $rol)
                                             @php
@@ -117,15 +120,4 @@
 </div>
 @endsection
 
-@section('js')
-<script src="js/Comites/EditComite.js"></script>
 
-{{-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
-<script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
-<script src="https://cdn.datatables.net/responsive/3.0.3/js/dataTables.responsive.js"></script>
-<script src="https://cdn.datatables.net/responsive/3.0.3/js/responsive.bootstrap5.js"></script>
-Todo este script es la section de decidir docentes y que aparezcan a la derecha --}}
-
-@endsection

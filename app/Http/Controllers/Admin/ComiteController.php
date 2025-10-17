@@ -86,9 +86,9 @@ class ComiteController extends Controller
         return redirect()->route("comites.members",$comite->id_comite);
     }
 
-    public function saveMembers($id){
+    public function saveMembers($id,$idAlumno){
         $comite = Comite::findOrFail($id);
-        $docentes = $this->getDocentes();
+        $docentes = $this->getDocentes($idAlumno);
 
         return view('Admin.Comites.AttachMembers',compact('comite','docentes'));
     }
@@ -280,7 +280,19 @@ class ComiteController extends Controller
         }
     }
  
-    public function getDocentes(){
+    public function getDocentes($idAlumno = null){
+        if($idAlumno){
+            $alumno = Usuarios::find($idAlumno);
+            $programasAlumno = $alumno->programas->pluck('id_programa')->toArray();
+            return Usuarios::whereHas('tipos', function ($query) {
+                $query->where('nombre_tipo', 'docente');
+                })
+                ->whereHas('programas', function ($query) use ($programasAlumno) {
+                    $query->whereIn('programa_academico.id_programa', $programasAlumno);
+                })
+                ->where('id_user', '!=', $idAlumno)
+                ->get();
+        }
         return Usuarios::whereHas('tipos', function ($query) {
             $query->where('nombre_tipo', 'docente');
         })->get();

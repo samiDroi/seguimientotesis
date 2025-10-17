@@ -3,7 +3,7 @@
 @section('content')
 <div id="datos-json" data-datos='@json($rolesBase->map(fn($r) => ['id' => $r->id_rol, 'nombre' => $r->nombre_rol]))'></div>
 <div class="container mx-auto p-6">
-    
+    {{-- @dd($rolesBase) --}}
     <h1 class="text-center mt-4">Panel de roles</h1>
     <div class="container">
         <div class="row  fs-4 py-5 shadow mb-4 rounded" style="background-color: var(--color-azul-obscuro)">

@@ -124,6 +124,8 @@ class TesisController extends Controller
                 'id_tesis' => $tesis->id_tesis,
                 'id_user' =>  $request->get('alumno')
             ]);
+            $unAlumno = $request->get('alumno');
+            // $this->asignarAlumno($tesis->id_tesis,$unAlumno);
         }
         
         // if ($request->boolean('comite')) {
@@ -134,7 +136,7 @@ class TesisController extends Controller
                 'id_tesis' => $tesis->id_tesis,
                 'id_comite' => $comite->id_comite
             ]);
-            return redirect()->route('comites.members',$comite->id_comite);
+            return redirect()->route('comites.members',[$comite->id_comite,'idAlumno' => $unAlumno]);
         // }
         // return redirect()->route('tesis.index');
 

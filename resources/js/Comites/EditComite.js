@@ -74,6 +74,7 @@ $(function() {
     function actualizarConfirmacion() {
         let confirmarComiteHtml = '';
 
+        
         $('.checkbox-docente:checked').each(function() {
 
             const userId = $(this).val();

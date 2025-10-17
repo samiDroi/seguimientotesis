@@ -85,7 +85,22 @@
                                     @endif
                                 @endif
                             </div>
-                             
+                            {{-- @dd($tesisItem->comites) --}}
+                             @if ($tesisItem->comites->first() && $tesisItem->comites->first()->usuarios->isEmpty())
+
+                                @php
+                                    $comite = $tesisItem->comites->first();
+                                    $alumno = $tesisItem->usuarios->first(); // si solo hay uno
+                                @endphp
+
+                                <div class="mt-3">
+                                    <a href="{{ route('comites.members', [$comite->id_comite, 'idAlumno' => $alumno->id_user]) }}"
+                                    class="btn btn-outline-primary btn-sm">
+                                        Gestionar comité
+                                    </a>
+                                </div>
+                            @endif
+
                             @if ($tieneRequerimientos)
                                 <details>
                                     <summary>Estructura</summary>

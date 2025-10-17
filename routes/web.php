@@ -96,7 +96,7 @@ Route::middleware(['auth'])->group(function(){
         
         Route::controller(ComiteController::class)->prefix("/comites")->group(function(){
             Route::get("/","index")->name("comites.index");
-            Route::get("/comite-members/{id}","saveMembers")->name("comites.members");
+            Route::get("/comite-members/{id}/{idAlumno}","saveMembers")->name("comites.members");
             Route::get("/edit-comite/{id}","edit")->name("comites.edit");
 
             Route::post("/comite-members/save","registerMembers")->name("comites.save.members");

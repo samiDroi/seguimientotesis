@@ -1,6 +1,6 @@
 
 // const { get } = require("jquery");
-const ROUTE = document.querySelector('#comentarios-route').dataset.routec;
+const ROUTE = document.querySelector('#comentarios-route')?.dataset.routec;
 renderComentarios();
 var existMain = document.querySelector('div[data-content-main]')?.dataset.contentMain == "";
     // let contentMain = document.querySelector('div[data-content-main]').dataset.contentMain
@@ -165,7 +165,9 @@ document.querySelector("#comentarios")?.addEventListener("click", function (e) {
                 </div>
             `)
             await renderComentarios();
-            submitContent();
+            //un pequeño delay porque sino no se guarda bien
+            setTimeout(() => submitContent(), 50);
+            
         })
 
 
