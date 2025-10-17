@@ -1,4 +1,5 @@
 const rolesDefinidos = [];
+import $ from 'jquery';
 $(function() {  
     $('.user-role-select').select2({
         width: '100%' // opcional, para que no se desborde en Bootstrap
@@ -121,7 +122,8 @@ $('#roles-container').on('click','.delete-rol',function(){
 //   ])) !!};
         let optionsHtml = '<option value="" selected disabled>Seleccione un tipo de rol</option>';
         options.forEach(opt => {
-            optionsHtml += <option value="${opt.id}" data-descripcion="${opt.descripcion}">${opt.nombre}</option>;
+            optionsHtml += `<option value="${opt.id}" data-descripcion="${opt.descripcion}">${opt.nombre}</option>`;
+
         });
 
        

@@ -17,7 +17,7 @@
         <div class="col-7">
             <label for="docentes">Lista de docentes disponibles</label>
             <
-            <table class="table" id="docentes">
+            <table class="table" id="docentes-members">
                 <thead class="table-primary">
                     <tr>
                         <th>Clave de trabajador</th>

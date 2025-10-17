@@ -1,5 +1,7 @@
 @extends('layouts.admin')
-
+@section('css')
+    {{-- @vite(['resources/js/Comites/Roles.js']) --}}
+@endsection
 @section('content')
 <div id="datos-json" data-datos='@json($rolesBase->map(fn($r) => ['id' => $r->id_rol, 'nombre' => $r->nombre_rol]))'></div>
 <div class="container mx-auto p-6">

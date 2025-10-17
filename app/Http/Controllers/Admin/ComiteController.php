@@ -171,13 +171,28 @@ class ComiteController extends Controller
             ->get()
             ->unique('nombre_rol') // <-- aquí se filtran los duplicados
             ->values();
-        $docentes = $this->getDocentes();
+            $alumnoDocente = DB::table('usuarios as u')
+            ->join('tesis_usuarios as tu','tu.id_user','=','u.id_user')
+            ->join('tesis as t','t.id_tesis','=','tu.id_tesis')
+            ->join('tesis_comite as tc','tc.id_tesis','=','t.id_tesis')
+            ->where('tc.id_comite',$id)
+            ->value('u.id_user');
+               
+        // $alumnoDocente = DB::table('usuarios_comite as uc')
+        //     ->join('usuarios as u','uc.id_user','=','u.id_user')
+        //     ->join('tesis_usuarios as tu','tu.id_user','=','u.id_user')
+        //     ->join('tesis as t','t.id_tesis','=','tu.id_tesis')
+        //     ->where('uc.id_comite',$id)
+        //     ->count();
+        $docentes = $this->getDocentes($alumnoDocente);
         $comite = Comite::where('id_comite',$id)->first();
         $programas = Auth::user()->programas;
         $roles = DB::table('usuarios_comite as uc')
         ->join('usuarios as u', 'uc.id_user', '=', 'u.id_user')
         ->leftJoin('usuarios_comite_roles as ucr', 'uc.id_usuario_comite', '=', 'ucr.id_usuario_comite')
         ->where('uc.id_comite', $id)
+        ->where('id_user_creador', Auth::user()->id_user)
+
         ->select(
             'u.id_user',
             'u.nombre',
@@ -196,9 +211,8 @@ class ComiteController extends Controller
             ->where('id_user_creador', Auth::user()->id_user)
             ->count();
         $rolesBase = ModelsRol::all();
-        $roles = DB::table('usuarios_comite_roles')
-             ->where('id_user_creador', Auth::user()->id_user)
-            ->get();
+        // $roles = DB::table('usuarios_comite_roles')
+        //     ->get();
         
         return view("Admin.Comites.Edit", compact("comite", "roles","docentes","programas","rolesExistentes","rolesBase"));
     }
@@ -206,7 +220,7 @@ class ComiteController extends Controller
 
     public function update(Request $request,$id){
         // dd($request);
-        //return $request->all();
+        // return $request->all();
         $comite = Comite::where('id_comite',$id)->first();
         $comite->nombre_comite = $request->get('nombre_comite');
         $comite->id_programa = $request->get('ProgramaAcademico');
@@ -281,6 +295,7 @@ class ComiteController extends Controller
     }
  
     public function getDocentes($idAlumno = null){
+        // dd($idAlumno);
         if($idAlumno){
             $alumno = Usuarios::find($idAlumno);
             $programasAlumno = $alumno->programas->pluck('id_programa')->toArray();

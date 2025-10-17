@@ -1,6 +1,6 @@
     import DataTable from "datatables.net-bs5";
     // Inicializar DataTables
-    new DataTable('#docentes', { responsive: true });
+    new DataTable('#docentes-members', { responsive: true });
 
     function actualizarConfirmacion() {
         let confirmarComiteHtml = '';

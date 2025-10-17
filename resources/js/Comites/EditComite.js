@@ -3,6 +3,7 @@ import 'datatables.net-bs5/css/dataTables.bootstrap5.css';
 
 import 'datatables.net-responsive-bs5';
 import 'datatables.net-responsive-bs5/css/responsive.bootstrap5.css';
+import $ from 'jquery';
 
 const rolesDefinidos = [];
 $(function() {
@@ -82,6 +83,15 @@ $(function() {
             const nombre = row.find('td:nth-child(3)').text();
             const apellidos = row.find('td:nth-child(4)').text();
             let bandera = false;
+//             if ($(`.selected-user-card[data-user-id="${userId}"]`).length === 0) {
+//     const template = $(".selected-user-card:first").clone(true, true);
+//     template.attr('data-user-id', userId);
+//     template.find('h5').text(`${nombre} ${apellidos}`);
+//     template.find('[name="docentes[]"]').val(userId);
+//     template.find('.user-role-selection').attr('data-user', userId);
+//     template.find('.user-role-selection').attr('name', `roles[${userId}][]`);
+//     $('#confirmarComite').append(template);
+// }
 
             if ($(`.selected-user-card[data-user-id="${userId}"]`).length === 0) {
                 console.log(userId);
@@ -89,13 +99,13 @@ $(function() {
                 confirmarComiteHtml.attr('data-user-id', userId);
                 confirmarComiteHtml.find('h5').text(`${nombre} ${apellidos}`);
                 confirmarComiteHtml.find('[name="docentes[]"]').val(userId);
-                confirmarComiteHtml.find('.user-role-select').attr('data-user', userId);
-                confirmarComiteHtml.find('.user-role-select').attr('name', `roles[${userId}][]`);
+                confirmarComiteHtml.find('.user-role-selection').attr('data-user', userId);
+                confirmarComiteHtml.find('.user-role-selection').attr('name', `roles[${userId}][]`);
              console.log(confirmarComiteHtml);
                 
             }
             
-        $('.user-role-select dinamic').each(function() {
+        $('.user-role-selection dinamic').each(function() {
             const select = this;
             const userId = select.dataset.user;
             const countRoles = JSON.parse(document.querySelector('div[data-roles]').getAttribute('data-roles'));
@@ -111,8 +121,6 @@ $(function() {
         });
         });
         // Agregar roles definidos al nuevo select
-        
-
         $('.selected-user-card').each(function() {
             const userId = $(this).data('user-id');
             if ($(`.checkbox-docente[value="${userId}"]:checked`).length === 0) {
@@ -123,7 +131,7 @@ $(function() {
         if (confirmarComiteHtml) {
             console.log('pegando');
              console.log(confirmarComiteHtml);
-            $('#confirmarComite').append(confirmarComiteHtml);
+            $('#confirmacion-comite').append(confirmarComiteHtml);
            
             
     
@@ -148,41 +156,81 @@ $(function() {
     actualizarConfirmacion();
 });
 
-// Esta parte busca solucionar todo los de los roles
-$(document).on('change', '.user-role-select', function(e) {
-    const $select = $(this);
-    const userId = $select.data('user'); 
+// Esta parte busca solucionar todo los de los roles_json
+$(document).on('change', '.user-role-selection', actualizarRolesJSON);
+// Función que reconstruye todos los roles de todos los usuarios
+function actualizarRolesJSON() {
+    let rolesJson = {};
 
-    const rolesData = $select.find('option:selected').map(function() {
-        return {
-            id_tipo: $(this).val(),
-            nombre_rol: $(this).text().trim()
-        };
-    }).get();
+    // Recorremos todos los selects de roles
+    $('.user-role-selection').each(function() {
+        const $select = $(this);
+        const userId = $select.data('user');
+        const rolesData = $(this).find('option:selected').map(function() {
+            return {
+                id_tipo: $(this).val(),
+                nombre_rol: $(this).text().trim()
+            };
+        }).get();
+
+        if (!rolesJson[userId]) {
+            rolesJson[userId] = [];
+        }
+        // Agregamos los roles de este select al array del usuario
+        rolesJson[userId].push(...rolesData);
+    });
+
+    // Eliminamos el input global si existe
+    $('input[name="roles_json"]').remove();
+
+    // Creamos un input global con todos los roles por usuario
+    $('<input>', {
+        type: 'hidden',
+        name: 'roles_json',
+        value: JSON.stringify(rolesJson)
+    }).appendTo('form'); // asegúrate que sea el form correcto
+}
+
+// Llamamos a la función cada vez que cambie un select
+// $(document).on('change', '.user-role-selection', actualizarRolesJSON);
+
+// Ejecutar al cargar para inicializar
+
+
+// $(document).on('change', '.user-role-selection', function(e) {
+//     const $select = $(this);
+//     const userId = $select.data('user'); 
+
+//     const rolesData = $select.find('option:selected').map(function() {
+//         return {
+//             id_tipo: $(this).val(),
+//             nombre_rol: $(this).text().trim()
+//         };
+//     }).get();
 
     
 
-    // Crear nuevo input hidden con los datos en JSON
-     // Verifica si ya existe un input hidden justo después de este select
-    let $existingInput = $select.next('input[type="hidden"][name^="roles_json"]');
+//     // Crear nuevo input hidden con los datos en JSON
+//      // Verifica si ya existe un input hidden justo después de este select
+//     let $existingInput = $select.next('input[type="hidden"][name^="roles_json"]');
 
    
-    // Quitar solo el input justo después del select (si existe y coincide con el usuario)
-    $select.nextAll(`input[name^="roles_json[${userId}]"]`).first().remove();
+//     // Quitar solo el input justo después del select (si existe y coincide con el usuario)
+//     $select.nextAll(`input[name^="roles_json[${userId}]"]`).first().remove();
     
-        const $hiddenInput = $('<input>', {
-            type: 'hidden',
-            name: `roles_json[${userId}]`, // ARRAY para cada input
-            value: JSON.stringify(rolesData)
-        });
+//         const $hiddenInput = $('<input>', {
+//             type: 'hidden',
+//             name: `roles_json[${userId}]`, // ARRAY para cada input
+//             value: JSON.stringify(rolesData)
+//         });
     
     
 
-    $select.after($hiddenInput);
-});
-
-    
-$('#agregarRol').on('click', function () {
+//     $select.after($hiddenInput);
+// });
+let existRolBase = document.querySelector('div[data-rolesBase]');
+if(existRolBase){
+    $('#agregarRol').on('click', function () {
         //roles-container es el contenedor de todos los cuadros de creacion de tesis
         const container = document.getElementById('roles-container');
         // const options = @json($rolesBase->map(fn($r) => ['id' => $r->id_rol, 'nombre' => $r->nombre_rol]));
@@ -203,6 +251,8 @@ $('#agregarRol').on('click', function () {
 
         container.appendChild(clonar);
     });
+}
+
     //funcion que sucede al crear los roles en el boton de crear roles
     //para definir roles, se cierra la pestaña de creacion de roles y regresa el boton de crear roles
     $('#definirRoles').on('click', function () {
@@ -224,14 +274,18 @@ $('#agregarRol').on('click', function () {
                 });
 
                
-                document.querySelectorAll('.user-role-select').forEach(select => {
-                    
-                    const option = document.createElement('option');
+                document.querySelectorAll('.user-role-selection').forEach(select => {
+                    // Verificar si la opción ya existe
+                    const exists = Array.from(select.options).some(opt => opt.value == tipo);
+                    if(!exists){
+                         const option = document.createElement('option');
                     //const existingRoles = Array.from(select.options).map(option => option.value); // Extraemos los valores de los roles existentes
                     option.value = tipo;
                     option.textContent = nombre;
                     option.classList.add('fs-4');
                     select.appendChild(option);
+                    }
+                   
                 });
            
             }

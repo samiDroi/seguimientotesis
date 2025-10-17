@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 
 @section('css')
+@vite(['resources/js/Comites/EditComite.js'])
 {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.3/css/responsive.bootstrap5.css"> --}}
@@ -14,6 +15,7 @@
         margin-bottom: 15px;
     }
 </style>
+
 @endsection
 
 @section('content')
@@ -49,7 +51,7 @@
             <div class="row mt-4">
                 <div class="col-md-7">
                     <h4>Docentes disponibles</h4>
-                    <table class="table" id="">
+                    <table class="table" id="docentes">
                         <thead class="table-primary">
                             <tr>
                                 <th>Seleccionar</th>
@@ -81,7 +83,7 @@
     
                 <div class="col-md-5">
                     <h4>Miembros y roles del comité</h4>
-                    <div id="confirmarComite">
+                    <div id="confirmacion-comite">
                         @foreach($comite->usuarios as $miembro)
                             <div class="users-roles card selected-user-card mb-3" id="" data-user-id="{{ $miembro->id_user }}">
                                 <div class="card-body">
@@ -90,7 +92,8 @@
                                     
                                     <label class="form-label">Roles asignados</label>
                                     {{-- @dd($roles) --}}
-                                    <select class="form-select role-select user-role-select" id="select-roles" data-user="{{ $miembro->id_user }}" name="roles[{{ $miembro->id_user }}][]" multiple>
+                                    {{-- en edit es user-role-selection --}}
+                                    <select class="form-select role-select user-role-selection" id="select-roles" data-user="{{ $miembro->id_user }}" name="roles[{{ $miembro->id_user }}][]" multiple>
                                         @foreach($roles as $rol)
                                             @php
                                                 $selected = DB::table('usuarios_comite_roles')
