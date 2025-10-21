@@ -3,30 +3,29 @@
 <!-- Nav tabs -->
 <ul class="nav nav-tabs mb-4" id="tesisTabs" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="mis-tesis-tab" data-bs-toggle="tab" data-bs-target="#mis-tesis" type="button" role="tab">Mis Tesis</button>
+        <button class="nav-link active pestañas-nav" id="mis-tesis-tab" data-bs-toggle="tab" data-bs-target="#mis-tesis" type="button" role="tab">Mis Tesis</button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="comite-tesis-tab" data-bs-toggle="tab" data-bs-target="#comite-tesis" type="button" role="tab">Tesis Asignadas a mi Comité</button>
+        <button class="nav-link pestañas-nav" id="comite-tesis-tab" data-bs-toggle="tab" data-bs-target="#comite-tesis" type="button" role="tab">Tesis Asignadas a mi Comité</button>
     </li>
 </ul>
 
-<!-- Tab panes -->
 
 <div class="tab-content" id="tesisTabsContent">
 
     <!-- TAB 1: Mis Tesis -->
     <div class="tab-pane fade show active " id="mis-tesis" role="tabpanel">
         @foreach ($tesisUsuario as $tesis)
-            <div class="card border-1 border-primary  rounded-5 ps-3 mb-4 mt-5 mx-5 shadow">
+            <div class="tesis-item">
                 <div class="card-body row  border-secondary border-2 rounded-4">
                     <div class="col-12 targ-tesis " >
-                        <h2 class="card-title h4 font-weight-bold text-dark flex-grow-1 titulotesis">{{ $tesis->nombre_tesis }}</h2>
+                        <h4 class="tesis-item-title  flex-grow-1 titulotesis">{{ $tesis->nombre_tesis }}</h4>
                     </div>
 
                     <div class="col-12">
                         @if ($tesis->comites->isNotEmpty())
                             
-                            <span class="small ms-2">Estructura: <b>{{ $tesis->comites->first()->nombre_comite }}</b></span>
+                            
                         @else
                             <span class="text-danger small ms-2">Pendiente de asignación de comité</span>
                             @if (Auth::user()->esCoordinador == 1)
@@ -38,21 +37,22 @@
                     </div>
 
                     <div class="col-12 text-center">
+
                     @php $tieneRequerimientos = false; @endphp
                      @foreach ($tesisComites as $tesisComite)
                                 @if ($tesisComite->id_tesis == $tesis->id_tesis)
                                     @if ($tesisComite->requerimientos->isNotEmpty())
                                      @php $tieneRequerimientos = true; @endphp
                                         <details>
-                                            <summary class="h5 text-primary">Estructura de tesis</summary>
+                                            <summary class="h5 "> Estructura de tesis</summary>
                                             <ul class="list-group list-group-flush text-start py-1">
                                                 @foreach ($tesisComite->requerimientos as $requerimiento)
                                                 {{-- @dd($requerimiento) --}}
-                                                    <li class="list-group-item px-0 rounded-4 ps-5 py-2 mx-5">
+                                                    <li class="list-group-item px-0 rounded-4 ps-5 py-2 mx-5 mt-4">
                                                         <strong>{{ $requerimiento->nombre_requerimiento }}</strong>
-                                                        <a class="text-primary fw-semibold" href="{{ route('avance.index', $requerimiento->id_requerimiento) }}">Revisar avance</a>
+                                                        <a class="btn-avance " href="{{ route('avance.index', $requerimiento->id_requerimiento) }}">Revisar avance  <i class="fa-solid fa-file-word"></i></a>
                                                         <br>
-                                                        <span class="fw-semibold">Descripción:</span> {{ $requerimiento->descripcion }}
+                                                        <span class="fw-semibold descripcion-span">Descripción:</span> {{ $requerimiento->descripcion }}
                                                         @foreach ($requerimiento->avances as $avance)
                                                             <span class="badge 
                                                             @if($avance->estado == '') bg-warning

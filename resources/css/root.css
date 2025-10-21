@@ -94,18 +94,10 @@
    
    }
 
-   .option{
-      transition: 0.5s;
-   }
+
   
      
-   .option:hover {
-      
-      border-top-right-radius: 40px;
-      border-bottom-right-radius: 40px;
-      background: rgba(58, 62, 200, 0.4); /* Transparencia con tu color */
-      box-shadow: 0 0 10px rgba(58, 62, 200, 0.8);
-  }
+  
  
 
    .row {
@@ -147,6 +139,66 @@
     transform: scale(1.1) translateX(-50px); /* escala suave y leve movimiento a la derecha */
 }
 
+.tesis-item{
+  border: 1px solid var(--color-morado-3);
+  padding: 2.4rem;
+  border-radius: 40px;
+  box-shadow: -10px 10px 5px var(--color-morado-2);
 
+  
+}
+.tesis-item-title{
+  font-family: Merriweather Sans, Arial, Helvetica, sans-serif;
+  font-weight: 1000;
+  font-size: 1.9rem;
+  color: var(--color-morado-1);
+}
 
+.tesis-item summary{
+  padding-top: 1.6rem;
+  font-family: Merriweather Sans, Arial, Helvetica, sans-serif;
+  font-size: 1.4rem;
+  color: var(--color-morado-1);
+}
+
+.tesis-item strong{
+  color: var(--color-morado-2);
+  font-family: Merriweather Sans, Arial, Helvetica, sans-serif;
+  font-weight: semibold;
+}
+
+.descripcion-span{
+  color: var(--color-morado-3);
+  font-family: Merriweather Sans, Arial, Helvetica, sans-serif;
+}
+
+.btn-avance{
+  text-decoration: none;
+  border: 1px solid var(--color-morado-3);
+  padding: .4rem;
+  background-color: var(--color-morado-3);
+  border-radius: 5px;
+  color: white;
+  font-size: .9rem;
+  font-family: Merriweather Sans, Arial, Helvetica, sans-serif;
+  margin-left: 25rem;
+  margin-top: 3rem;
+  transition: ease-in 100ms;
+}
+
+.btn-avance:hover{
+  background-color: white;
+  color: var(--color-morado-3);
+ 
+}
+
+.pestañas-nav{
+ color: var(--color-morado-1);
+}
+
+.pestañas-nav:hover{
+  background-color: var(--color-morado-4);
+  color: white;
+  transition: ease-in 100ms;
+}
 

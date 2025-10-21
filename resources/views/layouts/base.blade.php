@@ -6,11 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 
     <title>Landing page</title>
     @yield("css")
     {{-- @vite(['resources/css/app.scss', 'resources/js/app.js','resources/css/root.css','resources/css/variables.css']) --}}
-    @vite(['resources/js/app.js', 'resources/css/app.scss'])
+    @vite(['resources/js/app.js', 'resources/css/app.scss','resources/css/variables.css','resources/css/root.css'])
 
     <!-- Tus estilos personalizados si tienes -->
     <style>
@@ -49,6 +52,8 @@
     pointer-events: none; /* no se puede clicar el texto cuando está oculto */
 }
 
+
+
 #sidebar .option i {
     min-width: 24px; /* asegura que todos los iconos tengan el mismo ancho */
     text-align: center;
@@ -79,6 +84,28 @@
 .principal{
     width: 100%
 }
+
+.option{
+    height: 3rem;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    
+   
+}
+
+.option:hover{
+       
+    background-color: var(--color-morado-4);
+    height: 5rem;
+    cursor: pointer;
+    transition: ease-in-out 5s;
+   
+}
+
+.option:hover a, .option:hover i{
+    color: white;
+}
+
     </style>
     <style>
 /* 🔹 Layout 70/30 */
@@ -125,7 +152,7 @@
 <body>
 
     <!-- 🟦 Navbar superior -->
-    <nav class="navbar" style="height: 70px; background-color: purple;">
+    <nav class="navbar" style="height: 70px; background-color:var(--color-azul-obscuro);">
         <div class="container-fluid">
             <div class="row d-flex justify-content-between align-items-center w-100">
                 <!-- Título -->
@@ -215,15 +242,15 @@
 
             <div class="option my-1 py-3 mb-5 mt-2">
                 <a href="{{ Route('home') }}" class="text-decoration-none text-dark fw-semibold diva">
-                    <i class="fa-solid fa-house"></i>
-                    <span class="link-text">Inicio</span>
+                   <i class="fa-solid fa-house"></i> 
+                    <span class="link-text"> Inicios</span>
                 </a>
             </div>
 
             <div class="option my-1 py-3 mb-5">
-                <a href="{{ Route('info.comites') }}" class="text-decoration-none text-dark fw-semibold diva">
+                <a href="{{ Route('info.comites') }}" class="text-decoration-none text-dark  fw-semibold diva">
                     <i class="fa-solid fa-user-group"></i>
-                    <span class="link-text">Mi comité</span>
+                    <span class="link-text"> Mi comité</span>
                 </a>
             </div>
 
@@ -231,7 +258,7 @@
             <div class="option my-1 py-3 mb-5">
                 <a href="{{ Route('tesis.index') }}" class="text-decoration-none text-dark fw-semibold diva">
                     <i class="fa-solid fa-file-word"></i>
-                    <span class="link-text">Gestionar tesis</span>
+                    <span class="link-text"> Gestionar tesis</span>
                 </a>
             </div>
             @endif
@@ -239,7 +266,7 @@
             <div class="option my-1 py-3 mb-5">
                 <a href="{{ Route('info.unidad') }}" class="text-decoration-none text-dark fw-semibold diva">
                     <i class="fa-solid fa-school"></i>
-                    <span class="link-text">Mi unidad</span>
+                    <span class="link-text"> Mi unidad</span>
                 </a>
             </div>
         </div>
