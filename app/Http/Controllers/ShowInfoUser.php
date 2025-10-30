@@ -37,6 +37,11 @@ class ShowInfoUser extends Controller
     }
 
     public function showComites(){
+        // $comitesAuditaUser = DB::table('comite as c')
+        //     ->join('usuarios_comite as uc','uc.id_comite','=','c.id_comite')
+        //     ->join('usuarios as u','u.id_user','=','uc.id_user')
+        //     ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.  id_usuario_comite')
+        //     ->join()
         $comitesAuditaUser = DB::table('comite as c')
             ->join('tesis_comite as tc', 'c.id_comite', '=', 'tc.id_comite')  // Relación comités - tesis
             ->join('tesis as t', 'tc.id_tesis', '=', 't.id_tesis')  // Relación tesis - comités
@@ -55,7 +60,7 @@ class ShowInfoUser extends Controller
             ->join("comite as c", "uc.id_comite", "=", "c.id_comite")  // Relación usuarios - comités
             ->join("usuarios_comite as uc2", "c.id_comite", "=", "uc2.id_comite")  // Relación para obtener otros usuarios del comité
             ->join("usuarios as u", "uc2.id_user", "=", "u.id_user")  // Relación usuarios_comite - usuarios
-            ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.id_usuario_comite')
+            ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc2.id_usuario_comite')
             ->join('roles as r','r.id_rol','=','ucr.id_rol')
             ->where("uc.id_user", Auth::user()->id_user)  // Filtrar por comités donde el usuario pertenece
             ->select('c.*', 'u.*','uc.*','ucr.rol_personalizado')  // Obtener información del comité y los usuarios

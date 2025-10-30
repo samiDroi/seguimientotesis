@@ -13,12 +13,12 @@
             Crear Título de la Tesis
         </button>
     @endif
-        {{-- @dd($datosTesis) --}}
+
     @if ($agrupadasPorTesis->isNotEmpty())
         <div class="container mt-4">
             @foreach ($agrupadasPorTesis as $idTesis => $itemsTesis)
                 @php
-                    $primero = $itemsTesis->first(); // Todas las filas tienen los mismos datos de tesis y comité
+                    $primero = $itemsTesis->first();
                 @endphp
                 <div class="card mb-4 border-secondary">
                     <div class="card-body">
@@ -32,10 +32,10 @@
                                     });
                                 @endphp
 
-                                @if ($tieneRequerimientos && !$todosAceptados)
+                                {{-- @if ($tieneRequerimientos)
                                     <a href="{{ route('tesis.requerimientos', $idTesis) }}" class="btn btn-sm btn-warning text-light">Editar requerimientos</a>
-                                @endif
-                                    <a href="{{ route('plan.historial',$primero->id_comite) }}">Generar plan de trabajo</a>
+                                @endif --}}
+                                <a href="{{ route('plan.historial',$primero->id_comite) }}">Generar plan de trabajo</a>
                             </div>
                         </div>
 
@@ -57,19 +57,6 @@
                                                 <strong>{{ $fila->nombre_requerimiento }}</strong>
                                                 <br>
                                                 <span>Descripción:</span> {{ $fila->desc }}
-                                                <span class="badge
-                                                    @if(strtolower($fila->estado) == 'pendiente') bg-warning 
-                                                    @elseif(strtolower($fila->estado) == 'aceptado') bg-success 
-                                                    @elseif(strtolower($fila->estado) == 'rechazado') bg-info
-                                                    @else bg-dark 
-                                                    @endif">
-                                                    {{ ucfirst($fila->estado) }}
-                                                </span>
-                                                @if ($fila->motivo_rechazo && Auth::user()->esCoordinador == 1)
-                                                    @include('Admin.Tesis.Modals.MotivoRechazoModal')
-
-                                                    <button class="btn btn-sm btn-secondary mt-2 ver-comentario" data-bs-toggle="modal" data-bs-target="#modalTextarea" data-comentario="{{ $fila->motivo_rechazo }}">Ver comentario</button>
-                                                @endif
                                             </li>
                                         @endif
                                     @endforeach
@@ -79,18 +66,17 @@
                             <p class="text-muted">No hay requerimientos para esta tesis.</p>
                         @endif
 
-                        {{-- Mensaje si el usuario tiene permiso para crear estructura --}}
+                        {{-- Permiso para crear estructura --}}
                         @if ($primero->nombre_rol === 'administrador' && !$primero->id_requerimiento)
                             <a href="{{ route('tesis.requerimientos', $primero->id_tc) }}">
                                 Tiene permitido crear la estructura para esta tesis
                             </a>
-
-                        @elseif($todosAceptados)
-                            <a href="{{ route('tesis.requerimientos', $primero->id_tc) }}">
+                        
+                          
+                        @endif
+                          <a href="{{ route('tesis.requerimientos', $primero->id_tc) }}">
                                 Tiene permitido crear la estructura para esta tesis
                             </a>
-                        
-                        @endif
                     </div>
                 </div>
             @endforeach

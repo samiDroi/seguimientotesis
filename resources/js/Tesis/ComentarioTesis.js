@@ -164,9 +164,23 @@ document.querySelector("#comentarios")?.addEventListener("click", function (e) {
                 ${comentario}
                 </div>
             `)
+                    // 2️⃣ Esperar a que el DOM se actualice visualmente (importante)
+            await new Promise(requestAnimationFrame);
+
+            // 3️⃣ Renderizar los comentarios (esto modifica el contenido)
             await renderComentarios();
-            //un pequeño delay porque sino no se guarda bien
-            setTimeout(() => submitContent(), 50);
+
+            // 4️⃣ Una vez renderizado, subir el contenido completo
+            await submitContent();
+
+            // 5️⃣ (Opcional) Limpiar el textarea
+            document.querySelector("#nuevoComentario").value = "";
+            // // await renderComentarios();
+            // setTimeout(() => {
+            //     renderComentarios();
+            // }, 50);
+            // //un pequeño delay porque sino no se guarda bien
+            // setTimeout(() => submitContent(), 50);
             
         })
 

@@ -56,7 +56,6 @@ class TesisController extends Controller
     public function viewRequerimientos($id){
         $tesisComite = TesisComite::findOrFail($id);
         $requerimientos = ComiteTesisRequerimientos::where("id_tesis_comite", $id)
-            ->whereIn("estado", ["RECHAZADO", "PENDIENTE"]) // Filtrar por los estados "rechazado" o "aceptado"
             ->get();
         return view("Admin.Tesis.formulary", compact("tesisComite", "requerimientos"));
     }
@@ -68,13 +67,7 @@ class TesisController extends Controller
     //elementos llamados para crear elementos del formulario de tesis
     public function createRequerimientos(Request $request,$idTesisComite){
         $existsRequerimientos = ComiteTesisRequerimientos::where('id_tesis_comite',$idTesisComite);
-        $todosAceptados = ComiteTesisRequerimientos::where('id_tesis_comite', $idTesisComite)
-            ->get()
-            ->every(function ($req) {
-                return $req->estado === 'ACEPTADO';
-            });
-            
-        if ($existsRequerimientos && !$todosAceptados) {
+        if ($existsRequerimientos) {
             $this->updateRequerimientos($request,$idTesisComite);
 
         }else{
@@ -98,6 +91,12 @@ class TesisController extends Controller
                 alert()->success('Los requerimientos de la tesis se han creado satisfactoriamente')->persistent(true,false);
                 return redirect()->route('tesis.index');
         }
+        return redirect()->route('tesis.index');
+    }
+    public function deleteRequerimiento($id){
+        $requerimiento = ComiteTesisRequerimientos::findOrFail($id);
+        $requerimiento->delete();
+        alert()->success('El requerimiento de la tesis se ha eliminado satisfactoriamente')->persistent(true,false);
         return redirect()->route('tesis.index');
     }
     
@@ -235,29 +234,29 @@ class TesisController extends Controller
         return view('Admin.Tesis.standbyTesis', compact('tesis','requerimientos','tesisComites','comites','alumnos','directores'));
         //return view('Admin.Tesis.standbyTesis', compact('tesisComites','requerimientos','directores'));
     }
+// //ESTO ME LO VOY A CARGAR
+//     public function updateState(Request $request,$id){
+//         $requerimiento = ComiteTesisRequerimientos::findOrFail($id);
 
-    public function updateState(Request $request,$id){
-        $requerimiento = ComiteTesisRequerimientos::findOrFail($id);
-
-        // Validar que el estado esté permitido
-        $validStates = ['PENDIENTE', 'ACEPTADO', 'RECHAZADO'];
-        if (!in_array($request->estado, $validStates)) {
-            Alert::error("error","No se puede eliminar un comite si este tiene asignado una tesis, asegurese de eliminar primero la tesis antes que el comite");
-            return redirect()->back();
-        }
+//         // Validar que el estado esté permitido
+//         $validStates = ['PENDIENTE', 'ACEPTADO', 'RECHAZADO'];
+//         if (!in_array($request->estado, $validStates)) {
+//             Alert::error("error","No se puede eliminar un comite si este tiene asignado una tesis, asegurese de eliminar primero la tesis antes que el comite");
+//             return redirect()->back();
+//         }
        
-        // Actualizar el estado del requerimiento
-        $requerimiento->estado = $request->estado;
-        if($request->estado == "RECHAZADO"){
-            $requerimiento->motivo_rechazo = $request->get('comentario');
-        }
-        $requerimiento->save();
-        $statusTesis = new StatusTesisController;
-        $statusTesis->statusTesisToEnCurso($id);
-        $statusTesis->statusTesisToPorEvaluar($id);
-        alert()->success("El requerimiento ha sido {$request->estado} satisfactoriamente.")->persistent(true,false);
-        return redirect()->route('tesis.review');
-    }
+//         // Actualizar el estado del requerimiento
+//         $requerimiento->estado = $request->estado;
+//         if($request->estado == "RECHAZADO"){
+//             $requerimiento->motivo_rechazo = $request->get('comentario');
+//         }
+//         $requerimiento->save();
+//         $statusTesis = new StatusTesisController;
+//         $statusTesis->statusTesisToEnCurso($id);
+//         $statusTesis->statusTesisToPorEvaluar($id);
+//         alert()->success("El requerimiento ha sido {$request->estado} satisfactoriamente.")->persistent(true,false);
+//         return redirect()->route('tesis.review');
+//     }
 
     
 
@@ -274,8 +273,7 @@ class TesisController extends Controller
                 $query->select(DB::raw(1))
                     ->from("comite_tesis_requerimientos as ctr")
                     ->join("tesis_comite as tc", "ctr.id_tesis_comite", "=", "tc.id_tesis_comite")
-                    ->whereColumn("tc.id_tesis", "t.id_tesis") 
-                    ->where("ctr.estado", "PENDIENTE");
+                    ->whereColumn("tc.id_tesis", "t.id_tesis"); 
             })
             ->select("t.*")
             ->get();

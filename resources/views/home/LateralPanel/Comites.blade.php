@@ -52,6 +52,7 @@
         {{-- TAB: Comités a los que perteneces --}}
         
 <div class="tab-pane fade" id="pertenece" role="tabpanel" aria-labelledby="pertenece-tab">
+    {{-- @dd($comitesPerteneceUser) --}}
     @forelse($comitesPerteneceUser as $id_comite => $usuarios)
         <div class="card mb-4">
             <div class="card-header">

@@ -149,6 +149,10 @@
 @endsection
 @section('content') 
 <div  class="container mt-5  ">
+    @php
+        $rolesUsuario = getUserRolPermiso(Auth::user()->id_user, $comiteTesis->id_comite);
+    @endphp
+
     <h1 class=" fw-semibold" style="color: var(--color-azul-principal)">{{ $requerimiento->nombre_requerimiento }}</h1>
     <!-- Textarea que será reemplazada por TinyMCE -->
     
@@ -167,9 +171,10 @@
     <form  action="{{ Route("avance.create",$requerimiento->id_requerimiento) }}" method="POST">
         @csrf
             @if (!(comprobarIsInComite($comiteTesis->id_comite)))
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comentarios-mostrar">
-  Abrir Modal
-</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comentarios-mostrar">
+                        Ver comentarios
+                        </button>
+        
                 <textarea id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea>
                 
                 <a class=" mt-3 align-center btn btn-danger" href="{{ Route("home") }}"><i class="fa-solid fa-rectangle-xmark"></i> Regresar y cancelar</a>
@@ -187,7 +192,10 @@
                 <div class="fs-5 mb-5 py-4 px-4 " data-content-main = "{{ $contentHTML ? "procesado" : "" }}">
                 <p class="fw-semibold fs-4"> <i class="fa-regular fa-file-lines"></i> Contenido:</p>
                 {{-- @dd($contentHTML) --}}
-                <button type="button" id="show-comment">Ocultar comentarios</button>
+                @if(!$rolesUsuario->contains('lector')) 
+                    <button type="button" id="show-comment">Ocultar comentarios</button>
+                    
+                @endif
                 <div id="visor-comentarios" class="mt-4">
                     @if($contentHTML?->contenido_original)
                 {{-- @dd($contentHTML->contenido_original) --}}
@@ -202,6 +210,7 @@
                 @endif
                 
                     
+                @if(!$rolesUsuario->contains('lector')) 
                 
                 <aside class="section-comments" style="position: sticky; top: 1rem;">
                     <button id="comentar" type="button">Agregar comentario</button>
@@ -222,6 +231,7 @@
                     
 
                 </aside>
+                @endif
                 </div>
 
             </div>

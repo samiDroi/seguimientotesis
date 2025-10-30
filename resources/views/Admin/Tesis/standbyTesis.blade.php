@@ -1,20 +1,19 @@
 @extends('layouts.admin')
 @section('content')
-{{-- @dd($usuarios) --}}
+
 <div class="container">
     <br>
-    
     
     @include('Admin.Tesis.Modals.TesisModal')
    
     <x-Titulos text="Evaluar tesis"/>
-   <x-boton-modal clases="crear-tesis" text="Crear titulo de la tesis" target="tesisModal" icon=plus/>
+    <x-boton-modal clases="crear-tesis" text="Crear titulo de la tesis" target="tesisModal" icon=plus/>
    
-   <div class="text-end mt-4 enlace-a">
-    <a class="text-decoration-none" href="{{ route('tesis.admin') }}">
-        Acceder a mis tesis asignadas <i class="fa-solid fa-arrow-right-long"></i>
-    </a>
-</div>
+    <div class="text-end mt-4 enlace-a">
+        <a class="text-decoration-none" href="{{ route('tesis.admin') }}">
+            Acceder a mis tesis asignadas <i class="fa-solid fa-arrow-right-long"></i>
+        </a>
+    </div>
  
     <ul class="nav nav-tabs fs-5" id="filterNav">
         <li class="nav-item"><a class="nav-link active" data-filter="Todos">Todos</a></li>
@@ -24,7 +23,6 @@
     </ul>
     
     <div class="container mt-4">
-       
         @if ($tesis->isNotEmpty())
             
             @php
@@ -35,20 +33,7 @@
                 @foreach ($tesis->where("estado", $estado) as $tesisItem)
 
                     @php
-                        $colorEstado = match ($tesisItem->estado) {
-                            'EN DEFINICION' => 'text-secondary',
-                            'EN CURSO' => 'text-primary',
-                            'POR EVALUAR' => 'text-warning',
-                            'RECHAZADA' => 'text-danger',
-                            'ACEPTADA' => 'text-success',
-                            default => 'text-secondary',
-                        };
-
                         $comitesTesis = $tesisComites->where('id_tesis', $tesisItem->id_tesis);
-                        $tieneRequerimientos = $comitesTesis->some(function ($comite) {
-                            return $comite->requerimientos->isNotEmpty();
-                        });
-
                         $alumnosMostrados = collect();
                     @endphp
 
@@ -56,7 +41,6 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h2 class="card-title h4 font-weight-bold text-dark flex-grow-1">{{ $tesisItem->nombre_tesis }}</h2>
-                                <h3 class="fs-5 text-end me-5 {{ $colorEstado }}">{{ $tesisItem->estado }}</h3>
                             </div>
 
                             <div class="mt-2">
@@ -85,12 +69,11 @@
                                     @endif
                                 @endif
                             </div>
-                            {{-- @dd($tesisItem->comites) --}}
-                             @if ($tesisItem->comites->first() && $tesisItem->comites->first()->usuarios->isEmpty())
 
+                            @if ($tesisItem->comites->first() && $tesisItem->comites->first()->usuarios->isEmpty())
                                 @php
                                     $comite = $tesisItem->comites->first();
-                                    $alumno = $tesisItem->usuarios->first(); // si solo hay uno
+                                    $alumno = $tesisItem->usuarios->first();
                                 @endphp
 
                                 <div class="mt-3">
@@ -101,57 +84,22 @@
                                 </div>
                             @endif
 
-                            @if ($tieneRequerimientos)
+                            @if ($comitesTesis->isNotEmpty())
                                 <details>
                                     <summary>Estructura</summary>
                                     @foreach ($comitesTesis as $tesisComite)
                                         @foreach ($tesisComite->requerimientos as $requerimiento)
-                                            @include('admin.tesis.Modals.MotivoRechazoModal')
                                             <li class="list-group-item px-0">
                                                 <strong>{{ $requerimiento->nombre_requerimiento }}</strong>
                                                 <br>
                                                 <span>Descripción:</span> {{ $requerimiento->descripcion }}
-
-                                                @if (isset($requerimiento->estado))
-                                                    <span class="badge 
-                                                        @if(strtolower($requerimiento->estado) == 'pendiente') bg-warning 
-                                                        @elseif(strtolower($requerimiento->estado) == 'aceptado') bg-success 
-                                                        @elseif(strtolower($requerimiento->estado) == 'rechazado') bg-danger
-                                                        @else bg-secondary 
-                                                        @endif">
-                                                        {{ ucfirst($requerimiento->estado) }}
-                                                    </span>
-                                                @else
-                                                    <span class="badge bg-secondary">Estado desconocido</span>
-                                                @endif
-
-                                                <div class="d-flex gap-2 mt-2">
-                                                    <form action="{{ route('tesis.review.update', $requerimiento->id_requerimiento) }}" method="POST">
-                                                        @csrf
-                                                        <input type="hidden" name="estado" value="ACEPTADO">
-                                                        <button type="submit" class="btn btn-sm btn-success">Aceptar</button>
-                                                    </form>
-
-                                                    <form action="{{ route('tesis.review.update', $requerimiento->id_requerimiento) }}" method="POST" class="rechazarForm">
-                                                        @csrf
-                                                        <input type="hidden" name="estado" value="RECHAZADO">
-                                                        <button type="button" class="btn btn-sm btn-danger btn-modal-rechazo" data-bs-toggle="modal" data-bs-target="#modalTextarea">Rechazar</button>
-                                                    </form>
-                                                </div>
                                             </li>
                                         @endforeach
                                     @endforeach
                                 </details>
-                               
                             @else
                                 <p>Esta tesis aun no tiene estructura.</p>
                             @endif
-
-                            {{-- @if ($tesisItem->comites->isNotEmpty() && !$tieneRequerimientos)
-                                <a href="{{ route('tesis.requerimientos', optional($comitesTesis->first())->id_tesis_comite) }}">
-                                    Tiene permitido crear requerimientos para esta tesis
-                                </a>
-                            @endif --}}
 
                         </div>
                     </div>
@@ -177,29 +125,6 @@
                 dropdownParent: $("#tesisModal")
             });
         });
-        
-        let referencia;
-        $('.btn-modal-rechazo').on('click', function () {
-            referencia = $(this).closest('form');
-        });
-
-        $('#submitRechazoBtn').on('click', function() {
-            var comentario = $('#comentariosTextarea').val();
-
-            if ($.trim(comentario) === '') {
-                alert('Por favor, escribe un comentario.');
-                return;
-            }
-
-            var inputComentario = $('<input>').attr({
-                type: 'hidden',
-                name: 'comentario',
-                value: comentario
-            });
-
-            $(referencia).append(inputComentario);
-            $(referencia).submit();
-        });
 
         $(".nav-link").on("click", function () {
             let filtro = $(this).data("filter");
@@ -215,8 +140,5 @@
             }
         });
     });
-
-
-    
 </script>
 @endsection

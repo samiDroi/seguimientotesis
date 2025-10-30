@@ -258,12 +258,27 @@ function getUserRolesInComite($userId, $comiteId)
                 ->where('uc.id_user', '=', $userId)
                 ->where('uc.id_comite', '=', $comiteId);
         })
+        ->join('roles as r','r.id_rol','=','ucr.id_rol')
         ->select('ucr.rol_personalizado')
         ->get()
         ->pluck('rol_personalizado')
         ->filter(); // Elimina valores nulos o vacíos
 }
 
+function getUserRolPermiso($userId, $comiteId)
+{
+    return DB::table('usuarios_comite_roles as ucr')
+        ->join('usuarios_comite as uc', function($join) use ($userId, $comiteId) {
+            $join->on('ucr.id_usuario_comite', '=', 'uc.id_usuario_comite')
+                ->where('uc.id_user', '=', $userId)
+                ->where('uc.id_comite', '=', $comiteId);
+        })
+        ->join('roles as r','r.id_rol','=','ucr.id_rol')
+        ->select('r.nombre_rol')
+        ->get()
+        ->pluck('nombre_rol')
+        ->filter(); // Elimina valores nulos o vacíos
+}
 function getRolesComite($comiteId)
 {
     return DB::table('usuarios_comite_roles as ucr')
