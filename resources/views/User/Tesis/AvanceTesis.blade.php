@@ -193,44 +193,45 @@
                 <p class="fw-semibold fs-4"> <i class="fa-regular fa-file-lines"></i> Contenido:</p>
                 {{-- @dd($contentHTML) --}}
                 @if(!$rolesUsuario->contains('lector')) 
-                    <button type="button" id="show-comment">Ocultar comentarios</button>
+                    <button type="button" id="#btn-comentar">realizar comentario</button>
                     
                 @endif
                 <div id="visor-comentarios" class="mt-4">
-                    @if($contentHTML?->contenido_original)
+                    <div id="editor-avance"></div>
+                    {{-- @if($contentHTML?->contenido_original) --}}
                 {{-- @dd($contentHTML->contenido_original) --}}
                     {{-- {!! $contentHTML->contenido_original !!}    --}}
-                {!! $contentHTML->contenido_original !!}
+                {{-- {!! $contentHTML->contenido_original !!} --}}
                  
-                @else
-                <main>
+                {{-- @else --}}
+                {{-- <main> --}}
                     {{-- @dd($avanceTesis->contenido) --}}
-                    {!! $avanceTesis?->contenido !!}
-                </main> 
-                @endif
+                    {{-- {!! $avanceTesis?->contenido !!} --}}
+                {{-- </main>  --}}
+                {{-- @endif --}}
                 
-                    
+                {{-- aqui iniciara el modulo de realizar comentarios     --}}
                 @if(!$rolesUsuario->contains('lector')) 
                 
-                <aside class="section-comments" style="position: sticky; top: 1rem;">
+                {{-- <aside class="section-comments" style="position: sticky; top: 1rem;">
                     <button id="comentar" type="button">Agregar comentario</button>
 
                     <h2 class="mb-1 mt-5"> <i class="fa-regular fa-comments"></i> Comentarios   </h2>
                     {{-- cargar comentarios --}}
                     {{-- <div data-req = {{ $requerimiento->id_requerimiento }}></div> --}}
-                    <input type="hidden" id="auth" value="{{ Auth::user()->id_user }}">
+                    {{-- <input type="hidden" id="auth" value="{{ Auth::user()->id_user }}"> --}}
                     
                         {{-- @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento)) --}}
                             {{-- @dd(getInfoComentarioAvance( $requerimiento->id_requerimiento)) --}}
                     {{-- desde aqui esta todo lo de lo comentario auxilio porfavor --}}
-                    @if($contentHTML)
+                    {{-- @if($contentHTML)
                         {!! $contentHTML->comentario !!}
                     @else
                         <div class="comentario-contenido" id="comentarios"></div>
-                    @endif
+                    @endif --}}
                     
 
-                </aside>
+                {{-- </aside> --}} 
                 @endif
                 </div>
 

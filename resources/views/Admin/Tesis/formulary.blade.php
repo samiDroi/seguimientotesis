@@ -25,23 +25,8 @@
         
     </div>
     
-    {{-- <select name="usuarios" id="usuarios">
-        @foreach ($usuarios as $usuario)
-            <option value="{{ $usuario->id_user }}" {{ isset($tesis) && $tesis->id_usuario == $usuario->id_user ? 'selected' : '' }}>
-                {{ $usuario->username }} {{ $usuario->nombre }} {{ $usuario->apellidos }}
-            </option>
-        @endforeach
-    </select>
-    
-    <select name="comite" id="comite">
-        <option>Seleccione el comité que estará a cargo de la tesis</option>
-        @foreach ($comites as $comite)
-            <option value="{{ $comite->id_comite }}" {{ isset($tesisComite) && $tesisComite->id_comite == $comite->id_comite ? 'selected' : '' }}>
-                {{ $comite->nombre_comite }}
-            </option>
-        @endforeach
-    </select> --}}
     <button class="btn btn-secondary mt-5" id="newRequerimiento">Agregar nuevo capitulo</button>
+    <button class="btn btn-danger mt-5" ></button>
     <button class="btn btn-primary mt-5" type="submit">{{ isset($tesis) ? 'Actualizar información de tesis' : 'Guardar información de tesis' }}</button>
 </form>
 @endsection

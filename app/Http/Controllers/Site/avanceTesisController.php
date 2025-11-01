@@ -175,6 +175,17 @@ public function getComentariosToJson($id_avance_tesis){
         'comentarios' => $comentario->comentario ?? ''
     ]);
 }
+    public function getAvanceTesisJson($id_avance_tesis){
+        $avanceTesis = AvanceTesis::find($id_avance_tesis);
 
-
+        if ($avanceTesis) {
+            return response()->json([
+                'contenido' => $avanceTesis->contenido,
+            ]);
+        } else {
+            return response()->json([
+                'error' => 'Avance de tesis no encontrado.',
+            ], 404);
+        }
+    }
 }
