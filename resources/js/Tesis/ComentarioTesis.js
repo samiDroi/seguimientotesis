@@ -1,127 +1,328 @@
-// Estilos base
+// 🧩 Estilos base
 import "prosemirror-view/style/prosemirror.css";
 import "prosemirror-menu/style/menu.css";
 import "prosemirror-example-setup/style/style.css";
 
-import { EditorState, Plugin } from "prosemirror-state"
-import { EditorView, Decoration, DecorationSet } from "prosemirror-view"
-import { schema } from "prosemirror-schema-basic"
-import { exampleSetup } from "prosemirror-example-setup"
+import { EditorState, Plugin, PluginKey } from "prosemirror-state";
+import { EditorView, Decoration, DecorationSet } from "prosemirror-view";
+import { schema } from "prosemirror-schema-basic";
+import { exampleSetup } from "prosemirror-example-setup";
+import { Schema, DOMParser as ProseMirrorDOMParser } from "prosemirror-model";
+import { addListNodes } from "prosemirror-schema-list";
+import { DOMSerializer } from "prosemirror-model";
 
-// 📌 Reemplaza con el ID real de la tesis si lo pasas desde Blade
-// const tesisId = document.querySelector("div[data-avance-tesis]")?.getAttribute("data-avance-tesis");
-const avanceId = document.querySelector("div[data-avance-tesis]")?.dataset.avanceTesis;
+// funciones de mi api de comentarios
+import { getComentarios, saveComentario, getInfoComentario } from './Comentario-Api.js';
+import { loadComments } from './Comentario-Handler.js';
 
-// Inicializamos el conjunto vacío de anotaciones
-let decos = DecorationSet.empty
+const ROUTE_FETCH_AVANCE = document.querySelector("div[data-avance]")?.dataset.avance;
+const ID_AVANCE_TESIS = document.querySelector("div[data-avance-tesis]")?.dataset.avanceTesis;
+ const ID_REQUERIMIENTO = document.querySelector("div[data-requerimiento]")?.dataset.requerimiento;
+// 🧱 Esquema extendido
+const mySchema = new Schema({
+  nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
+  marks: schema.spec.marks,
+});
 
-// Plugin que mantiene las anotaciones activas
+// 🏷️ Plugin para anotaciones
 const anotacionesPlugin = new Plugin({
   state: {
-    init() { return decos },
-    apply(tr, old) { return old.map(tr.mapping, tr.doc) }
+    init: () => DecorationSet.empty,
+    apply: (tr, old) => old.map(tr.mapping, tr.doc),
   },
-  props: {
-    decorations(state) { return this.getState(state) }
-  }
-})
+  props: { decorations: s => anotacionesPlugin.getState(s) },
+});
 
-// Crear editor
-const editorContainer = document.querySelector("#editor-avance");
+// 🔄 Funciones auxiliares
+const htmlToDoc = (html, schema) => {
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return ProseMirrorDOMParser.fromSchema(schema).parse(div);
+};
 
-// 🚀 Cargar contenido desde Laravel
-fetch(`/cap/datajson/avance/show/${avanceId}`)
-  .then(res => res.json())
-  .then(data => {
-    // Parseamos el HTML a un nodo de ProseMirror
-    const doc = ProseMirrorDOMParser.fromSchema(schema).parse(
-        new DOMParser().parseFromString(data.contenido, "text/html")
-    );
-
-    // Crear estado con el contenido cargado
-    const state = EditorState.create({
-        doc,
-        plugins: [...exampleSetup({ schema }), anotacionesPlugin]
-    });
-
-    // Inicializar editor
-    const view = new EditorView(editorContainer, { state });
-
-    // ⚡ Si ya tienes anotaciones, aplicarlas aquí también
-    fetch(`/tesis/${avanceId}/anotaciones`)
-      .then(res => res.json())
-      .then(anotaciones => {
-        const decoraciones = anotaciones.map(c =>
-          Decoration.inline(c.from, c.to, { class: "anotacion", title: c.comentario })
-        );
-        decos = DecorationSet.create(view.state.doc, decoraciones);
-        view.updateState(view.state.reconfigure({
-          plugins: [...exampleSetup({ schema }), anotacionesPlugin]
-        }));
-      });
+const crearDoc = (texto = "Comienza a escribir tu contenido aquí...") =>
+  mySchema.nodeFromJSON({
+    type: "doc",
+    content: [{ type: "paragraph", content: [{ type: "text", text: texto }] }],
   });
-// // ⚙️ Cargar anotaciones existentes desde Laravel
-// fetch(`/tesis/${tesisId}/anotaciones`)
-//   .then(res => res.json())
-//   .then(data => {
-//     const decoraciones = data.map(c =>
-//       Decoration.inline(c.from, c.to, {
-//         class: "anotacion",
-//         title: c.comentario
-//       })
-//     )
-//     decos = DecorationSet.create(view.state.doc, decoraciones)
-//     view.updateState(view.state.reconfigure({
-//       plugins: [...exampleSetup({ schema }), anotacionesPlugin]
-//     }))
-//   })
 
-// // ➕ Botón para añadir nueva anotación
-// document.addEventListener("DOMContentLoaded", () => {
-//   const btn = document.querySelector("#btn-comentar")
-//   if (!btn) return
-
-//   btn.addEventListener("click", () => {
-//     const { from, to } = view.state.selection
-//     if (from === to) {
-//       alert("Selecciona un texto para comentar.")
-//       return
-//     }
-
-//     const comentario = prompt("Escribe tu comentario:")
-//     if (!comentario) return
-
-//     fetch("/anotaciones", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-//       },
-//       body: JSON.stringify({
-//         tesis_id: tesisId,
-//         from, to,
-//         comentario
-//       })
-//     })
-//       .then(res => res.json())
-//       .then(a => {
-//         const deco = Decoration.inline(a.from, a.to, { class: "anotacion", title: a.comentario })
-//         decos = decos.add(view.state.doc, [deco])
-//         view.dispatch(view.state.tr)
-//       })
-//   })
-// })
-
-// 💅 Estilos (puedes moverlo a tu CSS global)
-const style = document.createElement("style")
-style.innerHTML = `
-  .anotacion {
-    background-color: rgba(255, 255, 0, 0.5);
-    border-radius: 3px;
-    cursor: pointer;
+const cargarContenido = async () => {
+  if (!ROUTE_FETCH_AVANCE) return console.error("❌ Falta data-avance en el HTML"), null;
+  try {
+    const res = await fetch(ROUTE_FETCH_AVANCE, {
+      headers: {
+        Accept: "application/json",
+        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+      },
+    });
+    if (!res.ok) throw new Error(`Error ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error("Error cargando contenido:", err);
+    return null;
   }
-  .anotacion:hover {
-    background-color: rgba(255, 220, 0, 0.8);
+};
+
+// ✨ Inicialización del editor
+const inicializarEditor = async () => {
+  const contenedor = document.querySelector("#editor-avance");
+const esComite = contenedor?.dataset.esComite === "true"; // true si pertenece al comité
+console.log(esComite);
+
+  if (!contenedor) return console.error("No se encontró el contenedor del editor");
+
+  // contenedor.innerHTML = "<div class='loading'>Cargando editor...</div>";
+  const datos = await cargarContenido();
+  let doc;
+
+  try {
+    doc = datos?.contenido
+      ? htmlToDoc(datos.contenido, mySchema)
+      : crearDoc();
+  } catch {
+    doc = crearDoc("Error cargando contenido. Editando nuevo documento.");
   }
-`
-document.head.appendChild(style)
+ 
+  let state = EditorState.create({
+    doc,
+    plugins: [...exampleSetup({ schema: mySchema }), comentarioPlugin(async (comentario) => {
+      // console.log("comentario seleccionado: ",comentario);
+      // 1. Ya tienes el 'comentario' (con id, from, to, text, author)
+      console.log("Comentario seleccionado: ", comentario);
+
+      // 2. Obtén el id_user (lo guardaste como 'author')
+      const id_user = comentario.author; 
+
+      // 3. Llama a tu nueva API
+      if (!ID_REQUERIMIENTO) {
+          alert("Error: No se encontró data-requerimiento");
+          return;
+      }
+
+      console.log(`Buscando info para req: ${ID_REQUERIMIENTO}, user: ${id_user}`);
+      const infoAutor = await getInfoComentario(ID_REQUERIMIENTO, id_user);
+      console.log("Info del autor obtenida:", infoAutor);
+      // 4. Muestra la información combinada
+      if (infoAutor) {
+        const nombre = `${infoAutor.usuario_nombre} ${infoAutor.usuario_apellidos}`;
+        const roles = infoAutor.usuario_roles || 'Sin rol'; // Asegura que no sea null
+        const fechaComentario = infoAutor.fecha_comentario || 'Fecha Desconocida';
+        // Aquí puedes mostrarlo en un modal, un sidebar, etc.
+        // Por ahora, usamos un alert mejorado:
+        alert(`Fecha del Comentario: ${fechaComentario}\n
+          Autor: ${nombre} (${roles})\n\nComentario: ${comentario.text}
+          `);
+      
+      } else {
+        // Si falla la API, muestra al menos el comentario
+        console.error("No se pudo cargar la info del autor.");
+        alert("Comentario: " + comentario.text);
+      }
+      // alert("comentario: "+ comentario.text);
+    })],
+     
+  });
+  //Cargar comentarios existentes
+  const comentariosExistentes = await getComentarios();
+  if (comentariosExistentes?.length){
+      comentariosExistentes.forEach(c => {
+      console.log('comentarios existentes:',c);
+      // 1. ¡AQUÍ ESTÁ EL CAMBIO! Parsea el string
+      const rango = JSON.parse(c.rango_seleccionado);
+
+      const tr = state.tr.setMeta(comentarioPluginKey, {
+        addComentario: {
+          id: c.id_comentario,
+          from: rango.from,
+          to: rango.to,
+          text: c.comentario,
+          author: c.id_user
+        }
+      });
+      state = state.apply(tr);
+  });
+  }
+  
+
+  //  window.view = new EditorView(contenedor, {
+  //   state,
+  //   dispatchTransaction: tr => {
+  //     view.updateState(view.state.apply(tr));
+  //     clearTimeout(window.autoSaveTimeout);
+  //     window.autoSaveTimeout = setTimeout(() => {
+  //       // guardarContenido(view.state.doc.toJSON());
+  //     }, 2000);
+  //   },
+  // });
+  //Guarda la vista del editor prosemirror en window
+window.editorView = new EditorView(contenedor, {
+  state,
+  dispatchTransaction: tr => {
+    const v = window.editorView;
+    v.updateState(v.state.apply(tr));
+    clearTimeout(window.autoSaveTimeout);
+    window.autoSaveTimeout = setTimeout(() => {
+      // guardarContenido(v.state.doc.toJSON());
+    }, 2000);
+  },
+  editable: () => !esComite,
+});
+//Cargar comentarios guardados desde la base de datos
+await loadComments(window.editorView, ID_AVANCE_TESIS);
+
+
+};
+//  async function renderCommentData(comentario){
+//     const id_user = comentario.id_user;
+   
+
+//   }
+// 💅 Estilos de anotación
+document.head.insertAdjacentHTML(
+  "beforeend",
+  `<style>
+    .anotacion{background:rgba(255,255,0,.5);border-radius:3px;cursor:pointer;}
+    .anotacion:hover{background:rgba(255,220,0,.8);}
+  </style>`
+);
+
+// Inicializar el editor prosemirror al cargar el DOM
+document.addEventListener("DOMContentLoaded", () => inicializarEditor());
+
+//A PARTIR DE AQUI INICIA TODO LO RELACIONADO A COMENTARIOS
+// Clave del plugin
+export const comentarioPluginKey = new PluginKey("comentarios");
+// export const comentarioPluginKey = new PluginKey("comentarios");
+// Plugin de comentarios
+export function comentarioPlugin(onSelectComentario) {
+  return new Plugin({
+    key: comentarioPluginKey,
+
+    state: {
+      init() {
+        return { comentarios: [], decoraciones: DecorationSet.empty };
+      },
+      apply(tr, old) {
+        let { comentarios, decoraciones } = old;
+
+        // Si se añadieron comentarios nuevos
+        const meta = tr.getMeta(comentarioPluginKey);
+        if (meta && meta.addComentario) {
+          let nuevo = meta.addComentario;
+          comentarios = [...comentarios, nuevo];
+          console.log('EL CULPABLE QUE ES NUEVO JAJA EL PEPE: ',nuevo);
+          
+          const deco = Decoration.inline(
+            nuevo.from,
+            nuevo.to,
+            //AQUI ESTA EL PROBLEMA, EL DATA-ID SE REPITE
+            { class: "comentario-resaltado", 'data-id': nuevo.id },
+            { inclusiveStart: true, inclusiveEnd: true }
+          );
+          decoraciones = decoraciones.add(tr.doc, [deco]);
+        }
+
+        // Ajustar decoraciones si el documento cambió
+        decoraciones = decoraciones.map(tr.mapping, tr.doc);
+
+        return { comentarios, decoraciones };
+      },
+      provide(state) {
+        return null;
+      }
+    },
+
+    props: {
+      decorations(state) {
+        return this.getState(state).decoraciones;
+      },
+      // Manejar clics en comentarios y los muestra
+      handleClick(view, pos, event) {
+        const target = event.target.closest(".comentario-resaltado");
+        if (target) {
+          const id = parseInt(target.dataset.id, 10);
+          const stateData = this.getState(view.state);
+          console.log('id del dataset:',id);
+          
+          // Buscar el comentario exacto por ID
+          const comentario = stateData.comentarios.find(c => c.id === id);
+          console.log(comentario);
+          
+          if (comentario && onSelectComentario) {
+            onSelectComentario(comentario);
+          }
+          return true;
+          // const id = target.dataset.id;
+          // const state = this.getState(view.state);
+          // const comentario = state.comentarios.find(c => c.id === id);
+          // if (comentario && onSelectComentario) {
+          //   onSelectComentario(comentario);
+          // }
+          // return true;
+        }
+        return false;
+      }
+    }
+  });
+}
+//funcion la cual agrega un comentario al texto seleccionado
+async function agregarComentario(view, textoComentario) {
+  const { from, to } = view.state.selection;
+  if (from === to) return alert("Selecciona un texto para comentar.");
+
+ const idAutor = document.querySelector("div[data-autor]")?.dataset.autor || "Desconocido";
+ const idAvance = ID_AVANCE_TESIS;
+ //Guardar el comentario en la db via api
+  const saved = await saveComentario({
+    idAvance,
+    idAutor,
+    texto: textoComentario,
+    range: { from, to },
+  });
+
+  if (!saved) {
+    alert("Error guardando el comentario en el servidor");
+    return;
+  }
+
+  // 🔹 Reflejar visualmente el comentario guardado
+  const tr = view.state.tr.setMeta(comentarioPluginKey, {
+    addComentario: {
+      id: saved.id_comentario,
+      from,
+      to,
+      text: textoComentario,
+      author: idAutor,
+    },
+  });
+  view.dispatch(tr);
+
+  alert("✅ Comentario guardado correctamente");
+
+  // const tr = view.state.tr.setMeta(comentarioPluginKey, {
+  //   addComentario: { id, from, to, text: textoComentario, author: "Docente" }
+  // });
+  // view.dispatch(tr);
+}
+
+const comentBtn = document.querySelector('#btn-comentar');
+comentBtn?.addEventListener('click', () => {
+  const texto = prompt("Ingrese el comentario:");
+  if(texto) agregarComentario(window.editorView, texto);
+});
+
+
+document.querySelector("#form-avance")?.addEventListener("submit", (event) => {
+  // event.preventDefault(); // Detiene el envío para depuración
+    const serializer = DOMSerializer.fromSchema(mySchema);
+    const doc = window.editorView.state.doc;
+    const hidden = document.querySelector("#contenido-hidden");
+    // Serializa el contenido del documento (doc.content)
+    const fragment = serializer.serializeFragment(doc.content);
+    //se mete dentro de un html temporal para obtener el innerHTML
+    const tempContainer = document.createElement("div");
+    tempContainer.appendChild(fragment);
+    // document.querySelector('body').appendChild(tempContainer); // Solo para depuración
+    hidden.value = tempContainer.innerHTML;
+    console.log(hidden);
+});

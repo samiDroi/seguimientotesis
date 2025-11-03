@@ -11,6 +11,7 @@ use App\Models\TesisComite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class avanceTesisController extends Controller{
@@ -27,12 +28,13 @@ class avanceTesisController extends Controller{
 
         ->select("c.*")
         ->first();
-        $contentHTML = $avanceTesis?->id_avance_tesis ? ComentarioAvance::where('id_avance_tesis', $avanceTesis->id_avance_tesis)->whereNotNull('contenido_original')->latest()->first() : null;
+        // $contentHTML = $avanceTesis?->id_avance_tesis ? ComentarioAvance::where('id_avance_tesis', $avanceTesis->id_avance_tesis)->whereNotNull('contenido_original')->latest()->first() : null;
         
-        return view('User.tesis.AvanceTesis',compact('requerimiento','avanceTesis','comiteTesis','contentHTML'));
+        return view('User.tesis.AvanceTesis',compact('requerimiento','avanceTesis','comiteTesis'));
     }
     
     public function createAvance($id,Request $request){
+        // dd($request->all());
        $avance = AvanceTesis::where('id_requerimiento', $id)->first();
        //si el avance ya existia, se actualiza el avance 
        if($avance){
@@ -67,41 +69,79 @@ class avanceTesisController extends Controller{
 
     //     return redirect()->route("avance.index",$requerimiento->id_requerimiento);
     // }
-        public function comentarioAvance(Request $request)
-        {
-            // Buscar el primer registro asociado a ese avance_tesis
-            $comentario = ComentarioAvance::where('id_avance_tesis', $request->input('id_avance_tesis'))
-                ->first();
-            // dd($comentario);
-            if ($comentario) {
-                // Si existe, lo actualizamos
-                $comentario->update([
-                    'comentario' => $request->get('contenido'),
-                    'id_user' => Auth::user()->id_user,
-                    'contenido_original' => $request->get('contenido_original'),
-                ]);
-            } else {
-                // Si no existe, lo creamos (opcional, por si quieres garantizar que exista)
-                ComentarioAvance::create([
-                    'comentario' => $request->get('contenido'),
-                    'id_avance_tesis' => $request->input('id_avance_tesis'),
-                    'id_user' => Auth::user()->id_user,
-                    'contenido_original' => $request->get('contenido_original'),
-                ]);
-            }
+        // public function comentarioAvance(Request $request)
+        // {
+        //     $comentario = new ComentarioAvance();
+        //     $comentario->id_autor = $request->id_autor;
+        //     $comentario->id_avance_tesis = $request->id_avance_tesis;
+        //     $comentario->comentario = $request->comentario;
 
-            // Relacionar con requerimiento
-            $requerimiento = ComiteTesisRequerimientos::join(
-                'avance_tesis', 
-                'comite_tesis_requerimientos.id_requerimiento', 
-                '=', 
-                'avance_tesis.id_requerimiento'
-            )
-            ->where('avance_tesis.id_avance_tesis', $request->input('id_avance_tesis'))
-            ->first(['comite_tesis_requerimientos.*']);
+        //     // Convertir a JSON si viene como arreglo
+        //     $comentario->rango_seleccionado = is_array($request->rango_seleccionado)
+        //         ? json_encode($request->rango_seleccionado)
+        //         : $request->rango_seleccionado;
 
-            return redirect()->route("avance.index", $requerimiento->id_requerimiento);
+        //     $comentario->save();
+    
+        //     // Relacionar con requerimiento
+        //     $requerimiento = ComiteTesisRequerimientos::join(
+        //         'avance_tesis', 
+        //         'comite_tesis_requerimientos.id_requerimiento', 
+        //         '=', 
+        //         'avance_tesis.id_requerimiento'
+        //     )
+        //     ->where('avance_tesis.id_avance_tesis', $request->input('id_avance_tesis'))
+        //     ->first(['comite_tesis_requerimientos.*']);
+
+        //     return redirect()->route("avance.index", $requerimiento->id_requerimiento);
+        // }
+public function comentarioAvance(Request $request)
+{
+    // dd($request->all());
+    try {
+        $comentario = new ComentarioAvance();
+        $comentario->id_user = $request->id_autor;
+        $comentario->id_avance_tesis = $request->id_avance_tesis;
+        $comentario->comentario = $request->comentario;
+
+        // Guardar el rango en formato JSON
+        $comentario->rango_seleccionado = is_array($request->rango_seleccionado)
+            ? json_encode($request->rango_seleccionado)
+            : $request->rango_seleccionado;
+
+        $comentario->save();
+
+        // Buscar requerimiento asociado
+        $requerimiento = ComiteTesisRequerimientos::join(
+            'avance_tesis',
+            'comite_tesis_requerimientos.id_requerimiento',
+            '=',
+            'avance_tesis.id_requerimiento'
+        )
+        ->where('avance_tesis.id_avance_tesis', $request->input('id_avance_tesis'))
+        ->first(['comite_tesis_requerimientos.*']);
+
+        // 🔹 Si es una petición AJAX (desde fetch), devuelve JSON
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'comentario' => $comentario,
+                'requerimiento' => $requerimiento ? $requerimiento->id_requerimiento : null,
+            ]);
         }
+return response()->json([
+            'success' => true,
+            'comentario' => $comentario
+        ]);
+
+    } catch (\Exception $e) {
+        Log::error('Error al guardar comentario de avance: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
 
     public function updateEstadoAvance(Request $request){
         $avance = AvanceTesis::findOrFail($request->get("id_avance"));
@@ -126,7 +166,7 @@ class avanceTesisController extends Controller{
     }
 
     function getInfoComentarioAvance($id_requerimiento, $userId){
-        return DB::table('comentario_avance as ca')
+        $info = DB::table('comentario_avance as ca')
         ->join('avance_tesis as at', 'ca.id_avance_tesis', '=', 'at.id_avance_tesis')
         ->join('usuarios as u', 'ca.id_user', '=', 'u.id_user')
         ->join('usuarios_comite as uc', 'u.id_user', '=', 'uc.id_user')
@@ -146,11 +186,13 @@ class avanceTesisController extends Controller{
             'u.nombre as usuario_nombre',
             'u.apellidos as usuario_apellidos',
             'roles_table.roles as usuario_roles',
-            'ca.comentario as contenido',
+            'ca.comentario as comentario',
+            'ca.created_at as fecha_comentario',
             'ctr.*'
         )
          ->orderBy('ca.created_at', 'desc')// ->groupBy('ca.id_avance_tesis')  // Esto asegura que no se repitan
         ->first();
+        return response()->json($info);
     }
 
     function deleteComentarioAvance($id_comentario){
@@ -168,16 +210,18 @@ class avanceTesisController extends Controller{
     //     ]);
     // }
 public function getComentariosToJson($id_avance_tesis){
-    $comentario = ComentarioAvance::first()->where('id_avance_tesis', $id_avance_tesis)->first();
+    return ComentarioAvance::where('id_avance_tesis', $id_avance_tesis)->get();
+    // $comentario = ComentarioAvance::first()->where('id_avance_tesis', $id_avance_tesis)->first();
 
-    return response()->json([
-        'main' => $comentario->contenido_original ?? '',
-        'comentarios' => $comentario->comentario ?? ''
-    ]);
+    // return response()->json([
+    //     'main' => $comentario->contenido_original ?? '',
+    //     'comentarios' => $comentario->comentario ?? ''
+    // ]);
 }
+
     public function getAvanceTesisJson($id_avance_tesis){
         $avanceTesis = AvanceTesis::find($id_avance_tesis);
-
+        
         if ($avanceTesis) {
             return response()->json([
                 'contenido' => $avanceTesis->contenido,
@@ -188,4 +232,5 @@ public function getComentariosToJson($id_avance_tesis){
             ], 404);
         }
     }
+
 }

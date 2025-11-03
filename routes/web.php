@@ -140,8 +140,8 @@ Route::middleware(['auth'])->group(function(){
     Route::controller(avanceTesisController::class)->prefix("/requerimiento")->group(function(){
         Route::get("/{id}","showAvance")->name("avance.index");
         Route::get("/req/data/{id_requerimiento}/{userId}","getInfoComentarioAvance")->name("helper.fetch");
-        Route::get("/cap/datajson/comentario/show/{id_avance_tesis}","getComentariosToJson")->name("helper.fetch.html");
-        Route::get("/cap/datajson/avance/show/{id_avance_tesis}","getAvanceToJson")->name("helper.fetch.avance");
+        Route::get("/cap/datajson/comentario/show/{id_avance_tesis}","getComentariosToJson")->name("helper.fetch.comentarios");
+        Route::get("/req/datajson/avance/show/{id_avance_tesis}","getAvanceTesisJson")->name("helper.fetch.avance");
         Route::post("/create/{id}","createAvance")->name("avance.create");
         Route::post("/comentario","comentarioAvance")->name("comentario.create");
         Route::post("/estado","updateEstadoAvance")->name("avance.estado.update");
