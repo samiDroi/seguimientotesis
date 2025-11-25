@@ -15,7 +15,7 @@ export async function getComentarios() {
     if (!res.ok) throw new Error(`Error ${res.status}`);
     return await res.json();
   } catch (err) {
-    console.error("❌ Error cargando comentarios:", err);
+  
     return [];
   }
 }
@@ -51,7 +51,9 @@ export async function saveComentario({
     if (!res.ok) throw new Error(`Error ${res.status}`);
     return await res.json();
   } catch (err) {
-    console.error("❌ Error guardando comentario:", err);
+    console.log('Error guardando comentario:', err);  
+    // console.error("Error guardando comentario:", err);
+    // console.log(err);
     return null;
   }
 }

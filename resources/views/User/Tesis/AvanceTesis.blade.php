@@ -34,7 +34,7 @@
     @endif
     <div data-avance-tesis= "{{ $avanceTesis?->id_avance_tesis }}"></div>
   
-    <div>{{ route('helper.fetch',['id_requerimiento' => 1, 'userId' => Auth::user()->id_user]) }}</div>
+    {{-- <div>{{ route('helper.fetch',['id_requerimiento' => 1, 'userId' => Auth::user()->id_user]) }}</div> --}}
 
     <form id="form-avance" action="{{ Route("avance.create",$requerimiento->id_requerimiento) }}"  method="POST">
         @csrf
@@ -43,9 +43,8 @@
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comentarios-mostrar">
                         Ver comentarios
                         </button>
-        
                 {{-- <textarea id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea> --}}
-                <div id="editor-avance"></div>
+                <div id="editor-avance" aria-placeholder="Escribale"></div>
                 <input id="contenido-hidden" type="hidden" value="" name="contenido">
                 
                 <a class=" mt-3 align-center btn btn-danger" href="{{ Route("home") }}"><i class="fa-solid fa-rectangle-xmark"></i> Regresar y cancelar</a>

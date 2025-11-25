@@ -96,7 +96,11 @@
 
 
   
-     
+  .ProseMirror.ProseMirror-example-setup-style{
+    min-height: 100dvh;
+    border: 1px solid grey;
+    padding: 10px;
+  } 
   
  
 

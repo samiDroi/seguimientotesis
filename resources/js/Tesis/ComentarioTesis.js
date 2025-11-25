@@ -17,14 +17,14 @@ import { loadComments } from './Comentario-Handler.js';
 
 const ROUTE_FETCH_AVANCE = document.querySelector("div[data-avance]")?.dataset.avance;
 const ID_AVANCE_TESIS = document.querySelector("div[data-avance-tesis]")?.dataset.avanceTesis;
- const ID_REQUERIMIENTO = document.querySelector("div[data-requerimiento]")?.dataset.requerimiento;
-// 🧱 Esquema extendido
+const ID_REQUERIMIENTO = document.querySelector("div[data-requerimiento]")?.dataset.requerimiento;
+// Esquema extendido---------------------------------------------------------------------------
 const mySchema = new Schema({
   nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
   marks: schema.spec.marks,
 });
 
-// 🏷️ Plugin para anotaciones
+//Plugin para anotaciones
 const anotacionesPlugin = new Plugin({
   state: {
     init: () => DecorationSet.empty,
@@ -33,21 +33,21 @@ const anotacionesPlugin = new Plugin({
   props: { decorations: s => anotacionesPlugin.getState(s) },
 });
 
-// 🔄 Funciones auxiliares
+// Funciones auxiliares
 const htmlToDoc = (html, schema) => {
   const div = document.createElement("div");
   div.innerHTML = html;
   return ProseMirrorDOMParser.fromSchema(schema).parse(div);
 };
 
-const crearDoc = (texto = "Comienza a escribir tu contenido aquí...") =>
+const crearDoc = (texto = " ") =>
   mySchema.nodeFromJSON({
     type: "doc",
     content: [{ type: "paragraph", content: [{ type: "text", text: texto }] }],
   });
 
 const cargarContenido = async () => {
-  if (!ROUTE_FETCH_AVANCE) return console.error("❌ Falta data-avance en el HTML"), null;
+  if (!ROUTE_FETCH_AVANCE) return ;
   try {
     const res = await fetch(ROUTE_FETCH_AVANCE, {
       headers: {
@@ -63,11 +63,12 @@ const cargarContenido = async () => {
   }
 };
 
-// ✨ Inicialización del editor
+// Inicialización del editor
 const inicializarEditor = async () => {
-  const contenedor = document.querySelector("#editor-avance");
+const contenedor = document.querySelector("#editor-avance");
+contenedor.innerHTML = '';
 const esComite = contenedor?.dataset.esComite === "true"; // true si pertenece al comité
-console.log(esComite);
+// console.log(esComite);
 
   if (!contenedor) return console.error("No se encontró el contenedor del editor");
 
@@ -86,11 +87,9 @@ console.log(esComite);
   let state = EditorState.create({
     doc,
     plugins: [...exampleSetup({ schema: mySchema }), comentarioPlugin(async (comentario) => {
-      // console.log("comentario seleccionado: ",comentario);
-      // 1. Ya tienes el 'comentario' (con id, from, to, text, author)
-      console.log("Comentario seleccionado: ", comentario);
+      
 
-      // 2. Obtén el id_user (lo guardaste como 'author')
+      // 2. Obtén el id_user
       const id_user = comentario.author; 
 
       // 3. Llama a tu nueva API
@@ -165,19 +164,19 @@ window.editorView = new EditorView(contenedor, {
       // guardarContenido(v.state.doc.toJSON());
     }, 2000);
   },
-  editable: () => !esComite,
+  editable: () => !esComite,  
 });
 //Cargar comentarios guardados desde la base de datos
 await loadComments(window.editorView, ID_AVANCE_TESIS);
 
-
+if(esComite) document.querySelector('.ProseMirror-menubar')?.remove();
 };
 //  async function renderCommentData(comentario){
 //     const id_user = comentario.id_user;
    
 
 //   }
-// 💅 Estilos de anotación
+// Estilos de anotación
 document.head.insertAdjacentHTML(
   "beforeend",
   `<style>
@@ -210,7 +209,7 @@ export function comentarioPlugin(onSelectComentario) {
         if (meta && meta.addComentario) {
           let nuevo = meta.addComentario;
           comentarios = [...comentarios, nuevo];
-          console.log('EL CULPABLE QUE ES NUEVO JAJA EL PEPE: ',nuevo);
+          // console.log('EL CULPABLE QUE ES NUEVO JAJA EL PEPE: ',nuevo);
           
           const deco = Decoration.inline(
             nuevo.from,
@@ -297,7 +296,8 @@ async function agregarComentario(view, textoComentario) {
   });
   view.dispatch(tr);
 
-  alert("✅ Comentario guardado correctamente");
+  alert("Comentario guardado correctamente");
+  await inicializarEditor();
 
   // const tr = view.state.tr.setMeta(comentarioPluginKey, {
   //   addComentario: { id, from, to, text: textoComentario, author: "Docente" }
