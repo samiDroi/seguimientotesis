@@ -9,7 +9,32 @@
     .comentario-resaltado:hover {
      background-color: rgba(255, 229, 100, 0.9);
     }
+
+/* sidebar comment box */
+.comentario-box {
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 10px;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  cursor: pointer;
+  position: relative;
+}
+.comentario-box .meta { font-size: 12px; color: #666; margin-bottom: 6px; }
+.comentario-box .texto { font-size: 14px; white-space: pre-wrap; }
+.comentario-box .checkbox-correct { position: absolute; left: 8px; top: 8px; }
+
+/* estado corregido */
+.comentario-box.corregido { opacity: 0.7; border-left: 4px solid #198754; }
+
+/* highlight temporal en el editor */
+.comentario-target {
+  background: rgba(100, 200, 255, 0.35) !important;
+  border-radius: 2px;
+}
 </style>
+
+
 @endsection
 @section('content') 
 <div  class="container mt-5  ">
@@ -38,17 +63,23 @@
 
     <form id="form-avance" action="{{ Route("avance.create",$requerimiento->id_requerimiento) }}"  method="POST">
         @csrf
-        {{-- si no esta en el comite auditando es el alumno  --}}
+       <div class="d-flex gap-3">  
+             {{-- si no esta en el comite auditando es el alumno  --}}
             @if (!(comprobarIsInComite($comiteTesis->id_comite)))
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comentarios-mostrar">
+                    {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comentarios-mostrar">
                         Ver comentarios
-                        </button>
+                        </button> --}}
                 {{-- <textarea id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea> --}}
-                <div id="editor-avance" aria-placeholder="Escribale"></div>
-                <input id="contenido-hidden" type="hidden" value="" name="contenido">
-                
-                <a class=" mt-3 align-center btn btn-danger" href="{{ Route("home") }}"><i class="fa-solid fa-rectangle-xmark"></i> Regresar y cancelar</a>
-                <button class=" mt-3 btn btn-primary " type="submit"><i class="fa-solid fa-pen-to-square"></i>Guardar Cambios</button>
+                <div class="flex-grow-1">
+                    <div id="editor-col">
+                        <div id="editor-avance" aria-placeholder="Escribale"></div>
+                        <input id="contenido-hidden" type="hidden" value="" name="contenido">
+                    
+                        <a class=" mt-3 align-center btn btn-danger" href="{{ Route("home") }}"><i class="fa-solid fa-rectangle-xmark"></i> Regresar y cancelar</a>
+                        <button class=" mt-3 btn btn-primary " type="submit"><i class="fa-solid fa-pen-to-square"></i>Guardar Cambios</button>
+                    </div>
+                </div>
+
           {{-- si no, entonces esta en el comite y es docente  --}}
             @else
                 @if(!$rolesUsuario->contains('lector')) 
@@ -61,6 +92,14 @@
 
             </div>
             @endif
+            <aside id="sidebar-comentarios" style="width: 320px;">
+                <h5 class="mb-3">Comentarios</h5>
+                <div id="comentarios-list" class="d-flex flex-column gap-2">
+                {{-- Aquí el JS inyectará los recuadros de comentarios --}}
+                </div>
+            </aside>
+       </div>
+       
         
     </form>
    

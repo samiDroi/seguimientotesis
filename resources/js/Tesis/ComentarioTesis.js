@@ -1,3 +1,4 @@
+
 // 🧩 Estilos base
 import "prosemirror-view/style/prosemirror.css";
 import "prosemirror-menu/style/menu.css";
@@ -167,7 +168,9 @@ window.editorView = new EditorView(contenedor, {
   editable: () => !esComite,  
 });
 //Cargar comentarios guardados desde la base de datos
-await loadComments(window.editorView, ID_AVANCE_TESIS);
+// await loadComments(window.editorView, ID_AVANCE_TESIS);
+const comentarios = await getComentarios();
+renderSidebarComments(window.editorView, comentarios);
 
 if(esComite) document.querySelector('.ProseMirror-menubar')?.remove();
 };
@@ -199,17 +202,18 @@ export function comentarioPlugin(onSelectComentario) {
 
     state: {
       init() {
-        return { comentarios: [], decoraciones: DecorationSet.empty };
+        return { comentarios: [], decoraciones: DecorationSet.empty, transientHighlight: DecorationSet.empty,
+};
       },
       apply(tr, old) {
-        let { comentarios, decoraciones } = old;
+        let { comentarios, decoraciones,transientHighlight } = old;
 
         // Si se añadieron comentarios nuevos
         const meta = tr.getMeta(comentarioPluginKey);
         if (meta && meta.addComentario) {
           let nuevo = meta.addComentario;
           comentarios = [...comentarios, nuevo];
-          // console.log('EL CULPABLE QUE ES NUEVO JAJA EL PEPE: ',nuevo);
+          
           
           const deco = Decoration.inline(
             nuevo.from,
@@ -220,11 +224,22 @@ export function comentarioPlugin(onSelectComentario) {
           );
           decoraciones = decoraciones.add(tr.doc, [deco]);
         }
+        // resaltado temporal al clickear en la sidebar
+        if (meta.highlightRange) {
+            const { from, to } = meta.highlightRange;
+            transientHighlight = DecorationSet.create(tr.doc, [
+                Decoration.inline(from, to, { class: "comentario-target" })
+            ]);
+        }
 
+        if (meta.clearHighlight) {
+            transientHighlight = DecorationSet.empty;
+        }
         // Ajustar decoraciones si el documento cambió
         decoraciones = decoraciones.map(tr.mapping, tr.doc);
+        transientHighlight = transientHighlight.map(tr.mapping, tr.doc);
 
-        return { comentarios, decoraciones };
+        return { comentarios, decoraciones,transientHighlight, };
       },
       provide(state) {
         return null;
@@ -233,7 +248,9 @@ export function comentarioPlugin(onSelectComentario) {
 
     props: {
       decorations(state) {
-        return this.getState(state).decoraciones;
+        const st = this.getState(state);
+        return st.decoraciones.add(state.doc, st.transientHighlight.find());
+        // return this.getState(state).decoraciones;
       },
       // Manejar clics en comentarios y los muestra
       handleClick(view, pos, event) {
@@ -251,13 +268,7 @@ export function comentarioPlugin(onSelectComentario) {
             onSelectComentario(comentario);
           }
           return true;
-          // const id = target.dataset.id;
-          // const state = this.getState(view.state);
-          // const comentario = state.comentarios.find(c => c.id === id);
-          // if (comentario && onSelectComentario) {
-          //   onSelectComentario(comentario);
-          // }
-          // return true;
+         
         }
         return false;
       }
@@ -284,7 +295,7 @@ async function agregarComentario(view, textoComentario) {
     return;
   }
 
-  // 🔹 Reflejar visualmente el comentario guardado
+  // Reflejar visualmente el comentario guardado
   const tr = view.state.tr.setMeta(comentarioPluginKey, {
     addComentario: {
       id: saved.id_comentario,
@@ -326,3 +337,100 @@ document.querySelector("#form-avance")?.addEventListener("submit", (event) => {
     hidden.value = tempContainer.innerHTML;
     console.log(hidden);
 });
+//funcion para cargar los comentarios en la barra lateral
+function renderSidebarComments(view, comentarios) {
+    const cont = document.querySelector("#comentarios-list");
+    if (!cont) return;
+
+    cont.innerHTML = "";
+
+    comentarios.forEach(c => {
+        let box = document.createElement("div");
+        box.className = "comentario-box";
+        if (c.estado === "corregido") box.classList.add("corregido");
+
+        box.dataset.id = c.id_comentario;
+
+        // checkbox corregido
+        let chk = document.createElement("input");
+        chk.type = "checkbox";
+        chk.className = "checkbox-correct";
+        chk.checked = c.estado === "corregido";
+
+        // texto
+        let texto = document.createElement("div");
+        texto.className = "texto";
+        texto.textContent = c.comentario;
+
+        box.appendChild(chk);
+        box.appendChild(texto);
+        cont.appendChild(box);
+
+        // click en box -> scroll + highlight
+        box.addEventListener("click", e => {
+            if (e.target === chk) return;
+
+            const rango = JSON.parse(c.rango_seleccionado);
+            scrollToPos(view, rango.from);
+            highlightRangeTemporary(view, rango.from, rango.to);
+        });
+
+        // // cambiar estado corregido
+        // chk.addEventListener("change", async () => {
+        //     const nuevoEstado = chk.checked ? "corregido" : "pendiente";
+
+        //     try {
+        //         await fetch(
+        //             document
+        //                 .querySelector("div[data-update-comment]")
+        //                 .dataset.updateComment,
+        //             {
+        //                 method: "POST",
+        //                 headers: {
+        //                     "Content-Type": "application/json",
+        //                     "X-CSRF-TOKEN": document
+        //                         .querySelector('meta[name="csrf-token"]')
+        //                         .content,
+        //                 },
+        //                 body: JSON.stringify({
+        //                     id_comentario: c.id_comentario,
+        //                     estado: nuevoEstado,
+        //                 }),
+        //             }
+        //         );
+
+        //         if (nuevoEstado === "corregido") {
+        //             box.classList.add("corregido");
+        //         } else {
+        //             box.classList.remove("corregido");
+        //         }
+        //     } catch (e) {
+        //         alert("Error al actualizar estado");
+        //         chk.checked = !chk.checked;
+        //     }
+        // });
+    });
+}
+function scrollToPos(view, pos) {
+    const coords = view.coordsAtPos(pos);
+    window.scrollTo({
+        top: coords.top + window.scrollY - 150,
+        behavior: "smooth"
+    });
+}
+
+function highlightRangeTemporary(view, from, to, ms = 3500) {
+    const tr = view.state.tr.setMeta(comentarioPluginKey, {
+        highlightRange: { from, to }
+    });
+    view.dispatch(tr);
+
+    setTimeout(() => {
+        const tr2 = view.state.tr.setMeta(comentarioPluginKey, {
+            clearHighlight: true
+        });
+        view.dispatch(tr2);
+    }, ms);
+}
+
+
