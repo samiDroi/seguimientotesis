@@ -15,6 +15,7 @@ import { DOMSerializer } from "prosemirror-model";
 // funciones de mi api de comentarios
 import { getComentarios, saveComentario, getInfoComentario } from './Comentario-Api.js';
 import { loadComments } from './Comentario-Handler.js';
+import { get } from "jquery";
 
 const ROUTE_FETCH_AVANCE = document.querySelector("div[data-avance]")?.dataset.avance;
 const ID_AVANCE_TESIS = document.querySelector("div[data-avance-tesis]")?.dataset.avanceTesis;
@@ -98,7 +99,7 @@ const esComite = contenedor?.dataset.esComite === "true"; // true si pertenece a
           alert("Error: No se encontró data-requerimiento");
           return;
       }
-
+      //Aqui sucede todo lo de buscar info del autor del comentario
       console.log(`Buscando info para req: ${ID_REQUERIMIENTO}, user: ${id_user}`);
       const infoAutor = await getInfoComentario(ID_REQUERIMIENTO, id_user);
       console.log("Info del autor obtenida:", infoAutor);
@@ -170,7 +171,8 @@ window.editorView = new EditorView(contenedor, {
 //Cargar comentarios guardados desde la base de datos
 // await loadComments(window.editorView, ID_AVANCE_TESIS);
 const comentarios = await getComentarios();
-renderSidebarComments(window.editorView, comentarios);
+const infoComentarios = await getInfoComentario(ID_REQUERIMIENTO, null);
+renderSidebarComments(window.editorView, comentarios,infoComentarios);
 
 if(esComite) document.querySelector('.ProseMirror-menubar')?.remove();
 };
@@ -220,19 +222,19 @@ export function comentarioPlugin(onSelectComentario) {
             nuevo.to,
             //AQUI ESTA EL PROBLEMA, EL DATA-ID SE REPITE
             { class: "comentario-resaltado", 'data-id': nuevo.id },
-            { inclusiveStart: true, inclusiveEnd: true }
+            // { inclusiveStart: true, inclusiveEnd: true }
           );
           decoraciones = decoraciones.add(tr.doc, [deco]);
         }
         // resaltado temporal al clickear en la sidebar
-        if (meta.highlightRange) {
+        if (meta && meta.highlightRange) {
             const { from, to } = meta.highlightRange;
             transientHighlight = DecorationSet.create(tr.doc, [
                 Decoration.inline(from, to, { class: "comentario-target" })
             ]);
         }
 
-        if (meta.clearHighlight) {
+        if (meta && meta.clearHighlight) {
             transientHighlight = DecorationSet.empty;
         }
         // Ajustar decoraciones si el documento cambió
@@ -338,13 +340,27 @@ document.querySelector("#form-avance")?.addEventListener("submit", (event) => {
     console.log(hidden);
 });
 //funcion para cargar los comentarios en la barra lateral
-function renderSidebarComments(view, comentarios) {
+function renderSidebarComments(view, comentarios, infoComentarios) {
     const cont = document.querySelector("#comentarios-list");
     if (!cont) return;
 
     cont.innerHTML = "";
 
     comentarios.forEach(c => {
+        // Buscar la información del autor según el id_user del comentario
+        const autor = infoComentarios.find(u => u.id_user == c.id_user);
+
+        let nombreCompleto = "Autor desconocido";
+        let roles = "Sin rol";
+        let fecha = c.fecha_comentario || "Fecha desconocida";
+
+        if (autor) {
+            nombreCompleto = `${autor.usuario_nombre} ${autor.usuario_apellidos}`;
+            roles = autor.usuario_roles || "Sin rol";
+            fecha = autor.fecha_comentario ?? fecha;
+        }
+
+        // Crear la caja del comentario
         let box = document.createElement("div");
         box.className = "comentario-box";
         if (c.estado === "corregido") box.classList.add("corregido");
@@ -357,16 +373,26 @@ function renderSidebarComments(view, comentarios) {
         chk.className = "checkbox-correct";
         chk.checked = c.estado === "corregido";
 
-        // texto
+        // texto del comentario
         let texto = document.createElement("div");
         texto.className = "texto";
         texto.textContent = c.comentario;
 
-        box.appendChild(chk);
+        // ➕ información extra del autor
+        let info = document.createElement("div");
+        info.className = "comentario-info";
+        info.innerHTML = `
+            <strong>${nombreCompleto}</strong><br>
+            <small>${roles}</small><br>
+            <small>${fecha}</small>
+        `;
+
+        box.appendChild(info);
         box.appendChild(texto);
+        box.appendChild(chk);
         cont.appendChild(box);
 
-        // click en box -> scroll + highlight
+        // click en la caja → scroll + highlight
         box.addEventListener("click", e => {
             if (e.target === chk) return;
 
@@ -374,43 +400,9 @@ function renderSidebarComments(view, comentarios) {
             scrollToPos(view, rango.from);
             highlightRangeTemporary(view, rango.from, rango.to);
         });
-
-        // // cambiar estado corregido
-        // chk.addEventListener("change", async () => {
-        //     const nuevoEstado = chk.checked ? "corregido" : "pendiente";
-
-        //     try {
-        //         await fetch(
-        //             document
-        //                 .querySelector("div[data-update-comment]")
-        //                 .dataset.updateComment,
-        //             {
-        //                 method: "POST",
-        //                 headers: {
-        //                     "Content-Type": "application/json",
-        //                     "X-CSRF-TOKEN": document
-        //                         .querySelector('meta[name="csrf-token"]')
-        //                         .content,
-        //                 },
-        //                 body: JSON.stringify({
-        //                     id_comentario: c.id_comentario,
-        //                     estado: nuevoEstado,
-        //                 }),
-        //             }
-        //         );
-
-        //         if (nuevoEstado === "corregido") {
-        //             box.classList.add("corregido");
-        //         } else {
-        //             box.classList.remove("corregido");
-        //         }
-        //     } catch (e) {
-        //         alert("Error al actualizar estado");
-        //         chk.checked = !chk.checked;
-        //     }
-        // });
     });
 }
+
 function scrollToPos(view, pos) {
     const coords = view.coordsAtPos(pos);
     window.scrollTo({
@@ -432,5 +424,4 @@ function highlightRangeTemporary(view, from, to, ms = 3500) {
         view.dispatch(tr2);
     }, ms);
 }
-
 
