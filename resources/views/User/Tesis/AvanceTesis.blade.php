@@ -9,14 +9,21 @@
     .comentario-resaltado:hover {
      background-color: rgba(255, 229, 100, 0.9);
     }
-
-/* sidebar comment box */
+.sidebar-comentarios {
+    position: sticky;
+    top: 10px;
+    height: fit-content;
+    align-self: flex-start;
+}
+z
+/* sidebar comment box
 .comentario-box {
   border: 1px solid rgba(0,0,0,0.08);
   padding: 10px;
   border-radius: 6px;
   background: #fff;
   box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+   padding: 10px 10px 10px 35px; 
   cursor: pointer;
   position: relative;
 }
@@ -25,7 +32,83 @@
 .comentario-box .checkbox-correct { position: absolute; left: 8px; top: 8px; }
 
 /* estado corregido */
-.comentario-box.corregido { opacity: 0.7; border-left: 4px solid #198754; }
+/* .comentario-box.corregido { opacity: 0.7; border-left: 4px solid #198754; }
+.comentario-info {
+    margin-bottom: 6px;
+    font-size: 13px;
+    line-height: 1.2;
+} */ */
+/* ---- SIDEBAR ---- */
+.sidebar-comentarios {
+    width: 320px;
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: calc(100vh - 20px);
+    overflow-y: auto;
+    background: #fff;
+    border-left: 1px solid #e5e7eb;
+    padding: 15px;
+    box-shadow: -4px 0 12px rgba(0,0,0,0.05);
+}
+
+
+/* Título */
+.sidebar-comentarios .titulo {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1rem;
+}
+
+/* ---- CONTENEDOR DE COMENTARIOS ---- */
+.lista-comentarios {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ---- TARJETA INDIVIDUAL ---- */
+.comentario-box {
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.comentario-box:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+/* Estado corregido */
+.comentario-box.corregido {
+    background: #ecfdf5;
+    border-color: #6ee7b7;
+}
+
+/* ---- TEXTO ---- */
+.comentario-info {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+.comentario-box .texto {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 10px;
+}
+
+/* ---- CHECKBOX ---- */
+.checkbox-correct {
+    margin-top: 5px;
+    transform: scale(1.15);
+    cursor: pointer;
+}
 
 /* highlight temporal en el editor */
 .comentario-target {
@@ -80,6 +163,12 @@
                     </div>
                 </div>
 
+                     <aside id="sidebar-comentarios" class="sidebar-comentarios"">
+                <h5 class="mb-3">Comentarios</h5>
+                <div id="comentarios-list" class="d-flex flex-column gap-2" style="position:sticky;">
+                {{-- Aquí el JS inyectará los recuadros de comentarios --}}
+                </div>
+            </aside>
           {{-- si no, entonces esta en el comite y es docente  --}}
             @else
                 @if(!$rolesUsuario->contains('lector')) 
@@ -92,12 +181,12 @@
 
             </div>
             @endif
-            <aside id="sidebar-comentarios" style="width: 320px;">
+            {{-- <aside id="sidebar-comentarios" class="sidebar-comentarios"">
                 <h5 class="mb-3">Comentarios</h5>
-                <div id="comentarios-list" class="d-flex flex-column gap-2">
+                <div id="comentarios-list" class="d-flex flex-column gap-2" style="position:sticky;">
                 {{-- Aquí el JS inyectará los recuadros de comentarios --}}
-                </div>
-            </aside>
+                {{-- </div>
+            </aside> --}}
        </div>
        
         

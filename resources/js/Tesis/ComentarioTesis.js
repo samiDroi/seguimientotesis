@@ -87,74 +87,16 @@ const esComite = contenedor?.dataset.esComite === "true"; // true si pertenece a
   }
  
   let state = EditorState.create({
-    doc,
-    plugins: [...exampleSetup({ schema: mySchema }), comentarioPlugin(async (comentario) => {
-      
+  doc,
+  plugins: [
+    ...exampleSetup({ schema: mySchema }),
+    comentarioPlugin(comentario => {
+        // Aquí puedes poner lo que haces cuando clickean un comentario
+        console.log("Comentario seleccionado:", comentario);
+    })
+  ]
+});
 
-      // 2. Obtén el id_user
-      const id_user = comentario.author; 
-
-      // 3. Llama a tu nueva API
-      if (!ID_REQUERIMIENTO) {
-          alert("Error: No se encontró data-requerimiento");
-          return;
-      }
-      //Aqui sucede todo lo de buscar info del autor del comentario
-      console.log(`Buscando info para req: ${ID_REQUERIMIENTO}, user: ${id_user}`);
-      const infoAutor = await getInfoComentario(ID_REQUERIMIENTO, id_user);
-      console.log("Info del autor obtenida:", infoAutor);
-      // 4. Muestra la información combinada
-      if (infoAutor) {
-        const nombre = `${infoAutor.usuario_nombre} ${infoAutor.usuario_apellidos}`;
-        const roles = infoAutor.usuario_roles || 'Sin rol'; // Asegura que no sea null
-        const fechaComentario = infoAutor.fecha_comentario || 'Fecha Desconocida';
-        // Aquí puedes mostrarlo en un modal, un sidebar, etc.
-        // Por ahora, usamos un alert mejorado:
-        alert(`Fecha del Comentario: ${fechaComentario}\n
-          Autor: ${nombre} (${roles})\n\nComentario: ${comentario.text}
-          `);
-      
-      } else {
-        // Si falla la API, muestra al menos el comentario
-        console.error("No se pudo cargar la info del autor.");
-        alert("Comentario: " + comentario.text);
-      }
-      // alert("comentario: "+ comentario.text);
-    })],
-     
-  });
-  //Cargar comentarios existentes
-  const comentariosExistentes = await getComentarios();
-  if (comentariosExistentes?.length){
-      comentariosExistentes.forEach(c => {
-      console.log('comentarios existentes:',c);
-      // 1. ¡AQUÍ ESTÁ EL CAMBIO! Parsea el string
-      const rango = JSON.parse(c.rango_seleccionado);
-
-      const tr = state.tr.setMeta(comentarioPluginKey, {
-        addComentario: {
-          id: c.id_comentario,
-          from: rango.from,
-          to: rango.to,
-          text: c.comentario,
-          author: c.id_user
-        }
-      });
-      state = state.apply(tr);
-  });
-  }
-  
-
-  //  window.view = new EditorView(contenedor, {
-  //   state,
-  //   dispatchTransaction: tr => {
-  //     view.updateState(view.state.apply(tr));
-  //     clearTimeout(window.autoSaveTimeout);
-  //     window.autoSaveTimeout = setTimeout(() => {
-  //       // guardarContenido(view.state.doc.toJSON());
-  //     }, 2000);
-  //   },
-  // });
   //Guarda la vista del editor prosemirror en window
 window.editorView = new EditorView(contenedor, {
   state,
@@ -339,46 +281,54 @@ document.querySelector("#form-avance")?.addEventListener("submit", (event) => {
     hidden.value = tempContainer.innerHTML;
     console.log(hidden);
 });
+ 
 //funcion para cargar los comentarios en la barra lateral
-function renderSidebarComments(view, comentarios, infoComentarios) {
+async function renderSidebarComments(view, comentarios) {
+    
     const cont = document.querySelector("#comentarios-list");
     if (!cont) return;
 
     cont.innerHTML = "";
 
-    comentarios.forEach(c => {
-        // Buscar la información del autor según el id_user del comentario
-        const autor = infoComentarios.find(u => u.id_user == c.id_user);
+    for (const c of comentarios) {
 
-        let nombreCompleto = "Autor desconocido";
+        // Obtener info del autor de ESTE comentario
+        const infoAutor = await getInfoComentario(ID_REQUERIMIENTO, c.id_user);
+
+        let nombreCompleto = "Desconocido";
         let roles = "Sin rol";
-        let fecha = c.fecha_comentario || "Fecha desconocida";
+        let fecha = "Fecha desconocida";
 
-        if (autor) {
-            nombreCompleto = `${autor.usuario_nombre} ${autor.usuario_apellidos}`;
-            roles = autor.usuario_roles || "Sin rol";
-            fecha = autor.fecha_comentario ?? fecha;
+        if (infoAutor) {
+            nombreCompleto = `${infoAutor.usuario_nombre} ${infoAutor.usuario_apellidos}`;
+            roles = infoAutor.usuario_roles || "Sin rol";
+            fecha = infoAutor.fecha_comentario || "Fecha desconocida";
         }
 
-        // Crear la caja del comentario
+        // Crear elementos HTML
         let box = document.createElement("div");
         box.className = "comentario-box";
         if (c.estado === "corregido") box.classList.add("corregido");
 
         box.dataset.id = c.id_comentario;
 
-        // checkbox corregido
         let chk = document.createElement("input");
+        let labelChk = document.createElement("label");
+        
+        
+        
         chk.type = "checkbox";
         chk.className = "checkbox-correct";
         chk.checked = c.estado === "corregido";
+        chk.id = `chk-corregido-${c.id_comentario}`;
 
-        // texto del comentario
+        labelChk.textContent = "Corregido";
+        labelChk.htmlFor = chk.id;
+
         let texto = document.createElement("div");
         texto.className = "texto";
         texto.textContent = c.comentario;
 
-        // ➕ información extra del autor
         let info = document.createElement("div");
         info.className = "comentario-info";
         info.innerHTML = `
@@ -391,25 +341,69 @@ function renderSidebarComments(view, comentarios, infoComentarios) {
         box.appendChild(texto);
         box.appendChild(chk);
         cont.appendChild(box);
+        box.appendChild(labelChk);
 
-        // click en la caja → scroll + highlight
+        box.style.cursor = "pointer";
+        // CLICK → scroll + highlight
         box.addEventListener("click", e => {
             if (e.target === chk) return;
 
             const rango = JSON.parse(c.rango_seleccionado);
-            scrollToPos(view, rango.from);
+            if(window.editorView == null) return;
+
+            scrollToPos(window.editorView, rango.from);
             highlightRangeTemporary(view, rango.from, rango.to);
         });
-    });
+    }
 }
 
+
+// function scrollToPos(view, pos) {
+//     const coords = view.coordsAtPos(pos);
+//     window.scrollTo({
+//         top: coords.top + window.scrollY - 150,
+//         behavior: "smooth"
+//     });
+// }
 function scrollToPos(view, pos) {
-    const coords = view.coordsAtPos(pos);
-    window.scrollTo({
-        top: coords.top + window.scrollY - 150,
-        behavior: "smooth"
-    });
+    const targetCoords = view.coordsAtPos(pos);
+    const scrollContainer = document.querySelector('#editor-avance');
+    const currentScrollTop = (scrollContainer === window) ? window.scrollY : scrollContainer.scrollTop;
+  // 4. Calcula la nueva posición de scroll (posición del elemento - posición actual del scroll).
+    // Si es `window`, usa `targetCoords.top + window.scrollY`.
+    // Si es un div, usa la posición del elemento relativa al padre.
+    
+    let newScrollTop;
+    let offset = 150; // Offset para dejar espacio arriba
+
+    if (scrollContainer === window) {
+        // Si el scroll es de la ventana, usa la lógica original:
+        newScrollTop = targetCoords.top + currentScrollTop - offset;
+        window.scrollTo({
+            top: newScrollTop,
+            behavior: "smooth"
+        });
+    } else {
+        // Si el scroll es de un DIV interno (más complejo):
+        // Necesitas la posición del editor relativa al contenedor de scroll.
+        const editorTop = view.dom.getBoundingClientRect().top + currentScrollTop;
+        // La posición del comentario en el documento
+        const posInDocument = targetCoords.top + currentScrollTop;
+        
+        // El nuevo scroll será la posición del elemento menos el top del contenedor
+        newScrollTop = posInDocument - scrollContainer.getBoundingClientRect().top - offset;
+        
+        scrollContainer.scrollTo({
+            top: newScrollTop,
+            behavior: "smooth"
+        });
+    }
+    // container.scrollTo({
+    //     top: coords.top + container.scrollTop - 150,
+    //     behavior: "smooth"
+    // });
 }
+
 
 function highlightRangeTemporary(view, from, to, ms = 3500) {
     const tr = view.state.tr.setMeta(comentarioPluginKey, {
