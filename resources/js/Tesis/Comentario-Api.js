@@ -70,3 +70,24 @@ export async function getInfoComentario(id_requerimiento,id_user){
     return [];
   }
 }
+
+export async function actualizarEstadoComentario(idComentario, estado) {
+    try {
+        const res = await fetch(`/requerimiento/tesis/comentario/actualizar-estado/${idComentario}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ estado })
+        });
+
+        if (!res.ok) throw new Error("Error " + res.status);
+
+        return await res.json();
+
+    } catch (error) {
+        console.error("Error al actualizar comentario:", error);
+    }
+}
+

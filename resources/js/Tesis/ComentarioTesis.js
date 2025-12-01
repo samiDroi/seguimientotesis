@@ -321,6 +321,7 @@ async function renderSidebarComments(view, comentarios) {
         chk.className = "checkbox-correct";
         chk.checked = c.estado === "corregido";
         chk.id = `chk-corregido-${c.id_comentario}`;
+        chk.checked = c.comentario_estado === "EN REVISION";
 
         labelChk.textContent = "Corregido";
         labelChk.htmlFor = chk.id;
@@ -342,11 +343,19 @@ async function renderSidebarComments(view, comentarios) {
         box.appendChild(chk);
         cont.appendChild(box);
         box.appendChild(labelChk);
+        if (c.comentario_estado !== "PENDIENTE") {
+          box.classList.add("comentario-no-pendiente");
+          box.style.cursor = "default";
+          
+        }else{
+          box.style.cursor = "pointer";
+        }
+        
 
-        box.style.cursor = "pointer";
+        
         // CLICK → scroll + highlight
         box.addEventListener("click", e => {
-            if (e.target === chk) return;
+            if (e.target === chk || c.comentario_estado !== "PENDIENTE") return;
 
             const rango = JSON.parse(c.rango_seleccionado);
             if(window.editorView == null) return;

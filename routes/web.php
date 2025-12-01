@@ -145,6 +145,8 @@ Route::middleware(['auth'])->group(function(){
         Route::post("/create/{id}","createAvance")->name("avance.create");
         Route::post("/comentario","comentarioAvance")->name("comentario.create");
         Route::post("/estado","updateEstadoAvance")->name("avance.estado.update");
+        Route::post("/tesis/comentario/actualizar-estado/{idComentario}","updateComentarioEstado")->name("comentario.estado.update");
+        
     });
     
     Route::controller(ShowInfoUser::class)->prefix('myInfo')->group(function(){

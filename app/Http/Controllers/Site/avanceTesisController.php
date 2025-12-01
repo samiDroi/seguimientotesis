@@ -198,22 +198,21 @@ public function getComentariosToJson($id_avance_tesis){
         ]);
     }
 
-    public function updateComentarioEstado(Request $request){
-        $comentario = ComentarioAvance::findOrFail($request->get("id_comentario"));
+    public function updateComentarioEstado($idComentario,Request $request) {
+        $comentario = ComentarioAvance::findOrFail($idComentario);
 
-        // Validar que el estado esté permitido
         $validStates = ['CORREGIDO', 'PENDIENTE', 'EN REVISION'];
+
         if (!in_array($request->estado, $validStates)) {
             return response()->json(['error' => 'Estado no válido.'], 400);
         }
 
-        // Actualizar el estado del comentario
         $comentario->comentario_estado = $request->estado;
-        // $comentario->respuesta_correccion = $request->respuesta_correccion; // Actualiza la respuesta de corrección si se proporciona
         $comentario->save();
-        
+
         return response()->json(['success' => 'Estado del comentario actualizado correctamente.']);
     }
+
 
 
 }

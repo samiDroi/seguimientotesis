@@ -10,7 +10,7 @@ class ComentarioAvance extends Model
     use HasFactory;
     protected $table = 'comentario_avance';
 
-    protected $primaryKey = 'id_avance_tesis';
+    protected $primaryKey = 'id_comentario';
 
     protected $fillable = [
         'comentario',

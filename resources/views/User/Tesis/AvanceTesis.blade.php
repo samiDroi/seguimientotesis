@@ -115,6 +115,12 @@ z
   background: rgba(100, 200, 255, 0.35) !important;
   border-radius: 2px;
 }
+.comentario-no-pendiente {
+    background: #e5e5e5;
+    border-left: 4px solid #999;
+    opacity: 0.7;
+}
+
 </style>
 
 
@@ -135,6 +141,7 @@ z
     <div data-route="{{ Route("comentario.create") }}"></div>
     <div data-autor="{{ Auth::user()->id_user }}"></div>
     <div data-requerimiento = "{{ $requerimiento->id_requerimiento }}"></div>
+    
     {{-- rutas y datos necesarios para el avance de tesis --}}
     @if($avanceTesis)
         <div data-avance = "{{ route("helper.fetch.avance",$avanceTesis->id_avance_tesis) }}"></div>
