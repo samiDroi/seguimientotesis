@@ -52,49 +52,6 @@ class avanceTesisController extends Controller{
         return redirect()->route('home');
     }
 
-    // public function comentarioAvance(Request $request){
-    //     // dd($request->all());
-    //     //dd($request->get('id_avance_tesis'));
-    //     //dd($request->get('contenido'));
-    //     ComentarioAvance::create([
-    //         'comentario' => $request->get('contenido'),
-    //         'id_avance_tesis' => $request->input('id_avance_tesis'),
-    //         'id_user' => Auth::user()->id_user,
-    //         'contenido_original' => $request->get('contenido_original')
-    //     ]);
-   
-    //     $requerimiento = ComiteTesisRequerimientos::join('avance_tesis', 'comite_tesis_requerimientos.id_requerimiento', '=', 'avance_tesis.id_requerimiento')
-    //     ->where('avance_tesis.id_avance_tesis', $request->input('id_avance_tesis'))
-    //     ->first(['comite_tesis_requerimientos.*']);
-
-    //     return redirect()->route("avance.index",$requerimiento->id_requerimiento);
-    // }
-        // public function comentarioAvance(Request $request)
-        // {
-        //     $comentario = new ComentarioAvance();
-        //     $comentario->id_autor = $request->id_autor;
-        //     $comentario->id_avance_tesis = $request->id_avance_tesis;
-        //     $comentario->comentario = $request->comentario;
-
-        //     // Convertir a JSON si viene como arreglo
-        //     $comentario->rango_seleccionado = is_array($request->rango_seleccionado)
-        //         ? json_encode($request->rango_seleccionado)
-        //         : $request->rango_seleccionado;
-
-        //     $comentario->save();
-    
-        //     // Relacionar con requerimiento
-        //     $requerimiento = ComiteTesisRequerimientos::join(
-        //         'avance_tesis', 
-        //         'comite_tesis_requerimientos.id_requerimiento', 
-        //         '=', 
-        //         'avance_tesis.id_requerimiento'
-        //     )
-        //     ->where('avance_tesis.id_avance_tesis', $request->input('id_avance_tesis'))
-        //     ->first(['comite_tesis_requerimientos.*']);
-
-        //     return redirect()->route("avance.index", $requerimiento->id_requerimiento);
-        // }
 public function comentarioAvance(Request $request)
 {
     // dd($request->all());
@@ -232,5 +189,31 @@ public function getComentariosToJson($id_avance_tesis){
             ], 404);
         }
     }
+
+    public function fetchComentarioEstado($id_comentario){
+        $comentario = ComentarioAvance::findOrFail($id_comentario);
+        return response()->json([
+            'comentario_estado' => $comentario->comentario_estado,
+            'respuesta_correccion' => $comentario->respuesta_correccion,
+        ]);
+    }
+
+    public function updateComentarioEstado(Request $request){
+        $comentario = ComentarioAvance::findOrFail($request->get("id_comentario"));
+
+        // Validar que el estado esté permitido
+        $validStates = ['CORREGIDO', 'PENDIENTE', 'EN REVISION'];
+        if (!in_array($request->estado, $validStates)) {
+            return response()->json(['error' => 'Estado no válido.'], 400);
+        }
+
+        // Actualizar el estado del comentario
+        $comentario->comentario_estado = $request->estado;
+        // $comentario->respuesta_correccion = $request->respuesta_correccion; // Actualiza la respuesta de corrección si se proporciona
+        $comentario->save();
+        
+        return response()->json(['success' => 'Estado del comentario actualizado correctamente.']);
+    }
+
 
 }
