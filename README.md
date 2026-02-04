@@ -1,3 +1,8 @@
+---
+> **English Version**: [Click here to read the English version of this README](README.en.md)
+---
+
+
 # [SISTESIS]
 
 ### Descripción
@@ -27,19 +32,27 @@ Este proyecto fue construido con las siguientes tecnologías:
 
 *Figura 2: Dashboard de SISTESIS para coordinador*![Dashboard de SISTESIS para coordinador](Screenshots/Login-Coordinador.png)
 
+
 ---
+
 
 *Figura 3: Control de usuarios*![Control de usuarios](Screenshots/User-Control.png)
 
+
 ---
+
 
 *Figura 4: Control de comites*![Control de comites](Screenshots/Comite-Control.png)
 
+
 ---
+
 
 *Figura 5: Control de tesis*![Control de tesis](Screenshots/tesis-control.png)
 
+
 ---
+
 
 *Figura 6: Asignacion de usuarios de comite*![Asignacion de usuarios de comite](Screenshots/Assgnment-Commitees.png)
 
@@ -97,6 +110,7 @@ Para correr este proyecto localmente, sigue estos pasos:
    DB_DATABASE=nombre_de_tu_bd
    DB_USERNAME=tu_usuario
    DB_PASSWORD=tu_contraseña
-
+   
+6. **Ejecutar las migraciones**
    ```bash
    php artisan migrate --seed
