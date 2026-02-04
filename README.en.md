@@ -86,11 +86,12 @@ To run this project locally, follow these steps:
    ```bash
    git clone [https://github.com/samiDroi/seguimientotesis.git](https://github.com/samiDroi/seguimientotesis.git)
    cd seguimientotesis
-   2. **Instalar Dependencias**
+
+2. **Install Dependencies**
    ```bash
    composer install
 
-3. **Install Dependencies:**
+3. **Install Frontend Dependencies:**
    ```bash
    npm install 
    npm run build # o npm run dev si es para desarrollo activo
