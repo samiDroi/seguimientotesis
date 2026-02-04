@@ -1,6 +1,5 @@
----
 > **English Version**: [Click here to read the English version of this README](README.en.md)
----
+
 
 
 # [SISTESIS]
@@ -110,7 +109,7 @@ Para correr este proyecto localmente, sigue estos pasos:
    DB_DATABASE=nombre_de_tu_bd
    DB_USERNAME=tu_usuario
    DB_PASSWORD=tu_contraseña
-   
+
 6. **Ejecutar las migraciones**
    ```bash
    php artisan migrate --seed

@@ -1,6 +1,5 @@
----
 > **Spanish Version**: [Haz clic aquí para leer la versión en español de este README](README.md)
----
+
 
 # [SISTESIS]
 
