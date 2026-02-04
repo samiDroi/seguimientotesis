@@ -7,7 +7,7 @@
 ### Description
 A comprehensive system for the management and monitoring of theses at the Autonomous University of Nayarit (UAN), specifically for the Academic Unit of Economics. This platform digitizes institutional processes and streamlines the management of student committees for thesis candidates.
 
-### 🚀 Technologies Used
+### Technologies Used
 This project was built with the following stack:
 * **Backend:** PHP 8.x and Laravel 10.
 * **Frontend:** JavaScript (ES6+), jQuery, Bootstrap 5.
@@ -15,7 +15,7 @@ This project was built with the following stack:
 * **Package Management:** NPM and Composer.
 * **Key Libraries:** ProseMirror, Chart.js, SweetAlert2, DataTables.
 
-### ✨ Main Features
+### Main Features
 * **Thesis Management:** Complete workflow from thesis registration to final approval.
 * **Statistical Dashboard:** Real-time data visualization using Chart.js for Department/Master's coordinators.
 * **Rich Text Editor:** ProseMirror integration for detailed thesis descriptions and progress.
@@ -23,7 +23,7 @@ This project was built with the following stack:
 * **Dynamic Tables:** Fast filtering and searching powered by DataTables.
 * **Password Recovery System:** Email-based password reset functionality.
 
-### 📸 System Screenshots
+### System Screenshots
 
 **Figure 1: System Login**
 ![Login Screen](Screenshots/Login.png)
@@ -80,7 +80,7 @@ This project was built with the following stack:
 
 ---
 
-### 🛠️ Installation and Configuration
+### Installation and Configuration
 To run this project locally, follow these steps:
 
 1. **Clone the repository:**
