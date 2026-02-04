@@ -1,66 +1,71 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# [SISTESIS]
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### Descripción
+Sistema integral para la gestión y seguimiento de tesis de la Universidad Autónoma de Nayarit, en la unidad academica de economia,
+permitiendo la digitalización de procesos institucionales, asi mismo agilizando la gestion de comites estudiantiles a cargo de estudiantes de tesis.
 
-## About Laravel
+### Tecnologías Utilizadas
+Este proyecto fue construido con las siguientes tecnologías:
+* **Backend:** PHP 8.x y Laravel 10.
+* **Frontend:** JavaScript (ES6+), jQuery, Bootstrap 5.
+* **Base de Datos:** MySQL (Diseñada en MySQL Workbench).
+* **Gestión de Paquetes:** NPM y Composer.
+* **Librerías Clave:** ProseMirror, Chart.js, SweetAlert2, DataTables.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+###  Características Principales
+* **Gestión de Tesis:** Flujo completo desde el registro de tesis hasta la aprobación.
+* **Dashboard Estadístico:** Visualización de datos en tiempo real con Chart.js para el coordinador de la carrera/maestria.
+* **Editor Enriquecido:** Integración de ProseMirror para descripciones detalladas.
+* **Sistema de Roles:** Autenticación y permisos para Alumnos, Docentes y Administradores.
+* **Tablas Dinámicas:** Filtros y búsquedas rápidas con DataTables.
+* **sistema de recuperacion de contraseña:** Recuperacion de contraseña mediante email del usuario.
+ 
+###  Capturas de Pantalla
+> *Tip: Aquí puedes arrastrar una imagen o screenshot de tu sistema dentro de GitHub para que se genere el link.*
+![Inicio de sesion](Screenshots/Login.png)
+![Dashboard de SISTESIS para coordinador](Screenshots/Login-Coordinador.png)
+![Control de usuarios](Screenshots/User-Control.png)
+![Control de comites](Screenshots/Comite-Control.png)
+![Control de tesis](Screenshots/tesis-control.png)
+![Asignacion de usuarios de comite](Screenshots/Assgnment-Commitees.png)
+![Asignacion de roles en comite](Screenshots/Asiggnment-roles.png)
+![Vizualisacion de controles de tesis del director de tesis](Screenshots/Tesis%20director's-controls.png)
+![Visualizacion de tesis para miembros del comite](Screenshots/Visualization%20committee%20tesis.png)
+![Visualizacion de tesis del alumno](Screenshots/Tesis-Visualization.png)
+![Editor para escribir avance de tesis](Screenshots/Write-Tesis.png)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+###  Instalación y Configuración
+Para correr este proyecto localmente, sigue estos pasos:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. **Clonar el repositorio:**
+   ```bash
+   git clone [https://github.com/samiDroi/seguimientotesis.git](https://github.com/samiDroi/seguimientotesis.git)
+   cd seguimientotesis
+   
+2. **Instalar Dependencias**
+   ```bash
+   composer install
 
-## Learning Laravel
+3. **Instalar dependencias de Frontend (NPM)**
+   ```bash
+   npm install 
+   npm run build # o npm run dev si es para desarrollo activo
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+4. **Configurar variables de entorno**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+5. **Configurar base de datos**
+   Abre el archivo `.env` en tu editor de texto y asegúrate de actualizar las siguientes líneas con los datos de tu servidor local de MySQL:
+   
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=nombre_de_tu_bd
+   DB_USERNAME=tu_usuario
+   DB_PASSWORD=tu_contraseña
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+   ```bash
+   php artisan migrate --seed

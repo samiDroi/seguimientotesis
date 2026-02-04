@@ -77,66 +77,11 @@
                                     @endif
                                 @endif
                             @endforeach
-                    {{-- @foreach ($tesisComites as $tesisComite)
-                        @if ($tesisComite->id_tesis == $tesis->id_tesis)
-                            @if ($tesisComite->requerimientos->isNotEmpty())
-                                @php $tieneRequerimientos = true; @endphp
-                                <details>
-                                    <summary class="h5 text-primary">Estructura de tesis</summary>
-                                    <ul class="list-group list-group-flush text-start py-1">
-                                        @foreach ($tesisComite->requerimientos as $requerimiento)
-                                            <li class="list-group-item px-0 rounded-4 ps-5 py-2 mx-5">
-                                                <strong>{{ $requerimiento->nombre_requerimiento }}</strong>
-                                                <a class="text-primary fw-semibold" href="{{ route('avance.index', $requerimiento->id_requerimiento) }}">Realizar avance</a>
-                                                <br>
-                                                <span class="fw-semibold">Descripción:</span> {{ $requerimiento->descripcion }}
-                                                <span class="badge 
-                                                    @if($requerimiento->estado == 'pendiente') bg-warning
-                                                    @elseif($requerimiento->estado == 'completado') bg-success
-                                                    @elseif($requerimiento->estado == 'en_proceso') bg-info
-                                                    @endif">
-                                                    {{ ucfirst($requerimiento->estado) }}
-                                                </span>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </details>
-                            @endif
-                        @endif
-                    @endforeach --}}
-
+                    
                     @if (!$tieneRequerimientos)
                         <p class="text-danger">No hay requerimientos para esta tesis.</p>
                     @endif
 
-                        {{-- @foreach ($tesisComites as $tesisComite)
-                            @if ($tesisComite->id_tesis == $tesis->id_tesis)
-                                @if ($tesisComite->requerimientos->isNotEmpty())
-                                    <details>
-                                        <summary class="h5 text-primary">Estructura de tesis</summary>
-                                        <ul class="list-group list-group-flush text-start py-1">
-                                            @foreach ($tesisComite->requerimientos as $requerimiento)
-                                                <li class="list-group-item px-0 rounded-4 ps-5 py-2 mx-5">
-                                                    <strong>{{ $requerimiento->nombre_requerimiento }}</strong>
-                                                    <a class="text-primary fw-semibold" href="{{ route('avance.index', $requerimiento->id_requerimiento) }}">Realizar avance</a>
-                                                    <br>
-                                                    <span class="fw-semibold">Descripción:</span> {{ $requerimiento->descripcion }}
-                                                    <span class="badge 
-                                                        @if($requerimiento->estado == 'pendiente') bg-warning
-                                                        @elseif($requerimiento->estado == 'completado') bg-success
-                                                        @elseif($requerimiento->estado == 'en_proceso') bg-info
-                                                        @endif">
-                                                        {{ ucfirst($requerimiento->estado) }}
-                                                    </span>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </details>
-                                @else
-                                    <p class="text-danger">No hay capitulos para esta tesis.</p>
-                                @endif
-                            @endif
-                        @endforeach --}}
                     </div>
                 </div>
             </div>

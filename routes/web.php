@@ -110,7 +110,7 @@ Route::middleware(['auth'])->group(function(){
         
         });
     });
-    //desloggear al usuario, esta qui porque esta ruta debe ser accesible solo si se registro el usuario
+    //desloggear al usuario, esta aqui porque esta ruta debe ser accesible solo si se registro el usuario
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     //Ruta temporal que quiza se use para personalizar roles

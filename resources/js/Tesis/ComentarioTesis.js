@@ -367,13 +367,7 @@ async function renderSidebarComments(view, comentarios) {
 }
 
 
-// function scrollToPos(view, pos) {
-//     const coords = view.coordsAtPos(pos);
-//     window.scrollTo({
-//         top: coords.top + window.scrollY - 150,
-//         behavior: "smooth"
-//     });
-// }
+
 function scrollToPos(view, pos) {
     const targetCoords = view.coordsAtPos(pos);
     const scrollContainer = document.querySelector('#editor-avance');
@@ -394,7 +388,7 @@ function scrollToPos(view, pos) {
         });
     } else {
         // Si el scroll es de un DIV interno (más complejo):
-        // Necesitas la posición del editor relativa al contenedor de scroll.
+        // Se toma la posición del editor relativa al contenedor de scroll.
         const editorTop = view.dom.getBoundingClientRect().top + currentScrollTop;
         // La posición del comentario en el documento
         const posInDocument = targetCoords.top + currentScrollTop;
@@ -407,10 +401,7 @@ function scrollToPos(view, pos) {
             behavior: "smooth"
         });
     }
-    // container.scrollTo({
-    //     top: coords.top + container.scrollTop - 150,
-    //     behavior: "smooth"
-    // });
+ 
 }
 
 

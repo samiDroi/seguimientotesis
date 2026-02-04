@@ -52,8 +52,7 @@ export async function saveComentario({
     return await res.json();
   } catch (err) {
     console.log('Error guardando comentario:', err);  
-    // console.error("Error guardando comentario:", err);
-    // console.log(err);
+   
     return null;
   }
 }
