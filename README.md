@@ -20,29 +20,50 @@ Este proyecto fue construido con las siguientes tecnologías:
 * **Tablas Dinámicas:** Filtros y búsquedas rápidas con DataTables.
 * **sistema de recuperacion de contraseña:** Recuperacion de contraseña mediante email del usuario.
  
-###  Capturas de Pantalla
-*Figura 1: Inicio de sesion del sistema*
-![Inicio de sesion](Screenshots/Login.png)
-*Figura 2: Dashboard de SISTESIS para coordinador*
-![Dashboard de SISTESIS para coordinador](Screenshots/Login-Coordinador.png)
-*Figura 3: Control de usuarios*
-![Control de usuarios](Screenshots/User-Control.png)
-*Figura 4: Control de comites*
-![Control de comites](Screenshots/Comite-Control.png)
-*Figura 5: Control de tesis*
-![Control de tesis](Screenshots/tesis-control.png)
-*Figura 6: Asignacion de usuarios de comite*
-![Asignacion de usuarios de comite](Screenshots/Assgnment-Commitees.png)
-*Figura 7: Asignacion de roles en comite*
-![Asignacion de roles en comite](Screenshots/Asiggnment-roles.png)
-*Figura 8: Vizualisacion de controles de tesis del director de tesis*
-![Vizualisacion de controles de tesis del director de tesis](Screenshots/Tesis%20director's-controls.png)
-*Figura 9: Visualizacion de tesis para miembros del comite*
-![Visualizacion de tesis para miembros del comite](Screenshots/Visualization%20committee%20tesis.png)
-*Figura 10: Visualizacion de tesis del alumno*
-![Visualizacion de tesis del alumno](Screenshots/Tesis-Visualization.png)
-*Figura 9: Editor para escribir avance de tesis*
-![Editor para escribir avance de tesis](Screenshots/Write-Tesis.png)
+###  Capturas del sistema
+*Figura 1: Inicio de sesion del sistema*![Inicio de sesion](Screenshots/Login.png)
+
+---
+
+*Figura 2: Dashboard de SISTESIS para coordinador*![Dashboard de SISTESIS para coordinador](Screenshots/Login-Coordinador.png)
+
+---
+
+*Figura 3: Control de usuarios*![Control de usuarios](Screenshots/User-Control.png)
+
+---
+
+*Figura 4: Control de comites*![Control de comites](Screenshots/Comite-Control.png)
+
+---
+
+*Figura 5: Control de tesis*![Control de tesis](Screenshots/tesis-control.png)
+
+---
+
+*Figura 6: Asignacion de usuarios de comite*![Asignacion de usuarios de comite](Screenshots/Assgnment-Commitees.png)
+
+---
+
+*Figura 7: Asignacion de roles en comite*![Asignacion de roles en comite](Screenshots/Asiggnment-roles.png)
+
+---
+
+*Figura 8: Vizualisacion de controles de tesis del director de tesis*![Vizualisacion de controles de tesis del director de tesis](Screenshots/Tesis%20director's-controls.png)
+
+---
+
+*Figura 9: Visualizacion de tesis para miembros del comite*![Visualizacion de tesis para miembros del comite](Screenshots/Visualization%20committee%20tesis.png)
+
+---
+
+*Figura 10: Visualizacion de tesis del alumno*![Visualizacion de tesis del alumno](Screenshots/Tesis-Visualization.png)
+
+---
+
+*Figura 9: Editor para escribir avance de tesis*![Editor para escribir avance de tesis](Screenshots/Write-Tesis.png)
+
+---
 
 ###  Instalación y Configuración
 Para correr este proyecto localmente, sigue estos pasos:
