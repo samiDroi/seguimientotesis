@@ -13,7 +13,7 @@ import { addListNodes } from "prosemirror-schema-list";
 import { DOMSerializer } from "prosemirror-model";
 
 // funciones de mi api de comentarios
-import { getComentarios, saveComentario, getInfoComentario } from './Comentario-Api.js';
+import { getComentarios, saveComentario, getInfoComentario, actualizarEstadoComentario } from './Comentario-Api.js';
 import { loadComments } from './Comentario-Handler.js';
 import { get } from "jquery";
 
@@ -129,6 +129,7 @@ document.head.insertAdjacentHTML(
   `<style>
     .anotacion{background:rgba(255,255,0,.5);border-radius:3px;cursor:pointer;}
     .anotacion:hover{background:rgba(255,220,0,.8);}
+    .comentario-autor{background:#fff7ed;border-color:#ffedd5;}
   </style>`
 );
 
@@ -305,25 +306,70 @@ async function renderSidebarComments(view, comentarios) {
             fecha = infoAutor.fecha_comentario || "Fecha desconocida";
         }
 
+        // Detectar usuario actual y rol (se asume que si existe el botón de comentar, es comité)
+        const currentUserId = document.querySelector("div[data-autor]")?.dataset.autor;
+        const isComiteView = !!document.querySelector('#btn-comentar');
+        const isAlumnoView = !isComiteView;
+
         // Crear elementos HTML
         let box = document.createElement("div");
         box.className = "comentario-box";
-        if (c.estado === "corregido") box.classList.add("corregido");
+        // Usar el campo `comentario_estado` como fuente de verdad
+        if (c.comentario_estado === "CORREGIDO") box.classList.add("corregido");
 
         box.dataset.id = c.id_comentario;
 
         let chk = document.createElement("input");
         let labelChk = document.createElement("label");
         
-        
-        
         chk.type = "checkbox";
         chk.className = "checkbox-correct";
-        chk.checked = c.estado === "corregido";
         chk.id = `chk-corregido-${c.id_comentario}`;
-        chk.checked = c.comentario_estado === "EN REVISION";
 
-        labelChk.textContent = "Corregido";
+        // Detectar si el usuario es el autor del comentario
+        const isAuthor = String(currentUserId) === String(c.id_user);
+        
+        if (isAuthor) {
+            box.classList.add('comentario-autor');
+        }
+
+        // Lógica de renderizado del checkbox según la vista y estado
+        let mostrarCheckbox = false;
+        let labelCheckboxText = "Corregido";
+
+        if (isAlumnoView) {
+            // VISTA ALUMNO
+            mostrarCheckbox = true;
+            labelCheckboxText = "Marcar como corregido";
+            
+            if (c.comentario_estado === "EN REVISION") {
+                chk.checked = true; // checkbox marcado si está EN REVISION
+                chk.disabled = true; // inhabilitar checkbox en EN REVISION
+            } else if (c.comentario_estado === "CORREGIDO") {
+                chk.checked = true; // checkbox marcado si ya está CORREGIDO
+                chk.disabled = true; // inhabilitar checkbox si ya está CORREGIDO
+                chk.style.display = "none"; // ocultar checkbox si ya está CORREGIDO
+                labelCheckboxText = "Corregido"; // cambiar texto a "Corregido" si ya está corregido
+            } else {
+                chk.checked = false; // checkbox desmarcado si está PENDIENTE
+            }
+            
+            // // Solo hace interactivo si es el autor
+            // if (!isAuthor) {
+            //     chk.disabled = true;
+            // }
+        } else {
+            // VISTA COMITÉ
+            if (isAuthor && c.comentario_estado === "EN REVISION") {
+                mostrarCheckbox = true;
+                labelCheckboxText = "Aceptar corrección";
+                chk.checked = false;
+            } else {
+                mostrarCheckbox = false;
+            }
+        }
+
+        labelChk.textContent = labelCheckboxText;
         labelChk.htmlFor = chk.id;
 
         let texto = document.createElement("div");
@@ -340,9 +386,15 @@ async function renderSidebarComments(view, comentarios) {
 
         box.appendChild(info);
         box.appendChild(texto);
-        box.appendChild(chk);
+        
+        // Solo agregar checkbox si debe mostrarse
+        if (mostrarCheckbox) {
+            box.appendChild(chk);
+            box.appendChild(labelChk);
+        }
+        
         cont.appendChild(box);
-        box.appendChild(labelChk);
+        
         if (c.comentario_estado !== "PENDIENTE") {
           box.classList.add("comentario-no-pendiente");
           box.style.cursor = "default";
@@ -354,54 +406,108 @@ async function renderSidebarComments(view, comentarios) {
 
         
         // CLICK → scroll + highlight
-        box.addEventListener("click", e => {
-            if (e.target === chk || c.comentario_estado !== "PENDIENTE") return;
+        box.addEventListener("click", async e => {
+            if (e.target === chk) return;
+
+            // Si no es autor y el comentario no está en PENDIENTE, no permitir click
+            if (!isAuthor && c.comentario_estado !== "PENDIENTE") return;
 
             const rango = JSON.parse(c.rango_seleccionado);
             if(window.editorView == null) return;
 
-            scrollToPos(window.editorView, rango.from);
+            // Primero hacer highlight
             highlightRangeTemporary(view, rango.from, rango.to);
+            
+            // Luego hacer scroll con pequeño delay
+            setTimeout(() => {
+                scrollToPos(window.editorView, rango.from);
+            }, 100);
+
+            // Si el autor hace click sobre un comentario en EN REVISION o PENDIENTE (solo en vista alumno),
+            // marcarlo como CORREGIDO y persistir en la BD
+            if (isAlumnoView && isAuthor && c.comentario_estado !== 'CORREGIDO') {
+                const nuevoEstado = 'CORREGIDO';
+                const resp = await actualizarEstadoComentario(c.id_comentario, nuevoEstado, null);
+                if (resp && resp.success) {
+                    c.comentario_estado = nuevoEstado;
+                    if (mostrarCheckbox) chk.checked = true;
+                    box.classList.add('corregido');
+                }
+            }
         });
+
+        // Si el checkbox está presente, agregar event listener
+        if (mostrarCheckbox) {
+            chk.addEventListener('change', async (ev) => {
+                if (!isAuthor) return;
+                
+                let nuevoEstado;
+                if (isAlumnoView) {
+                    // Vista alumno: cambiar entre CORREGIDO y EN REVISION
+                    nuevoEstado = ev.target.checked ? 'CORREGIDO' : 'EN REVISION';
+                } else {
+                    // Vista comité: "Aceptar corrección" significa cambiar de EN REVISION a CORREGIDO
+                    nuevoEstado = ev.target.checked ? 'CORREGIDO' : 'EN REVISION';
+                }
+                
+                const resp = await actualizarEstadoComentario(c.id_comentario, nuevoEstado, ev.target);
+                if (resp && resp.success) {
+                    c.comentario_estado = nuevoEstado;
+                    // actualizar clase visual
+                    if (nuevoEstado === 'CORREGIDO') {
+                        box.classList.add('corregido');
+                    } else {
+                        box.classList.remove('corregido');
+                    }
+                } else {
+                    // revertir checkbox si hubo error
+                    ev.target.checked = !ev.target.checked;
+                    alert('No se pudo actualizar el estado del comentario.');
+                }
+            });
+        }
     }
 }
 
 
 
 function scrollToPos(view, pos) {
-    const targetCoords = view.coordsAtPos(pos);
-    const scrollContainer = document.querySelector('#editor-avance');
-    const currentScrollTop = (scrollContainer === window) ? window.scrollY : scrollContainer.scrollTop;
-  // 4. Calcula la nueva posición de scroll (posición del elemento - posición actual del scroll).
-    // Si es `window`, usa `targetCoords.top + window.scrollY`.
-    // Si es un div, usa la posición del elemento relativa al padre.
+    const offset = 150; // Offset para dejar espacio arriba
     
-    let newScrollTop;
-    let offset = 150; // Offset para dejar espacio arriba
-
-    if (scrollContainer === window) {
-        // Si el scroll es de la ventana, usa la lógica original:
-        newScrollTop = targetCoords.top + currentScrollTop - offset;
+    try {
+        // Obtener el nodo DOM en esa posición
+        const node = view.domAtPos(pos);
+        
+        if (node && node.node) {
+            // Si es un nodo de texto, obtener el padre
+            let element = node.node.nodeType === 3 ? node.node.parentElement : node.node;
+            
+            console.log("Scrolling to node:", element);
+            
+            // Usar scrollIntoView para un navegador más confiable
+            element.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+            
+            return;
+        }
+        
+        // Fallback: usar coordenadas
+        const targetCoords = view.coordsAtPos(pos);
+        const editorElement = view.dom;
+        const editorRect = editorElement.getBoundingClientRect();
+        const targetTop = editorRect.top + window.scrollY + targetCoords.top - offset;
+        
+        console.log("Fallback scroll to:", targetTop);
+        
         window.scrollTo({
-            top: newScrollTop,
+            top: targetTop,
             behavior: "smooth"
         });
-    } else {
-        // Si el scroll es de un DIV interno (más complejo):
-        // Se toma la posición del editor relativa al contenedor de scroll.
-        const editorTop = view.dom.getBoundingClientRect().top + currentScrollTop;
-        // La posición del comentario en el documento
-        const posInDocument = targetCoords.top + currentScrollTop;
-        
-        // El nuevo scroll será la posición del elemento menos el top del contenedor
-        newScrollTop = posInDocument - scrollContainer.getBoundingClientRect().top - offset;
-        
-        scrollContainer.scrollTo({
-            top: newScrollTop,
-            behavior: "smooth"
-        });
+    } catch (err) {
+        console.error("Error en scrollToPos:", err);
     }
- 
 }
 
 

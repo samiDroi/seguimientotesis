@@ -70,7 +70,7 @@ export async function getInfoComentario(id_requerimiento,id_user){
   }
 }
 
-export async function actualizarEstadoComentario(idComentario, estado) {
+export async function actualizarEstadoComentario(idComentario, estado, target) {
     try {
         const res = await fetch(`/requerimiento/tesis/comentario/actualizar-estado/${idComentario}`, {
             method: "POST",

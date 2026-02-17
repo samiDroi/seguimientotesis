@@ -153,49 +153,35 @@ z
 
     <form id="form-avance" action="{{ Route("avance.create",$requerimiento->id_requerimiento) }}"  method="POST">
         @csrf
-       <div class="d-flex gap-3">  
-             {{-- si no esta en el comite auditando es el alumno  --}}
-            @if (!(comprobarIsInComite($comiteTesis->id_comite)))
-                    {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comentarios-mostrar">
-                        Ver comentarios
-                        </button> --}}
-                {{-- <textarea id="avance_tesis" name="contenido">{{ $avanceTesis?->contenido }}</textarea> --}}
-                <div class="flex-grow-1">
-                    <div id="editor-col">
-                        <div id="editor-avance" aria-placeholder="Escribale"></div>
-                        <input id="contenido-hidden" type="hidden" value="" name="contenido">
-                    
-                        <a class=" mt-3 align-center btn btn-danger" href="{{ Route("home") }}"><i class="fa-solid fa-rectangle-xmark"></i> Regresar y cancelar</a>
-                        <button class=" mt-3 btn btn-primary " type="submit"><i class="fa-solid fa-pen-to-square"></i>Guardar Cambios</button>
-                    </div>
+       <div class="d-flex gap-3">
+    {{-- CONTENEDOR DEL EDITOR (IZQUIERDA) --}}
+    <div class="flex-grow-1">
+        @if (!(comprobarIsInComite($comiteTesis->id_comite)))
+            {{-- VISTA ALUMNO --}}
+            <div id="editor-col">
+                <div id="editor-avance"></div>
+                <input id="contenido-hidden" type="hidden" name="contenido">
+                <div class="mt-3">
+                    <a class="btn btn-danger" href="{{ Route('home') }}">Regresar</a>
+                    <button class="btn btn-primary" type="submit">Guardar Cambios</button>
                 </div>
-
-                     <aside id="sidebar-comentarios" class="sidebar-comentarios"">
-                <h5 class="mb-3">Comentarios</h5>
-                <div id="comentarios-list" class="d-flex flex-column gap-2" style="position:sticky;">
-                {{-- Aquí el JS inyectará los recuadros de comentarios --}}
-                </div>
-            </aside>
-          {{-- si no, entonces esta en el comite y es docente  --}}
-            @else
-                @if(!$rolesUsuario->contains('lector')) 
-                    <button type="button" id="btn-comentar">realizar comentario</button>
-                    
-                @endif
-                    <div data-es-comite="@json(Auth::user()->comites->contains("id_comite", $comiteTesis->id_comite))" id="editor-avance"></div>
-
-                
-
             </div>
+        @else
+            {{-- VISTA COMITÉ --}}
+            @if(!$rolesUsuario->contains('lector'))
+                <button type="button" id="btn-comentar" class="btn btn-warning mb-2">Realizar comentario</button>
             @endif
-            {{-- <aside id="sidebar-comentarios" class="sidebar-comentarios"">
-                <h5 class="mb-3">Comentarios</h5>
-                <div id="comentarios-list" class="d-flex flex-column gap-2" style="position:sticky;">
-                {{-- Aquí el JS inyectará los recuadros de comentarios --}}
-                {{-- </div>
-            </aside> --}}
-       </div>
-       
+            <div id="editor-avance"></div>
+        @endif
+    </div>
+
+    {{-- SIDEBAR DE COMENTARIOS (DERECHA - SIEMPRE VISIBLE) --}}
+    <aside id="sidebar-comentarios" class="sidebar-comentarios">
+        <h5 class="titulo">Comentarios</h5>
+        <div id="comentarios-list" class="lista-comentarios">
+            </div>
+    </aside>
+</div>
         
     </form>
    

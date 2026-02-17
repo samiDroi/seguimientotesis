@@ -158,22 +158,10 @@ return response()->json([
         alert()->success("El comentario ha sido eliminado satisfactoriamente.")->persistent(true,false);
         return redirect()->back();
     }
-    // public function getComentariosToJson(){
-    //     $htmlComment = ComentarioAvance::first();
-        
-    //     return response()->json([
-    //         'main' => $htmlComment->contenido_original,
-    //         'comentarios' => $htmlComment->comentarios
-    //     ]);
-    // }
+   
 public function getComentariosToJson($id_avance_tesis){
     return ComentarioAvance::where('id_avance_tesis', $id_avance_tesis)->get();
-    // $comentario = ComentarioAvance::first()->where('id_avance_tesis', $id_avance_tesis)->first();
-
-    // return response()->json([
-    //     'main' => $comentario->contenido_original ?? '',
-    //     'comentarios' => $comentario->comentario ?? ''
-    // ]);
+  
 }
 
     public function getAvanceTesisJson($id_avance_tesis){
