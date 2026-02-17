@@ -393,5 +393,12 @@ function getUsersComiteAudita(){
         ->get();
 }
 
+    function isInAnyComite(){
+        return DB::table('usuarios_comite')
+        ->where('id_user', Auth::user()?->id_user)
+        ->count();
+    }
+
+
 
 

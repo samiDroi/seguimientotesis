@@ -5,9 +5,11 @@
     <li class="nav-item" role="presentation">
         <button class="nav-link active pestañas-nav" id="mis-tesis-tab" data-bs-toggle="tab" data-bs-target="#mis-tesis" type="button" role="tab">Mis Tesis</button>
     </li>
+    @if(isInAnyComite())
     <li class="nav-item" role="presentation">
         <button class="nav-link pestañas-nav" id="comite-tesis-tab" data-bs-toggle="tab" data-bs-target="#comite-tesis" type="button" role="tab">Tesis Asignadas a mi Comité</button>
     </li>
+    @endif
 </ul>
 
 
@@ -89,6 +91,7 @@
     </div>
 
     <!-- TAB 2: Tesis del Comité -->
+    {{-- @if(isInAnyComite()) --}}
     <div class="tab-pane fade" id="comite-tesis" role="tabpanel">
         @if ($tesisDeComite->isNotEmpty())
             @foreach ($tesisDeComite as $tesis)
@@ -171,6 +174,7 @@
             <p class="text-center text-danger">No tienes tesis asignadas como parte de un comité.</p>
         @endif
     </div>
+    {{-- @endif --}}
 
 </div>
 
