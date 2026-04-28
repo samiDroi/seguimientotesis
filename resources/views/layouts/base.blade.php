@@ -1,5 +1,4 @@
-
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -17,137 +16,167 @@
 
     <!-- Tus estilos personalizados si tienes -->
     <style>
-        :root {
-            --color-belize: #2980b9;
-            --color-delete: #e74c3c;
-        }
-    #sidebar {
+      :root {
+    --color-belize: #2980b9;
+    --color-delete: #e74c3c;
+}
+
+/* 🔹 SIDEBAR */
+#sidebar {
     background-color: white;
     box-shadow: 4px 0 6px -1px rgba(0,0,0,0.1);
     transition: width 0.3s ease-in-out;
-    overflow: hidden;
-    width: 20%; /* ancho expandido */
+    width: 20%;
+    max-width: 100%;
+    height:1000px;
+     overflow-y: auto;   
+    overflow-x: hidden; 
 }
 
 #sidebar.collapsed {
-    width: 60px; /* ancho plegado solo iconos */
+    width: 60px;
 }
 
+/* 🔹 OPCIONES */
 #sidebar .option {
     display: flex;
-    align-items: center; /* centra icono y texto verticalmente */
+    align-items: center;
     justify-content: flex-start;
     gap: 10px;
     padding: 10px 15px;
-    white-space: nowrap; /* evita que el texto se rompa */
+ white-space: normal;
+    min-height: 3rem;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    transition: all 0.25s ease;
+     flex-direction: column; /* ahora sí es seguro */
+    align-items: flex-start;
+    
 }
 
+
+
+
+/* 🔹 HOVER (SIN ROMPER LAYOUT) */
+#sidebar .option:hover {
+    background-color: var(--color-morado-4);
+    cursor: pointer;
+    transform: scale(1.03);
+}
+
+#sidebar .option:hover a,
+#sidebar .option:hover i {
+    color: white;
+}
+
+/* 🔹 ICONOS */
+#sidebar .option i {
+    min-width: 24px;
+    text-align: center;
+}
+
+/* 🔹 TEXTO */
 #sidebar .link-text {
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
+/* 🔹 SIDEBAR COLAPSADO */
 #sidebar.collapsed .link-text {
     opacity: 0;
-    transform: translateX(-10px); /* un pequeño desplazamiento para animación */
-    pointer-events: none; /* no se puede clicar el texto cuando está oculto */
+    transform: translateX(-10px);
+    pointer-events: none;
 }
 
-
-
-#sidebar .option i {
-    min-width: 24px; /* asegura que todos los iconos tengan el mismo ancho */
-    text-align: center;
+/* 🔹 DETAILS/SUMMARY */
+#sidebar details {
+    width: 100%;
 }
-#sidebar .option, .collapse-btn {
+
+#sidebar summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    cursor: pointer;
+    list-style: none;
+}
+
+#sidebar summary::-webkit-details-marker {
+    display: none;
+}
+
+#sidebar details[open] summary {
+    background-color: var(--color-morado-4);
+    color: white;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+/* 🔹 BOTÓN */
+#sidebar .collapse-btn {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 10px;
-    transition: 0.3s ease;
 }
-.collapse-btn .btn-text {
+
+#sidebar .collapse-btn .btn-text {
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Cuando el sidebar se pliega */
 #sidebar.collapsed .collapse-btn .btn-text {
     opacity: 0;
     transform: translateX(-10px);
-    pointer-events: none; /* no clickeable cuando está oculto */
+    pointer-events: none;
 }
-
-/* Opcional: animar el icono para girar cuando se pliega */
 #sidebar.collapsed .collapse-btn i {
     transition: transform 0.3s ease-in-out;
-    transform: rotate(180deg); /* o cualquier animación */
+    transform: rotate(180deg);
 }
-.principal{
-    width: 100%
-}
-
-.option{
-    height: 3rem;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-    
-   
-}
-
-.option:hover{
-       
-    background-color: var(--color-morado-4);
-    height: 5rem;
-    cursor: pointer;
-    transition: ease-in-out 5s;
-   
-}
-
-.option:hover a, .option:hover i{
-    color: white;
-}
-
-    </style>
-    <style>
-/* 🔹 Layout 70/30 */
+/* 🔹 LAYOUT */
 .layout-wrapper {
-  display: flex;
-  height: calc(100vh - 70px); /* Resta el alto del navbar */
-  overflow: hidden;
+    display: flex;
+    height: calc(100vh - 70px);
+    overflow: hidden;
 }
-
 .sidebar-area {
-  flex: 0 0 20%;
-  max-width: 30%;
-  background-color: white;
-  box-shadow: 4px 0 6px -1px rgba(0,0,0,0.1);
-  overflow-y: auto;
+    flex: 0 0 20%;
+    max-width: 30%;
+    background-color: white;
+    box-shadow: 4px 0 6px -1px rgba(0,0,0,0.1);
+    overflow-y: auto;
 }
-
 .content-area {
-  flex: 0 0 70%;
-  max-width: 70%;
-  overflow-y: auto;
-  padding: 1.5rem;
+    flex: 0 0 70%;
+    max-width: 70%;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+.mlista:hover{
+    background: rgba(255, 255, 255, 0.459);
+    padding: 4px;
+    border-radius: 3px;
 }
 
-/* 🔹 Ajuste en pantallas pequeñas */
+
+
+/* 🔹 RESPONSIVE */
 @media (max-width: 768px) {
-  .layout-wrapper {
-    flex-direction: column;
-  }
-  .sidebar-area {
-    flex: 0 0 auto;
-    max-width: 100%;
-  }
-  .content-area {
-    flex: 1;
-    max-width: 100%;
-  }
+    .layout-wrapper {
+        flex-direction: column;
+    }
+
+    .sidebar-area {
+        flex: 0 0 auto;
+        max-width: 100%;
+    }
+
+    .content-area {
+        flex: 1;
+        max-width: 100%;
+    }
 }
 </style>
-
   <!-- TinyMCE CDN -->
-<!-- Place the first <script> tag in your HTML's <head> -->
 </head>
 <body>
 
@@ -180,59 +209,8 @@
         </div>
     </nav>
 
-     {{-- <div class="container-fluid p-0">
-        <div class="row g-0">
-
-            <!-- 🟥 Sidebar -->
-            <div class="col-md-3 col-lg-3 col-xl-3 p-0">
-                <nav id="sidebar" class="nav flex-column gap-4 pt-5 pb-5 fs-4 text-center vh-100">
-                    <div class="sidebar-toggle mb-4">
-                        <button id="toggleSidebar" class="btn btn-light">
-                            <i class="fa-solid fa-bars"></i>
-                        </button>
-                    </div>
-
-                    <div class="option my-1 py-3 mb-5 mt-2">
-                        <a href="{{ Route('home') }}" class="text-decoration-none text-dark fw-semibold diva">
-                            <i class="fa-solid fa-house"></i>
-                            <span class="link-text">Inicio</span>
-                        </a>
-                    </div>
-
-                    <div class="option my-1 py-3 mb-5">
-                        <a href="{{ Route('info.comites') }}" class="text-decoration-none text-dark fw-semibold diva">
-                            <i class="fa-solid fa-user-group"></i>
-                            <span class="link-text">Mi comité</span>
-                        </a>
-                    </div>
-
-                    @if (isDirector() > 0)
-                    <div class="option my-1 py-3 mb-5">
-                        <a href="{{ Route('tesis.index') }}" class="text-decoration-none text-dark fw-semibold diva">
-                            <i class="fa-solid fa-file-word"></i>
-                            <span class="link-text">Gestionar tesis</span>
-                        </a>
-                    </div>
-                    @endif
-
-                    <div class="option my-1 py-3 mb-5">
-                        <a href="{{ Route('info.unidad') }}" class="text-decoration-none text-dark fw-semibold diva">
-                            <i class="fa-solid fa-school"></i>
-                            <span class="link-text">Mi unidad</span>
-                        </a>
-                    </div>
-                </nav>
-            </div>
-
-            <!-- 🟩 Contenido principal -->
-            <div class="col-md-9 col-lg-9 col-xl-9 mt-4 principal px-4">
-                @yield('content')
-            </div>
-        </div>
-    </div> --}}
     <div class="layout-wrapper">
-    <!-- 🟥 Sidebar -->
-    
+        <!-- 🟥 Sidebar -->
         <div id="sidebar" class="nav flex-column gap-4 pt-5 pb-5 fs-4 text-center">
             <div class="sidebar-toggle mb-4">
                 <button id="toggleSidebar" class="btn btn-light ml-3">
@@ -240,30 +218,45 @@
                 </button>
             </div>
 
-            <div class="option my-1 py-3 mb-5 mt-2">
+            <div class="option my-1 py-3 mb-2 mt-2">
                 <a href="{{ Route('home') }}" class="text-decoration-none text-dark fw-semibold diva">
                    <i class="fa-solid fa-house"></i> 
-                    <span class="link-text"> Inicios</span>
+               <span class="link-text"> Inicio</span>
                 </a>
             </div>
 
-            <div class="option my-1 py-3 mb-5">
+            <div class="option my-1 py-3 mb-2">
                 <a href="{{ Route('info.comites') }}" class="text-decoration-none text-dark  fw-semibold diva">
                     <i class="fa-solid fa-user-group"></i>
                     <span class="link-text"> Mi comité</span>
                 </a>
             </div>
 
-            @if (isDirector() > 0)
-            <div class="option my-1 py-3 mb-5">
-                <a href="{{ Route('tesis.index') }}" class="text-decoration-none text-dark fw-semibold diva">
-                    <i class="fa-solid fa-file-word"></i>
-                    <span class="link-text"> Gestionar tesis</span>
-                </a>
+@if ($sidebarRoles->isNotEmpty())
+            <div class="option my-1 py-3 mb-2">
+
+                  <details class="w-100">
+                  <summary class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-file-word"></i>
+                  <span class="link-text fw-semibold">Gestionar tesis</span>
+                  </summary>
+
+                      <div class="ps-4 mt-2">
+                      @foreach($sidebarRoles as $rol)
+                      <p>
+                          <a class="text-dark text-decoration-none mlista" 
+                             href="{{ route('tesis.index', ['rol' => $rol['nombre_rol']]) }}">
+                              {{ $rol['nombre_rol'] }}
+                          </a>
+                      </p>
+                      @endforeach
+                      </div>
+                      </details>
+
             </div>
             @endif
 
-            <div class="option my-1 py-3 mb-5">
+            <div class="option my-1 py-3 mb-2">
                 <a href="{{ Route('info.unidad') }}" class="text-decoration-none text-dark fw-semibold diva">
                     <i class="fa-solid fa-school"></i>
                     <span class="link-text"> Mi unidad</span>
@@ -272,16 +265,15 @@
         </div>
     
 
-    <!-- 🟩 Contenido principal -->
-    <div class="content-area">
-        @yield('content')
+        <!-- 🟩 Contenido principal -->
+        <div class="content-area">
+            @yield('content')
+        </div>
     </div>
-</div>
 
     @include('sweetalert::alert')
     <script src="{{ asset("vendor/sweetalert/sweetalert.all.js") }}"></script>
     <script src="https://cdn.tiny.cloud/1/urwrxmsleu3b744kjom91xeido5jy6oujj95v82jp8ixig9s/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
-    <script src="https://kit.fontawesome.com/eaefdedbbf.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

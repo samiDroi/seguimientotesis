@@ -341,6 +341,44 @@ function getDirectorTesis(){
         ->get();
 }
 
+function obtenerTesisPorRol($rolNombre){
+    return DB::table('tesis as t')
+        ->join('tesis_comite as tc','tc.id_tesis','=','t.id_tesis')
+        ->join('comite as c','c.id_comite','=','tc.id_comite')
+        ->join('usuarios_comite as uc','uc.id_comite','=','c.id_comite')
+        ->join('usuarios as u','u.id_user','=','uc.id_user')
+        ->join('usuarios_comite_roles as ucr','ucr.id_usuario_comite','=','uc.id_usuario_comite')
+        ->join('roles as r','r.id_rol','=','ucr.id_rol')
+       ->leftJoin('comite_tesis_requerimientos as ctr', 'ctr.id_tesis_comite', '=', 'tc.id_tesis_comite')
+
+        ->where('uc.id_user',Auth::user()->id_user)
+        ->where('r.nombre_rol',$rolNombre)
+        ->select('t.*','c.*','ctr.*','ucr.*','r.*','tc.id_tesis_comite as id_tc','ctr.descripcion as desc')
+        ->orderBy('ctr.id_requerimiento','asc')
+        ->get();
+}
+
+function obtenerRolesUnicosSidebar($userId){
+    return DB::table('usuarios_comite_roles as ucr')
+        ->join('usuarios_comite as uc', 'uc.id_usuario_comite', '=', 'ucr.id_usuario_comite')
+        ->join('roles as r', 'r.id_rol', '=', 'ucr.id_rol')
+        ->where('uc.id_user', $userId)
+        ->orWhere('ucr.id_user_creador', $userId)
+        ->select('r.id_rol', 'r.nombre_rol', 'uc.id_comite')
+        ->distinct()
+        ->get()
+        ->groupBy('id_rol')
+        ->map(function ($items) {
+            $first = $items->first();
+            return [
+                'id_rol' => $first->id_rol,
+                'nombre_rol' => $first->nombre_rol,
+                'comites' => $items->pluck('id_comite')->unique()->values()
+            ];
+        })
+        ->values();
+}
+
 function getRolComite($id_comite){
      return DB::table('usuarios_comite as uc')
     ->join('comite as c', 'uc.id_comite', '=', 'c.id_comite')

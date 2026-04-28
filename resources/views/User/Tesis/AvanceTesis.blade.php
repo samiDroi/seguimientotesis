@@ -15,29 +15,8 @@
     height: fit-content;
     align-self: flex-start;
 }
-z
-/* sidebar comment box
-.comentario-box {
-  border: 1px solid rgba(0,0,0,0.08);
-  padding: 10px;
-  border-radius: 6px;
-  background: #fff;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-   padding: 10px 10px 10px 35px; 
-  cursor: pointer;
-  position: relative;
-}
-.comentario-box .meta { font-size: 12px; color: #666; margin-bottom: 6px; }
-.comentario-box .texto { font-size: 14px; white-space: pre-wrap; }
-.comentario-box .checkbox-correct { position: absolute; left: 8px; top: 8px; }
 
-/* estado corregido */
-/* .comentario-box.corregido { opacity: 0.7; border-left: 4px solid #198754; }
-.comentario-info {
-    margin-bottom: 6px;
-    font-size: 13px;
-    line-height: 1.2;
-} */ */
+
 /* ---- SIDEBAR ---- */
 .sidebar-comentarios {
     width: 320px;
@@ -159,7 +138,9 @@ z
         @if (!(comprobarIsInComite($comiteTesis->id_comite)))
             {{-- VISTA ALUMNO --}}
             <div id="editor-col">
-                <div id="editor-avance"></div>
+                <div id="editor-avance">
+                  
+                </div>
                 <input id="contenido-hidden" type="hidden" name="contenido">
                 <div class="mt-3">
                     <a class="btn btn-danger" href="{{ Route('home') }}">Regresar</a>

@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\TesisController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ShowInfoUser;
 use App\Http\Controllers\Site\avanceTesisController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\isDirector;
 use Illuminate\Support\Facades\Auth;
 
@@ -170,4 +171,9 @@ Route::controller(PlanDeTrabajoController::class)->prefix('plan-trabajo')->group
     Route::get('/print-plan/{id}','exportarPDF')->name('plan.print');
     Route::post('/create','create')->name('plan.create');
     Route::post('/plan-history/{id_plan}','update')->name('plan.update');
+});
+
+Route::controller(DashboardController::class)->prefix('dashboard')->middleware(['auth'])->group(function(){
+    Route::get('/','index')->name('dashboard.index');
+    Route::get('/tesis/filtrar','obtenerTesisFiltradas')->name('dashboard.tesis.filtrar');
 });
